@@ -10,16 +10,21 @@ public class ZapLine : MonoBehaviour {
 
     private int m_NumZaps;
     public int NumZaps { get { return m_NumZaps; } }
+
     private int m_TargetZapIndex;
+    public int TargetZapIndex { get { return m_TargetZapIndex; } }
+
     private int m_CurrZapIndex;
-    private List<Zap> m_Zaps;
+    public int CurrZapIndex { get { return m_CurrZapIndex; } }
+
     private bool m_IsCountingUp;
+    public bool IsCountingUp { get { return m_IsCountingUp; } }
+
+    private List<Zap> m_Zaps;
 
     void Awake()
     {
-        m_TargetZapIndex = 0;
-        m_CurrZapIndex = 0;
-        m_IsCountingUp = true;
+        InitializeVariables(0, 0, true);
     }
 
     public Zap GetNextZap()
@@ -50,37 +55,30 @@ public class ZapLine : MonoBehaviour {
         return null;
     }
 
-    public void SetCurrZapIndex(int index)
+    public void InitializeVariables(int currZapIndex, int targetZapIndex, bool isCountingUp)
     {
-        m_CurrZapIndex = index % m_Zaps.Count;
+        m_CurrZapIndex = currZapIndex;
+        m_TargetZapIndex = targetZapIndex;
+        m_IsCountingUp = isCountingUp;
     }
+
     public int GetCurrZapIndex()
     {
         return m_CurrZapIndex;
-    }
-
-    public void SetTargetZapIndex(int index)
-    {
-        m_TargetZapIndex = index % m_Zaps.Count;
     }
     public int GetTargetZapIndex()
     {
         return m_TargetZapIndex;
     }
-
     public bool GetIsCountingUp()
     {
         return m_IsCountingUp;
     }
-    public void SetIsCountingUp(bool isCountingUp)
-    {
-        m_IsCountingUp = isCountingUp;
-    }
 
     public void SpawnZaps(int numZaps, Vector3 position, float positionOffsetDistance, float zapWaitTime)
     {
-        m_NumZaps = numZaps;
         m_Zaps = new List<Zap>();
+        m_NumZaps = numZaps;
         Vector3 spawnPosWorldSpace = Vector3.zero;
         float zapWidthWorldSpace = .675f / m_NumZaps;
         for (int i = 0; i < m_NumZaps; i++)
@@ -103,8 +101,7 @@ public class ZapLine : MonoBehaviour {
             Zap zap = (Zap)Instantiate(zapPrefab, this.transform, true);
             zap.transform.position = spawnPosWorldSpace;
             zap.SetWidth(zapWidthWorldSpace);
-            zap.SetOffsetPosition(positionOffsetDistance);
-            zap.WaitTime = zapWaitTime;
+            zap.SetOffsetDistance(positionOffsetDistance);
             m_Zaps.Add(zap);
         }
     }

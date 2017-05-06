@@ -9,12 +9,12 @@ public abstract class Zap : MonoBehaviour {
     private int m_Points;
     [SerializeField]
     private Color m_Color;
-
-    public float WaitTime = 0.0f;
     
     public float Width { get { return m_SpriteRenderer.bounds.size.x; } }
     public float Height { get { return m_SpriteRenderer.bounds.size.y; } }
     private Vector3 m_OffsetPosition;
+    private int m_Row;
+    private int m_Col;
 
     private SpriteRenderer m_SpriteRenderer;
 
@@ -29,7 +29,7 @@ public abstract class Zap : MonoBehaviour {
         GameMaster.Instance.m_ZapScore.AddToScore(m_Points);
     }
 
-    public void SetOffsetPosition(float distanceFromZap)
+    public void SetOffsetDistance(float distanceFromZap)
     {
         m_OffsetPosition = new Vector3(Width / 2.0f, Height / 2.0f - distanceFromZap, 0) + this.transform.position;
     }
@@ -37,6 +37,26 @@ public abstract class Zap : MonoBehaviour {
     public Vector3 GetOffsetPosition()
     {
         return m_OffsetPosition;
+    }
+
+    public int GetRow()
+    {
+        return m_Row;
+    }
+
+    public int GetCol()
+    {
+        return m_Row;
+    }
+
+    public void SetRow(int row)
+    {
+        m_Row = row;
+    }
+
+    public void SetCol(int col)
+    {
+        m_Col = col;
     }
 
     public void SetWidth(float width)
