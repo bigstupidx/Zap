@@ -10,7 +10,7 @@ namespace Player
     public class PlayerMovement : MonoBehaviour
     {
 
-        private enum MovementState
+        public enum MovementState
         {
             MovingVertical,
             MovingHorizontal
@@ -39,6 +39,7 @@ namespace Player
         private int m_CurrRow;
         private int m_CurrCol;
         private int m_NextCol;
+        private bool m_IsMovementImpaired; // if true then cannot go to next line
 
         private Rigidbody2D m_Rigidbody;
 
@@ -46,23 +47,28 @@ namespace Player
         void Start()
         {
             m_Rigidbody = GetComponent<Rigidbody2D>();
-            SetMovementState(MovementState.MovingHorizontal);
+            m_PrevMovementState = MovementState.MovingHorizontal;
+            m_MovementState = MovementState.MovingHorizontal;
             m_StartPosition = this.transform.position;
             m_SpeedMultiplier = 1.0f;
             m_IsMovingRight = true;
             m_CurrRow = 0;
             m_CurrCol = 0;
+            m_IsMovementImpaired = false;
         }
 
         // Update is called once per frame
         void Update()
         {
-            if (m_CurrZap != null && m_NextZap != null)
+            if (!m_IsMovementImpaired)
             {
-                if (Input.GetKeyDown(KeyCode.UpArrow))
+                if (m_CurrZap != null && m_NextZap != null)
                 {
-                    SetMovementState(MovementState.MovingVertical);
-                    fillMovementData();
+                    if (Input.GetKeyDown(KeyCode.UpArrow))
+                    {
+                        SetMovementState(MovementState.MovingVertical);
+                        fillMovementData();
+                    }
                 }
             }
 
@@ -74,15 +80,16 @@ namespace Player
             lerpToTarget();
         }
 
-        private void SetMovementState(MovementState movementState)
+        public void SetMovementState(MovementState movementState)
         {
             m_PrevMovementState = m_MovementState;
             m_MovementState = movementState;
         }
 
-        public void SetSpeedMultiplier(float multiplier)
+        public void SetSpeedMultiplier(float multiplier, bool isMovementImpaired)
         {
             m_SpeedMultiplier = multiplier;
+            m_IsMovementImpaired = isMovementImpaired;
         }
 
         private void lerpToTarget()
@@ -113,6 +120,7 @@ namespace Player
                 }
                 else if (m_MovementState == MovementState.MovingVertical)
                 {
+                    SetSpeedMultiplier(1.0f, false);
                     SetMovementState(MovementState.MovingHorizontal);
                 }
 
@@ -165,50 +173,64 @@ namespace Player
             }
             else if (m_MovementState == MovementState.MovingVertical)
             {
-                /* get correct zap on new line to go to 
-                    this will compare the distance between the curr and next zap
-                    if next zap is closer then go to it and vice versa. */
-                Zap zapOnNewLine = null;
-                bool underneathCurrZap = transform.position.x <= (m_CurrZap.transform.position.x + m_CurrZap.Width) &&
-                    transform.position.x >= m_CurrZap.transform.position.x;
-                if (underneathCurrZap)
-                {
-                    // handles to make sure that we can't repeatedly make up for increment issues when moving vertically.
-                    if (m_PrevMovementState != MovementState.MovingVertical)
-                    {
-                        if (m_IsMovingRight)
-                        {
-                            m_NextCol--;
-                        }
-                        else
-                        {
-                            m_NextCol++;
-                        }
-                    }
-                    zapOnNewLine = GameMaster.Instance.m_ZapManager.GetZapGrid().GetZap(m_CurrRow + 1, m_NextCol);
-
-                }
-                else
-                {
-                    zapOnNewLine = GameMaster.Instance.m_ZapManager.GetZapGrid().GetZap(m_CurrRow + 1, m_NextCol);
-                }
-
-
-                if (zapOnNewLine != null)
-                {
-                    //m_P2 = m_CurrZap.GetOffsetPosition();
-                    //m_P1 = m_StartPosition
-                    //m_TargetPosition = GetPoint(m_LerpPercentage);
-                    // figure out which zap we are closer too
-                    m_CurrZap = m_NextZap;
-                    m_NextZap = zapOnNewLine;
-                    m_CurrRow++;
-                    m_LerpAmount = 0.0f;
-                    m_CurrZap.ApplyEffect();
-                    m_StartPosition = this.transform.position;
-                    m_TargetPosition = zapOnNewLine.GetOffsetPosition();
-                }
+                Zap zapMovedThrough = moveVertically(1);
+                zapMovedThrough.ApplyEffect();
             }
+        }
+
+        // returns the zap we move through initially when moving up.
+        public Zap moveVertically(int numRows)
+        {
+            /* get correct zap on new line to go to 
+                this will compare the distance between the curr and next zap
+                if next zap is closer then go to it and vice versa. */
+            Zap zapOnNewLine = null;
+            Zap zapMovedThrough = null;
+            bool underneathCurrZap = transform.position.x <= (m_CurrZap.transform.position.x + m_CurrZap.Width) &&
+                transform.position.x >= m_CurrZap.transform.position.x;
+            if (underneathCurrZap)
+            {
+                // handles to make sure that we can't repeatedly make up for increment issues when moving vertically.
+                if (m_PrevMovementState != MovementState.MovingVertical)
+                {
+                    if (m_IsMovingRight)
+                    {
+                        m_NextCol--;
+                    }
+                    else
+                    {
+                        m_NextCol++;
+                    }
+                }
+                zapOnNewLine = GameMaster.Instance.m_ZapManager.GetZapGrid().GetZap(m_CurrRow + numRows, m_NextCol);
+                zapMovedThrough = m_CurrZap;
+            }
+            else
+            {
+                zapOnNewLine = GameMaster.Instance.m_ZapManager.GetZapGrid().GetZap(m_CurrRow + numRows, m_NextCol);
+                zapMovedThrough = m_NextZap;
+            }
+
+
+            if (zapOnNewLine != null)
+            {
+                //m_P2 = m_CurrZap.GetOffsetPosition();
+                //m_P1 = m_StartPosition
+                //m_TargetPosition = GetPoint(m_LerpPercentage);
+                // figure out which zap we are closer too
+                m_CurrZap = zapOnNewLine;
+                m_NextZap = zapOnNewLine;
+                m_CurrRow += numRows;
+                m_LerpAmount = 0.0f;
+                m_StartPosition = this.transform.position;
+                m_TargetPosition = zapOnNewLine.GetOffsetPosition();
+            }
+            else
+            {
+                // Move to next zap grid
+            }
+
+            return zapMovedThrough;
         }
     }
 }

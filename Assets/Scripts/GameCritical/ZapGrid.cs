@@ -53,6 +53,7 @@ namespace GameCritical
             {
                 Vector3 spawnPos = Vector3.zero;
                 float zapWidth = .675f / cols;
+                float zapHeight = .01f;
                 m_ZapGrid[i] = new Zap[cols];
                 for (int j = 0; j < cols; j++)
                 {
@@ -73,6 +74,7 @@ namespace GameCritical
                     Zap zap = (Zap)Instantiate(zapPrefab);
                     zap.transform.position = spawnPos;
                     zap.SetWidth(zapWidth);
+                    zap.SetHeight(zapHeight);
                     zap.SetOffsetDistance(offsetDistance);
                     m_ZapGrid[i][j] = zap;
 

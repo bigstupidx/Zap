@@ -9,7 +9,7 @@ public class GoodZap : Zap
     public override void ApplyEffect()
     {
         base.ApplyEffect();
-
+        
     }
 }
 }

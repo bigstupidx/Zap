@@ -29,9 +29,9 @@ namespace Obstacles
 
         private IEnumerator ApplySlowForTime(float time)
         {
-            GameMaster.Instance.m_PlayerMovement.SetSpeedMultiplier(0.1f);
+            GameMaster.Instance.m_PlayerMovement.SetSpeedMultiplier(0.1f, true);
             yield return new WaitForSeconds(time);
-            GameMaster.Instance.m_PlayerMovement.SetSpeedMultiplier(1.0f);
+            GameMaster.Instance.m_PlayerMovement.SetSpeedMultiplier(1.0f, false);
         }
     }
 }
