@@ -173,13 +173,13 @@ namespace Player
             }
             else if (m_MovementState == MovementState.MovingVertical)
             {
-                Zap zapMovedThrough = moveVertically(1);
-                zapMovedThrough.ApplyEffect();
+                Zap zapMovedThrough = MoveVertically(1);
+                zapMovedThrough.ApplyImmediateEffect();
             }
         }
 
         // returns the zap we move through initially when moving up.
-        public Zap moveVertically(int numRows)
+        public Zap MoveVertically(int numRows)
         {
             /* get correct zap on new line to go to 
                 this will compare the distance between the curr and next zap
@@ -231,6 +231,20 @@ namespace Player
             }
 
             return zapMovedThrough;
+        }
+
+        public void InterruptAndMoveTo(Zap targetZap)
+        {
+            m_CurrZap = targetZap;
+            m_NextZap = targetZap;
+            // NEED TO SET COLS AND ROW MAYBE SHOULD STORE IN ZAP
+            m_NextCol = targetZap.Col;
+            m_CurrRow = targetZap.Row;
+            m_StartPosition = this.transform.position;
+            m_TargetPosition = targetZap.GetOffsetPosition();
+            SetMovementState(MovementState.MovingHorizontal);
+            SetSpeedMultiplier(1.0f, false);
+            m_LerpAmount = 0.0f;
         }
     }
 }

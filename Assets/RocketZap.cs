@@ -10,13 +10,21 @@ namespace GameCritical
         [SerializeField]
         private int m_NumberOfRowsToJump = 3;
 
-        public override void ApplyEffect()
+        [SerializeField]
+        private float m_SpeedMultiplier = 0.075f;
+
+        public override void ApplyImmediateEffect()
         {
-            base.ApplyEffect();
+            base.ApplyImmediateEffect();
 
             GameMaster.Instance.m_PlayerMovement.SetMovementState(PlayerMovement.MovementState.MovingVertical);
-            GameMaster.Instance.m_PlayerMovement.SetSpeedMultiplier(0.075f, true);
-            GameMaster.Instance.m_PlayerMovement.moveVertically(m_NumberOfRowsToJump);
+            GameMaster.Instance.m_PlayerMovement.SetSpeedMultiplier(m_SpeedMultiplier, true);
+            GameMaster.Instance.m_PlayerMovement.MoveVertically(m_NumberOfRowsToJump);
+        }
+
+        public override void ApplyCollisionEffect()
+        {
+            base.ApplyCollisionEffect();
         }
     }
 }

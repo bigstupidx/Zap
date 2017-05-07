@@ -4,12 +4,16 @@ using UnityEngine;
 
 namespace GameCritical
 {
-public class GoodZap : Zap
-{
-    public override void ApplyEffect()
+    public class GoodZap : Zap
     {
-        base.ApplyEffect();
-        
+        public override void ApplyImmediateEffect()
+        {
+            base.ApplyImmediateEffect();
+        }
+
+        public override void ApplyCollisionEffect()
+        {
+            base.ApplyCollisionEffect();
+        }
     }
-}
 }
