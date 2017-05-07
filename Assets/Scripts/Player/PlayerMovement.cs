@@ -228,6 +228,7 @@ namespace Player
             else
             {
                 // Move to next zap grid
+                GameMaster.Instance.m_ZapManager.EnterDeadZone();
             }
 
             return zapMovedThrough;

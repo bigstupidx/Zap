@@ -22,6 +22,8 @@ namespace GameCritical
         private List<Zap> m_ZapPrefabs;
         [SerializeField]
         private List<float> m_ZapPrefabChance;
+        [SerializeField]
+        private List<int> m_ZapPrefabsForced;
 
         [SerializeField]
         private List<Obstacle> m_ObstaclePrefabs;
@@ -34,21 +36,21 @@ namespace GameCritical
             Init();
         }
 
-        private Zap[][] m_ZapGrid;
+        private List<List<Zap>> m_ZapGrid;
 
         public int GetNumCols(int row)
         {
-            return m_ZapGrid[row].Length;
+            return m_ZapGrid[row].Count;
         }
 
         public int GetNumRows()
         {
-            return m_ZapGrid.Length;
+            return m_ZapGrid.Count;
         }
 
         public Zap GetZap(int row, int col)
         {
-            if (row < m_ZapGrid.Length && col < m_ZapGrid[row].Length && col >= 0)
+            if (row < m_ZapGrid.Count && col < m_ZapGrid[row].Count && col >= 0)
             {
                 return m_ZapGrid[row][col];
             }
@@ -106,25 +108,41 @@ namespace GameCritical
         public void Init()
         {
             // pre fill the zap grid before shuffling.
-            m_ZapGrid = new Zap[m_Rows][];
+            m_ZapGrid = new List<List<Zap>>();
             for (int i = 0; i < m_Rows; i++)
             {
-                m_ZapGrid[i] = new Zap[m_Cols];
-                for (int j = 0; j < m_Cols; j++)
+                List<Zap> zapRowToFill = new List<Zap>();
+
+                // spawn all required zaps for this row
+                int totalForcedPrefabsAdded = 0;
+                for(int j = 0; j < m_ZapPrefabsForced.Count; j++)
+                {
+                    int numOfPrefabToSpawn = m_ZapPrefabsForced[j];
+                    Zap prefabToSpawn = m_ZapPrefabs[j];
+                    for (int k = 0; k < numOfPrefabToSpawn; k++)
+                    {
+                        zapRowToFill.Add(prefabToSpawn);
+                        totalForcedPrefabsAdded++;
+                    }
+                }
+
+                for (int j = totalForcedPrefabsAdded; j < m_Cols; j++)
                 {
                     // spawn zap
                     Zap zapPrefab = GetRandomZapPrefab();
-                    m_ZapGrid[i][j] = zapPrefab;
+                    zapRowToFill.Add(zapPrefab);
                 }
 
                 // shuffle the zaps in each row
-                for (int k = 0; k < m_ZapGrid[i].Length; k++)
+                for (int k = 0; k < zapRowToFill.Count; k++)
                 {
-                    Zap temp = m_ZapGrid[i][k];
-                    int randomIndex = (int)Random.Range(0, m_ZapGrid[i].Length - 1);
-                    m_ZapGrid[i][k] = m_ZapGrid[i][randomIndex];
-                    m_ZapGrid[i][randomIndex] = temp;
+                    Zap temp = zapRowToFill[k];
+                    int randomIndex = (int)Random.Range(0, zapRowToFill.Count - 1);
+                    zapRowToFill[k] = zapRowToFill[randomIndex];
+                    zapRowToFill[randomIndex] = temp;
                 }
+
+                m_ZapGrid.Add(zapRowToFill);
             }
 
             // actually spawn the zap grid
@@ -151,7 +169,7 @@ namespace GameCritical
                     Zap zapPrefab = m_ZapGrid[i][j];
                     if (zapPrefab != null)
                     {
-                        Zap zap = (Zap)Instantiate(zapPrefab);
+                        Zap zap = (Zap)Instantiate(zapPrefab, this.transform);
                         zap.transform.position = spawnPos;
                         zap.SetWidth(zapWidth);
                         zap.SetHeight(m_ZapHeight);
@@ -161,7 +179,7 @@ namespace GameCritical
                         m_ZapGrid[i][j] = zap;
 
                         // spawn things randomly on zap
-                        SpawnRandomObstacle(i, j, m_ChanceOfObstacle);
+                        // SpawnRandomObstacle(i, j, m_ChanceOfObstacle);
                     }
                 }
             }

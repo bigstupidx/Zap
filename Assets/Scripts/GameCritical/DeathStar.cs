@@ -4,29 +4,40 @@ using UnityEngine;
 
 namespace GameCritical
 {
-public class DeathStar : MonoBehaviour
-{
-
-    [SerializeField]
-    private float m_Speed;
-
-    public bool m_CanKillPlayer;
-
-    // Update is called once per frame
-    void Update()
+    public class DeathStar : MonoBehaviour
     {
-        this.transform.position += new Vector3(0, m_Speed, 0) * Time.deltaTime;
-    }
 
-    void OnTriggerEnter2D(Collider2D col)
-    {
-        if (col.tag == "Player")
+        [SerializeField]
+        private float m_Speed;
+        private float m_SpeedMultiplier;
+
+        public bool m_CanKillPlayer;
+
+        void Start()
         {
-            if (m_CanKillPlayer)
+            m_SpeedMultiplier = 1.0f;
+        }
+
+        // Update is called once per frame
+        void Update()
+        {
+            this.transform.position += new Vector3(0, m_Speed, 0) * Time.deltaTime * m_SpeedMultiplier;
+        }
+
+        public void SetSpeedMultiplier(float multiplier)
+        {
+            m_SpeedMultiplier = multiplier;
+        }
+
+        void OnTriggerEnter2D(Collider2D col)
+        {
+            if (col.tag == "Player")
             {
-                Destroy(col.gameObject);
+                if (m_CanKillPlayer)
+                {
+                    Destroy(col.gameObject);
+                }
             }
         }
     }
-}
 }

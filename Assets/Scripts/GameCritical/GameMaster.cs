@@ -14,6 +14,7 @@ namespace GameCritical
         public UIManager m_UIManager;
         public PlayerMovement m_PlayerMovement;
         public ZapScore m_ZapScore;
+        public DeathStar m_DeathStar;
 
         void Awake()
         {
@@ -41,6 +42,10 @@ namespace GameCritical
             if (m_UIManager == null)
             {
                 m_UIManager = FindObjectOfType<UIManager>();
+            }
+            if (m_DeathStar == null)
+            {
+                m_DeathStar = FindObjectOfType<DeathStar>();
             }
         }
 
