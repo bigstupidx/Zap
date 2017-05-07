@@ -1,8 +1,13 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Player;
+using UI;
 
-public class GameMaster : MonoBehaviour {
+namespace GameCritical
+{
+public class GameMaster : MonoBehaviour
+{
 
     public static GameMaster Instance;
     public ZapManager m_ZapManager;
@@ -25,19 +30,21 @@ public class GameMaster : MonoBehaviour {
         }
     }
 
-	void Start ()
+    void Start()
     {
-        if(m_PlayerMovement == null)
+        if (m_PlayerMovement == null)
         {
             m_PlayerMovement = FindObjectOfType<PlayerMovement>();
         }
-        if(m_ZapScore == null)
+        if (m_ZapScore == null)
         {
             m_ZapScore = FindObjectOfType<ZapScore>();
         }
     }
 
-    void Update () {
-		
-	}
+    void Update()
+    {
+
+    }
+}
 }

@@ -2,11 +2,14 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class BadZap : Zap
+namespace GameCritical
+{
+public class GoodZap : Zap
 {
     public override void ApplyEffect()
     {
         base.ApplyEffect();
 
     }
+}
 }

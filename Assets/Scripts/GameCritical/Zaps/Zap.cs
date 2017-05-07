@@ -2,19 +2,20 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+namespace GameCritical
+{
 [RequireComponent(typeof(SpriteRenderer))]
-public abstract class Zap : MonoBehaviour {
+public abstract class Zap : MonoBehaviour
+{
 
     [SerializeField]
     private int m_Points;
     [SerializeField]
     private Color m_Color;
-    
+
     public float Width { get { return m_SpriteRenderer.bounds.size.x; } }
     public float Height { get { return m_SpriteRenderer.bounds.size.y; } }
     private Vector3 m_OffsetPosition;
-    private int m_Row;
-    private int m_Col;
 
     private SpriteRenderer m_SpriteRenderer;
 
@@ -39,29 +40,10 @@ public abstract class Zap : MonoBehaviour {
         return m_OffsetPosition;
     }
 
-    public int GetRow()
-    {
-        return m_Row;
-    }
-
-    public int GetCol()
-    {
-        return m_Row;
-    }
-
-    public void SetRow(int row)
-    {
-        m_Row = row;
-    }
-
-    public void SetCol(int col)
-    {
-        m_Col = col;
-    }
-
     public void SetWidth(float width)
     {
         Vector3 currScale = this.transform.localScale;
         this.transform.localScale = new Vector3(width, currScale.y, currScale.z);
     }
+}
 }

@@ -3,7 +3,10 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class ZapScore : MonoBehaviour {
+namespace UI
+{
+public class ZapScore : MonoBehaviour
+{
 
     [SerializeField]
     private string m_ScoreString;
@@ -11,12 +14,13 @@ public class ZapScore : MonoBehaviour {
     private Text m_Text;
     private int m_Score;
 
-	// Use this for initialization
-	void Start () {
+    // Use this for initialization
+    void Start()
+    {
         m_Text = GetComponent<Text>();
-	}
-	
-	public void AddToScore(int scoreToAdd)
+    }
+
+    public void AddToScore(int scoreToAdd)
     {
         m_Score += scoreToAdd;
         m_Text.text = m_ScoreString + m_Score;
@@ -26,4 +30,5 @@ public class ZapScore : MonoBehaviour {
     {
         return m_Score;
     }
+}
 }
