@@ -3,8 +3,8 @@
 	Properties
 	{
 		_MainTex ("Texture", 2D) = "white" {}
-		_Color1("Tint", Color) = (1,1,1,1)
-		_Color2("Tint", Color) = (1,1,1,1)
+		_Color1("Tint1", Color) = (1,1,1,1)
+		_Color2("Tint2", Color) = (1,1,1,1)
 		_GradientStartY("GradientStartY", float) = 0
 	}
 	SubShader

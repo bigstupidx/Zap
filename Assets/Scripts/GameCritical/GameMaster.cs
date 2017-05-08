@@ -17,6 +17,7 @@ namespace GameCritical
         public DeathStar m_DeathStar;
         public ParticleSystem m_WarpParticleSystem;
         public CameraFollow m_CameraFollow;
+        public BackdropManager m_BackDropManager;
 
         void Awake()
         {
@@ -52,6 +53,10 @@ namespace GameCritical
             if(m_WarpZoneManager == null)
             {
                 m_WarpZoneManager = FindObjectOfType<WarpZoneManager>();
+            }
+            if (m_BackDropManager == null)
+            {
+                m_BackDropManager = FindObjectOfType<BackdropManager>();
             }
         }
     }
