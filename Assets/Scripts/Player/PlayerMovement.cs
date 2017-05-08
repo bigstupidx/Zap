@@ -50,6 +50,13 @@ namespace Player
         void Start()
         {
             m_Rigidbody = GetComponent<Rigidbody2D>();
+            EnterZapGrid();
+        }
+
+        public void EnterZapGrid()
+        {
+            m_CurrZap = null;
+            m_NextZap = null;
             m_PrevMovementState = MovementState.MovingHorizontal;
             m_MovementState = MovementState.MovingHorizontal;
             m_StartPosition = this.transform.position;
@@ -58,6 +65,7 @@ namespace Player
             m_CurrRow = 0;
             m_CurrCol = 0;
             m_CanMove = true;
+            m_FakeTrailParticleSystem.gameObject.SetActive(false);
         }
 
         // Update is called once per frame
@@ -142,6 +150,8 @@ namespace Player
                     m_TargetPosition = this.transform.position;
                     m_StartPosition = this.transform.position;
                     m_FakeTrailParticleSystem.gameObject.SetActive(true);
+                    GameMaster.Instance.m_WarpZoneManager.SetInputEnabled(true);
+                    GameMaster.Instance.m_UIManager.m_WarpStorePanel.Show();
                 }
 
                 SetSpeedMultiplier(1.0f, true);
@@ -164,33 +174,37 @@ namespace Player
                 }
 
                 // check to make sure we don't go out of bounds
-                if (m_IsMovingRight)
+                ZapGrid currZapGrid = GameMaster.Instance.m_ZapManager.GetZapGrid();
+                if (currZapGrid != null)
                 {
-                    if (m_NextCol + 1 < GameMaster.Instance.m_ZapManager.GetZapGrid().GetNumCols(m_CurrRow))
+                    if (m_IsMovingRight)
                     {
-                        m_NextCol++;
+                        if (m_NextCol + 1 < currZapGrid.GetNumCols(m_CurrRow))
+                        {
+                            m_NextCol++;
+                        }
+                        else
+                        {
+                            m_IsMovingRight = false;
+                            m_NextCol--;
+                        }
                     }
                     else
                     {
-                        m_IsMovingRight = false;
-                        m_NextCol--;
+                        if (m_NextCol - 1 >= 0)
+                        {
+                            m_NextCol--;
+                        }
+                        else
+                        {
+                            m_IsMovingRight = true;
+                            m_NextCol++;
+                        }
                     }
-                }
-                else
-                {
-                    if (m_NextCol - 1 >= 0)
-                    {
-                        m_NextCol--;
-                    }
-                    else
-                    {
-                        m_IsMovingRight = true;
-                        m_NextCol++;
-                    }
-                }
 
-                m_NextZap = GameMaster.Instance.m_ZapManager.GetZapGrid().GetZap(m_CurrRow, m_NextCol);
-                m_TargetPosition = m_NextZap.GetOffsetPosition();
+                    m_NextZap = currZapGrid.GetZap(m_CurrRow, m_NextCol);
+                    m_TargetPosition = m_NextZap.GetOffsetPosition();
+                }
             }
             else if (m_MovementState == MovementState.MovingVertical)
             {
@@ -202,59 +216,67 @@ namespace Player
         // returns the zap we move through initially when moving up.
         public Zap MoveVertically(int numRows)
         {
-            // don't allow player to jump higher than number of rows in zap grid.
-            numRows = Mathf.Clamp(numRows, 0, (GameMaster.Instance.m_ZapManager.GetZapGrid().GetNumRows() - m_CurrRow));
+            ZapGrid currZapGrid = GameMaster.Instance.m_ZapManager.GetZapGrid();
 
-            /* get correct zap on new line to go to 
-                this will compare the distance between the curr and next zap
-                if next zap is closer then go to it and vice versa. */
-            Zap zapOnNewLine = null;
-            Zap zapMovedThrough = null;
-            bool underneathCurrZap = transform.position.x <= (m_CurrZap.transform.position.x + m_CurrZap.Width) &&
-                transform.position.x >= m_CurrZap.transform.position.x;
-            if (underneathCurrZap)
+            if (currZapGrid)
             {
-                // handles to make sure that we can't repeatedly make up for increment issues when moving vertically.
-                if (m_PrevMovementState != MovementState.MovingVertical)
-                {
-                    if (m_IsMovingRight)
-                    {
-                        m_NextCol--;
-                    }
-                    else
-                    {
-                        m_NextCol++;
-                    }
-                }
-                zapOnNewLine = GameMaster.Instance.m_ZapManager.GetZapGrid().GetZap(m_CurrRow + numRows, m_NextCol);
-                zapMovedThrough = m_CurrZap;
-            }
-            else
-            {
-                zapOnNewLine = GameMaster.Instance.m_ZapManager.GetZapGrid().GetZap(m_CurrRow + numRows, m_NextCol);
-                zapMovedThrough = m_NextZap;
-            }
-
-
-            if (zapOnNewLine != null)
-            {
-                //m_P2 = m_CurrZap.GetOffsetPosition();
-                //m_P1 = m_StartPosition
-                //m_TargetPosition = GetPoint(m_LerpPercentage);
-                // figure out which zap we are closer too
-                m_CurrZap = zapOnNewLine;
-                m_NextZap = zapOnNewLine;
+                // don't allow player to jump higher than number of rows in zap grid.
                 m_CurrRow += numRows;
-                m_LerpAmount = 0.0f;
-                m_StartPosition = this.transform.position;
-                m_TargetPosition = zapOnNewLine.GetOffsetPosition();
-            }
-            else
-            {
-                MoveToDeadZone();
+                m_CurrRow = Mathf.Clamp(m_CurrRow, 0, currZapGrid.GetNumRows());
+
+                /* get correct zap on new line to go to 
+                    this will compare the distance between the curr and next zap
+                    if next zap is closer then go to it and vice versa. */
+                Zap zapOnNewLine = null;
+                Zap zapMovedThrough = null;
+                bool underneathCurrZap = transform.position.x <= (m_CurrZap.transform.position.x + m_CurrZap.Width) &&
+                    transform.position.x >= m_CurrZap.transform.position.x;
+                if (underneathCurrZap)
+                {
+                    // handles to make sure that we can't repeatedly make up for increment issues when moving vertically.
+                    if (m_PrevMovementState != MovementState.MovingVertical)
+                    {
+                        if (m_IsMovingRight)
+                        {
+                            m_NextCol--;
+                        }
+                        else
+                        {
+                            m_NextCol++;
+                        }
+                    }
+                    zapOnNewLine = currZapGrid.GetZap(m_CurrRow, m_NextCol);
+                    zapMovedThrough = m_CurrZap;
+                }
+                else
+                {
+                    zapOnNewLine = currZapGrid.GetZap(m_CurrRow, m_NextCol);
+                    zapMovedThrough = m_NextZap;
+                }
+
+
+                if (zapOnNewLine != null)
+                {
+                    //m_P2 = m_CurrZap.GetOffsetPosition();
+                    //m_P1 = m_StartPosition
+                    //m_TargetPosition = GetPoint(m_LerpPercentage);
+                    // figure out which zap we are closer too
+                    m_CurrZap = zapOnNewLine;
+                    m_NextZap = zapOnNewLine;
+                    //m_CurrRow += numRows;
+                    m_LerpAmount = 0.0f;
+                    m_StartPosition = this.transform.position;
+                    m_TargetPosition = zapOnNewLine.GetOffsetPosition();
+                }
+                else
+                {
+                    MoveToDeadZone();
+                }
+
+                return zapMovedThrough;
             }
 
-            return zapMovedThrough;
+            return null;
         }
 
         public void InterruptAndMoveTo(Zap targetZap)
@@ -274,7 +296,7 @@ namespace Player
         public void MoveToDeadZone()
         {
             // Move to next zap grid
-            DeadZone newDeadZone = GameMaster.Instance.m_ZapManager.SpawnDeadZone();
+            WarpZone newDeadZone = GameMaster.Instance.m_WarpZoneManager.SpawnDeadZone();
             m_CurrZap = null;
             m_NextZap = null;
             // NEED TO SET COLS AND ROW MAYBE SHOULD STORE IN ZAP

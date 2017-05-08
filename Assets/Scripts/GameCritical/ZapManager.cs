@@ -9,37 +9,27 @@ namespace GameCritical
     {
         [SerializeField]
         private ZapGrid m_ZapGrid;
+        private ZapGrid m_CurrZapGrid;
 
-        [SerializeField]
-        private DeadZone m_DeadZonePrefab;
-        private DeadZone m_DeadZone;
-
-        // Use this for initialization
         void Start()
         {
             SpawnNextZapGrid();
         }
 
-        public DeadZone SpawnDeadZone()
-        {
-            Vector3 spawnPos = m_ZapGrid.GetTopMiddle();
-            m_DeadZone = (DeadZone)Instantiate(m_DeadZonePrefab, spawnPos + m_DeadZonePrefab.GetOriginOffsetPosition(), Quaternion.identity);
-            return m_DeadZone;
-        }
-
-        public DeadZone GetDeadZone()
-        {
-            return m_DeadZone;
-        }
-
         public void SpawnNextZapGrid()
         {
-            m_ZapGrid = Instantiate(m_ZapGrid);
+            if(m_CurrZapGrid != null)
+            {
+                Destroy(m_CurrZapGrid);
+            }
+
+            m_CurrZapGrid = (ZapGrid)Instantiate(m_ZapGrid);
+            GameMaster.Instance.m_PlayerMovement.EnterZapGrid();
         }
 
         public ZapGrid GetZapGrid()
         {
-            return m_ZapGrid;
+            return m_CurrZapGrid;
         }
     }
 }

@@ -53,19 +53,30 @@ namespace GameCritical
 
         public int GetNumCols(int row)
         {
-            return m_ZapGrid[row].Count;
+            if(m_ZapGrid != null)
+            {
+                return m_ZapGrid[row].Count;
+            }
+            return 0;
         }
 
         public int GetNumRows()
         {
-            return m_ZapGrid.Count;
+            if (m_ZapGrid != null)
+            {
+                return m_ZapGrid.Count;
+            }
+            return 0;
         }
 
         public Zap GetZap(int row, int col)
         {
-            if (row < m_ZapGrid.Count && col < m_ZapGrid[row].Count && col >= 0)
+            if (m_ZapGrid != null)
             {
-                return m_ZapGrid[row][col];
+                if (row < m_ZapGrid.Count && col < m_ZapGrid[row].Count && col >= 0)
+                {
+                    return m_ZapGrid[row][col];
+                }
             }
             return null;
         }
@@ -116,6 +127,18 @@ namespace GameCritical
             }
 
             return resZapPrefab;
+        }
+
+        void OnDestroy()
+        {
+            for (int i = 0; i < m_Rows + 1; i++)
+            {
+                for (int j = 0; j < m_Cols; j++)
+                {
+                    Destroy(m_ZapGrid[i][j].gameObject);
+                }
+            }
+            Destroy(this.gameObject);
         }
 
         public void Init()
@@ -209,7 +232,8 @@ namespace GameCritical
                         {
                             hasSetStartingPosition = true;
                             m_TopMiddle = this.transform.position +
-                                new Vector3(m_Cols * zap.Width / 2.0f, 0, 0);
+                                new Vector3(m_Cols * zap.Width / 2.0f, 0, 0) +
+                                new Vector3(0,m_Rows * m_ZapHeight + m_Rows * m_RowGapDistance, 0);
                         }
 
                         // spawn things randomly on zap

@@ -12,6 +12,7 @@ namespace GameCritical
         public static GameMaster Instance;
         public ZapManager m_ZapManager;
         public UIManager m_UIManager;
+        public WarpZoneManager m_WarpZoneManager;
         public PlayerMovement m_PlayerMovement;
         public DeathStar m_DeathStar;
         public ParticleSystem m_WarpParticleSystem;
@@ -47,6 +48,10 @@ namespace GameCritical
             if(m_CameraFollow == null)
             {
                 m_CameraFollow = FindObjectOfType<CameraFollow>();
+            }
+            if(m_WarpZoneManager == null)
+            {
+                m_WarpZoneManager = FindObjectOfType<WarpZoneManager>();
             }
         }
     }
