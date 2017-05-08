@@ -9,10 +9,6 @@ namespace UI
     public class ZapScore : MonoBehaviour
     {
         [SerializeField]
-        public PopUpText m_PopUpTextPrefab;
-        [SerializeField]
-        private Vector3 m_PopUpTextOffset;
-        [SerializeField]
         private Color m_PositiveColor;
         [SerializeField]
         private Color m_NegativeColor;
@@ -29,21 +25,10 @@ namespace UI
             m_Text = GetComponent<Text>();
         }
 
-        public void AddToScore(int scoreToAdd, Vector3 position)
+        public void AddToScore(int scoreToAdd)
         {
             m_Score += scoreToAdd;
             m_Text.text = m_ScoreString + m_Score;
-            //Vector3 screenPoint = Camera.main.WorldToScreenPoint(position);
-            PopUpText popUpTextPrefab = (PopUpText)Instantiate(m_PopUpTextPrefab, position + m_PopUpTextOffset, Quaternion.identity);
-            popUpTextPrefab.SetText(scoreToAdd.ToString());
-            if(scoreToAdd >= 0)
-            {
-                popUpTextPrefab.SetColor(m_PositiveColor);
-            }
-            else
-            {
-                popUpTextPrefab.SetColor(m_NegativeColor);
-            }
         }
 
         public int GetScore()

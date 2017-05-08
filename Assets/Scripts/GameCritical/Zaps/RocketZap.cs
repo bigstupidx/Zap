@@ -18,7 +18,7 @@ namespace GameCritical
             base.ApplyImmediateEffect();
 
             GameMaster.Instance.m_PlayerMovement.SetMovementState(PlayerMovement.MovementState.MovingVertical);
-            GameMaster.Instance.m_PlayerMovement.SetSpeedMultiplier(m_SpeedMultiplier, true);
+            GameMaster.Instance.m_PlayerMovement.SetSpeedMultiplier(m_SpeedMultiplier, false);
             GameMaster.Instance.m_PlayerMovement.MoveVertically(m_NumberOfRowsToJump);
         }
 

@@ -8,9 +8,15 @@ namespace GameCritical
     [RequireComponent(typeof(BoxCollider2D))]
     public abstract class Zap : MonoBehaviour
     {
-
         [SerializeField]
-        private int m_Points;
+        private Color m_PopUpColor;
+
+        public bool m_HasPoints;
+        public int m_Points;
+
+        public bool m_HasPopUpText;
+        public string m_PopUpText;
+
         [SerializeField]
         private Color m_Color;
 
@@ -32,7 +38,7 @@ namespace GameCritical
 
         public virtual void ApplyImmediateEffect()
         {
-            GameMaster.Instance.m_ZapScore.AddToScore(m_Points, this.transform.position + new Vector3(Width/2.0f, 0, 0));
+
         }
 
         public virtual void ApplyCollisionEffect() { }
@@ -41,6 +47,18 @@ namespace GameCritical
         {
             if (col.tag == "Player")
             {
+                if(m_HasPoints)
+                {
+                    UIManager m_UIManager = GameMaster.Instance.m_UIManager;
+                    if(m_UIManager)
+                    {
+                        m_UIManager.m_ZapScore.AddToScore(m_Points);
+                        m_UIManager.SpawnPopUpText(
+                            m_Points.ToString(),
+                            this.transform.position + new Vector3(Width / 2.0f, 0, 0),
+                            m_Color);
+                    }
+                }
                 ApplyCollisionEffect();
             }
         }

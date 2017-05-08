@@ -19,6 +19,13 @@ namespace GameCritical
         private float m_RowGapDistance = 1.5f;
 
         [SerializeField]
+        private float m_ZDistanceFromCamera = 1.0f;
+        [SerializeField]
+        private float m_YDistanceFromCamera = 4.0f;
+
+        [SerializeField]
+        private Zap m_EndZapPrefab;
+        [SerializeField]
         private List<Zap> m_ZapPrefabs;
         [SerializeField]
         private List<float> m_ZapPrefabChance;
@@ -31,12 +38,18 @@ namespace GameCritical
         [Tooltip("Chance of obstacle spawning per Zap")]
         private float m_ChanceOfObstacle = 0.05f;
 
+        private List<List<Zap>> m_ZapGrid;
+        private Vector3 m_TopMiddle;
+
         void Start()
         {
             Init();
         }
 
-        private List<List<Zap>> m_ZapGrid;
+        public Vector3 GetTopMiddle()
+        {
+            return m_TopMiddle;
+        }
 
         public int GetNumCols(int row)
         {
@@ -109,47 +122,63 @@ namespace GameCritical
         {
             // pre fill the zap grid before shuffling.
             m_ZapGrid = new List<List<Zap>>();
-            for (int i = 0; i < m_Rows; i++)
+            for (int i = 0; i < m_Rows + 1; i++)
             {
                 List<Zap> zapRowToFill = new List<Zap>();
 
-                // spawn all required zaps for this row
-                int totalForcedPrefabsAdded = 0;
-                for(int j = 0; j < m_ZapPrefabsForced.Count; j++)
+                if(i >= m_Rows)
                 {
-                    int numOfPrefabToSpawn = m_ZapPrefabsForced[j];
-                    Zap prefabToSpawn = m_ZapPrefabs[j];
-                    for (int k = 0; k < numOfPrefabToSpawn; k++)
+                    for(int j = 0; j < m_Cols; j++)
                     {
-                        zapRowToFill.Add(prefabToSpawn);
-                        totalForcedPrefabsAdded++;
+                        zapRowToFill.Add(m_EndZapPrefab);
                     }
                 }
+                else
+                { 
+                    // spawn all required zaps for this row
+                    int totalForcedPrefabsAdded = 0;
+                    for (int j = 0; j < m_ZapPrefabsForced.Count; j++)
+                    {
+                        int numOfPrefabToSpawn = m_ZapPrefabsForced[j];
+                        Zap prefabToSpawn = m_ZapPrefabs[j];
+                        for (int k = 0; k < numOfPrefabToSpawn; k++)
+                        {
+                            zapRowToFill.Add(prefabToSpawn);
+                            totalForcedPrefabsAdded++;
+                        }
+                    }
 
-                for (int j = totalForcedPrefabsAdded; j < m_Cols; j++)
-                {
-                    // spawn zap
-                    Zap zapPrefab = GetRandomZapPrefab();
-                    zapRowToFill.Add(zapPrefab);
-                }
+                    for (int j = totalForcedPrefabsAdded; j < m_Cols; j++)
+                    {
+                        // spawn zap
+                        Zap zapPrefab = GetRandomZapPrefab();
+                        zapRowToFill.Add(zapPrefab);
+                    }
 
-                // shuffle the zaps in each row
-                for (int k = 0; k < zapRowToFill.Count; k++)
-                {
-                    Zap temp = zapRowToFill[k];
-                    int randomIndex = (int)Random.Range(0, zapRowToFill.Count - 1);
-                    zapRowToFill[k] = zapRowToFill[randomIndex];
-                    zapRowToFill[randomIndex] = temp;
+                    // shuffle the zaps in each row
+                    for (int k = 0; k < zapRowToFill.Count; k++)
+                    {
+                        Zap temp = zapRowToFill[k];
+                        int randomIndex = (int)Random.Range(0, zapRowToFill.Count - 1);
+                        zapRowToFill[k] = zapRowToFill[randomIndex];
+                        zapRowToFill[randomIndex] = temp;
+                    }
                 }
 
                 m_ZapGrid.Add(zapRowToFill);
             }
 
-            // actually spawn the zap grid
-            for (int i = 0; i < m_Rows; i++)
+            // Do one time calculations for grid before spawning zaps.
+            bool hasSetStartingPosition = false;
+            float zapWidth = .675f / m_Cols;
+            Vector3 botLeftInWorldSpace = Camera.main.ScreenToWorldPoint(new Vector3(0, 0, 0));
+            Vector3 origin = botLeftInWorldSpace + new Vector3(0, m_YDistanceFromCamera, 0);
+            origin.z = m_ZDistanceFromCamera;
+            this.transform.position = origin;
+
+            for (int i = 0; i < m_Rows + 1; i++)
             {
                 Vector3 spawnPos = Vector3.zero;
-                float zapWidth = .675f / m_Cols;
                 for (int j = 0; j < m_Cols; j++)
                 {
                     // set position accordingly relative to previous zap.
@@ -160,10 +189,7 @@ namespace GameCritical
                     }
                     else // spawn start zap in row
                     {
-                        Vector3 origin = Camera.main.ScreenToWorldPoint(new Vector3(0, 0, 0));
-                        float distanceFromCamera = 1.0f;
                         spawnPos = origin + new Vector3(0, i * m_RowGapDistance, 0);
-                        spawnPos.z = distanceFromCamera;
                     }
 
                     Zap zapPrefab = m_ZapGrid[i][j];
@@ -177,6 +203,14 @@ namespace GameCritical
                         zap.Row = i;
                         zap.Col = j;
                         m_ZapGrid[i][j] = zap;
+
+                        // Specify the top middle position of the zap grid
+                        if(!hasSetStartingPosition)
+                        {
+                            hasSetStartingPosition = true;
+                            m_TopMiddle = this.transform.position +
+                                new Vector3(m_Cols * zap.Width / 2.0f, 0, 0);
+                        }
 
                         // spawn things randomly on zap
                         // SpawnRandomObstacle(i, j, m_ChanceOfObstacle);

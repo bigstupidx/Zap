@@ -13,7 +13,8 @@ namespace Player
         public enum MovementState
         {
             MovingVertical,
-            MovingHorizontal
+            MovingHorizontal,
+            MovingInDeadSpace
         }
         private MovementState m_MovementState;
         private MovementState m_PrevMovementState;
@@ -25,6 +26,8 @@ namespace Player
         private float m_VerticalMoveSpeed = 0.1f;
         [SerializeField]
         private LayerMask m_TouchInputMask;
+        [SerializeField]
+        private ParticleSystem m_FakeTrailParticleSystem;
 
         private Vector3 m_TargetPosition;
         private Vector3 m_StartPosition;
@@ -39,7 +42,7 @@ namespace Player
         private int m_CurrRow;
         private int m_CurrCol;
         private int m_NextCol;
-        private bool m_IsMovementImpaired; // if true then cannot go to next line
+        private bool m_CanMove; // if true then cannot go to next line
 
         private Rigidbody2D m_Rigidbody;
 
@@ -54,13 +57,13 @@ namespace Player
             m_IsMovingRight = true;
             m_CurrRow = 0;
             m_CurrCol = 0;
-            m_IsMovementImpaired = false;
+            m_CanMove = true;
         }
 
         // Update is called once per frame
         void Update()
         {
-            if (!m_IsMovementImpaired)
+            if (m_CanMove)
             {
                 if (m_CurrZap != null && m_NextZap != null)
                 {
@@ -72,9 +75,12 @@ namespace Player
                 }
             }
 
-            if (m_NextZap == null)
+            if(m_MovementState == MovementState.MovingHorizontal)
             {
-                fillMovementData();
+                if (m_NextZap == null)
+                {
+                    fillMovementData();
+                }
             }
 
             lerpToTarget();
@@ -86,29 +92,37 @@ namespace Player
             m_MovementState = movementState;
         }
 
-        public void SetSpeedMultiplier(float multiplier, bool isMovementImpaired)
+        public void SetSpeedMultiplier(float multiplier, bool canMove)
         {
             m_SpeedMultiplier = multiplier;
-            m_IsMovementImpaired = isMovementImpaired;
+            m_CanMove = canMove;
         }
 
         private void lerpToTarget()
         {
+            float startToFinishDistance = (m_TargetPosition - m_StartPosition).magnitude;
+
             if (m_MovementState == MovementState.MovingHorizontal)
             {
                 // Lerp normal
                 m_LerpAmount += Time.deltaTime * m_SpeedMultiplier * m_HorizontalMoveSpeed;
-                m_LerpPercentage = m_LerpAmount / m_LerpTime;
+                m_LerpPercentage = m_LerpAmount / startToFinishDistance;
                 this.transform.position = Vector3.Lerp(m_StartPosition, m_TargetPosition, m_LerpPercentage);
             }
             else if (m_MovementState == MovementState.MovingVertical)
             {
                 // Double lerp
                 m_LerpAmount += Time.deltaTime * m_SpeedMultiplier * m_VerticalMoveSpeed;
-                m_LerpPercentage = m_LerpAmount / m_LerpTime;
+                m_LerpPercentage = m_LerpAmount / startToFinishDistance;
                 this.transform.position = Vector3.Lerp(m_StartPosition, m_TargetPosition, m_LerpPercentage);
                 //this.transform.position = Vector3.Lerp(Vector3.Lerp(m_StartPosition, m_P1, m_LerpPercentage),
                 //  Vector3.Lerp(m_StartPosition, m_P2, m_LerpPercentage), m_LerpPercentage);
+            }
+            else if (m_MovementState == MovementState.MovingInDeadSpace)
+            {
+                m_LerpAmount += Time.deltaTime * m_SpeedMultiplier * m_VerticalMoveSpeed;
+                m_LerpPercentage = m_LerpAmount / startToFinishDistance;
+                this.transform.position = Vector3.Lerp(m_StartPosition, m_TargetPosition, m_LerpPercentage);
             }
 
             // check to see if we reached target
@@ -120,12 +134,19 @@ namespace Player
                 }
                 else if (m_MovementState == MovementState.MovingVertical)
                 {
-                    SetSpeedMultiplier(1.0f, false);
                     SetMovementState(MovementState.MovingHorizontal);
                 }
+                else if (m_MovementState == MovementState.MovingInDeadSpace)
+                {
+                    // this happens when reached dead space target location
+                    m_TargetPosition = this.transform.position;
+                    m_StartPosition = this.transform.position;
+                    m_FakeTrailParticleSystem.gameObject.SetActive(true);
+                }
 
+                SetSpeedMultiplier(1.0f, true);
                 m_LerpAmount = 0.0f;
-                fillMovementData(); // gets zap for next lerp
+                fillMovementData();
             }
         }
 
@@ -181,6 +202,9 @@ namespace Player
         // returns the zap we move through initially when moving up.
         public Zap MoveVertically(int numRows)
         {
+            // don't allow player to jump higher than number of rows in zap grid.
+            numRows = Mathf.Clamp(numRows, 0, (GameMaster.Instance.m_ZapManager.GetZapGrid().GetNumRows() - m_CurrRow));
+
             /* get correct zap on new line to go to 
                 this will compare the distance between the curr and next zap
                 if next zap is closer then go to it and vice versa. */
@@ -227,8 +251,7 @@ namespace Player
             }
             else
             {
-                // Move to next zap grid
-                GameMaster.Instance.m_ZapManager.EnterDeadZone();
+                MoveToDeadZone();
             }
 
             return zapMovedThrough;
@@ -244,6 +267,22 @@ namespace Player
             m_StartPosition = this.transform.position;
             m_TargetPosition = targetZap.GetOffsetPosition();
             SetMovementState(MovementState.MovingHorizontal);
+            SetSpeedMultiplier(1.0f, false);
+            m_LerpAmount = 0.0f;
+        }
+
+        public void MoveToDeadZone()
+        {
+            // Move to next zap grid
+            DeadZone newDeadZone = GameMaster.Instance.m_ZapManager.SpawnDeadZone();
+            m_CurrZap = null;
+            m_NextZap = null;
+            // NEED TO SET COLS AND ROW MAYBE SHOULD STORE IN ZAP
+            m_NextCol = 0;
+            m_CurrRow = 0;
+            m_StartPosition = this.transform.position;
+            m_TargetPosition = newDeadZone.transform.position;
+            SetMovementState(MovementState.MovingInDeadSpace);
             SetSpeedMultiplier(1.0f, false);
             m_LerpAmount = 0.0f;
         }

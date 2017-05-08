@@ -4,18 +4,16 @@ using UnityEngine;
 
 namespace GameCritical
 {
-    public class BadZap : Zap
+    public class EndZap : Zap
     {
         public override void ApplyImmediateEffect()
         {
             base.ApplyImmediateEffect();
-            GameMaster.Instance.m_PlayerMovement.SetSpeedMultiplier(1.0f, false);
         }
 
         public override void ApplyCollisionEffect()
         {
             base.ApplyCollisionEffect();
-            GameMaster.Instance.m_PlayerMovement.InterruptAndMoveTo(this);
         }
     }
 }

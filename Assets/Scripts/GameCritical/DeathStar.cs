@@ -24,9 +24,9 @@ namespace GameCritical
             this.transform.position += new Vector3(0, m_Speed, 0) * Time.deltaTime * m_SpeedMultiplier;
         }
 
-        public void SetSpeedMultiplier(float multiplier)
+        public void SetSpeedMultiplier(float multiplier, bool shouldMultiplyByCurrentSpeed)
         {
-            m_SpeedMultiplier = multiplier;
+            m_SpeedMultiplier = (shouldMultiplyByCurrentSpeed) ? m_SpeedMultiplier * multiplier: multiplier;
         }
 
         void OnTriggerEnter2D(Collider2D col)
