@@ -14,7 +14,8 @@ namespace Player
         {
             MovingVertical,
             MovingHorizontal,
-            MovingInDeadSpace
+            MovingToWarpZone,
+            MovingToZapGrid
         }
         private MovementState m_MovementState;
         private MovementState m_PrevMovementState;
@@ -45,27 +46,16 @@ namespace Player
         private bool m_CanMove; // if true then cannot go to next line
 
         private Rigidbody2D m_Rigidbody;
+        private TrailRenderer m_TrailRenderer;
 
         // Use this for initialization
         void Start()
         {
             m_Rigidbody = GetComponent<Rigidbody2D>();
-            EnterZapGrid();
-        }
-
-        public void EnterZapGrid()
-        {
-            m_CurrZap = null;
-            m_NextZap = null;
-            m_PrevMovementState = MovementState.MovingHorizontal;
-            m_MovementState = MovementState.MovingHorizontal;
-            m_StartPosition = this.transform.position;
-            m_SpeedMultiplier = 1.0f;
-            m_IsMovingRight = true;
-            m_CurrRow = 0;
-            m_CurrCol = 0;
-            m_CanMove = true;
-            m_FakeTrailParticleSystem.gameObject.SetActive(false);
+            m_TrailRenderer = GetComponent<TrailRenderer>();
+            MoveToZapGrid();
+            m_TrailRenderer.sortingLayerName = "Foreground";
+            m_TrailRenderer.sortingOrder = 0;
         }
 
         // Update is called once per frame
@@ -75,6 +65,17 @@ namespace Player
             {
                 if (m_CurrZap != null && m_NextZap != null)
                 {
+                    // TOUCH INPUT
+                    for (int i = 0; i < Input.touchCount; ++i)
+                    {
+                        if (Input.GetTouch(i).phase == TouchPhase.Began)
+                        {
+                            SetMovementState(MovementState.MovingVertical);
+                            fillMovementData();
+                        }
+                    }
+
+                    // PC INPUT
                     if (Input.GetKeyDown(KeyCode.UpArrow))
                     {
                         SetMovementState(MovementState.MovingVertical);
@@ -83,7 +84,8 @@ namespace Player
                 }
             }
 
-            if(m_MovementState == MovementState.MovingHorizontal)
+            if(m_MovementState == MovementState.MovingHorizontal ||
+                m_MovementState == MovementState.MovingToZapGrid)
             {
                 if (m_NextZap == null)
                 {
@@ -126,8 +128,15 @@ namespace Player
                 //this.transform.position = Vector3.Lerp(Vector3.Lerp(m_StartPosition, m_P1, m_LerpPercentage),
                 //  Vector3.Lerp(m_StartPosition, m_P2, m_LerpPercentage), m_LerpPercentage);
             }
-            else if (m_MovementState == MovementState.MovingInDeadSpace)
+            else if (m_MovementState == MovementState.MovingToWarpZone)
             {
+                m_LerpAmount += Time.deltaTime * m_SpeedMultiplier * m_VerticalMoveSpeed;
+                m_LerpPercentage = m_LerpAmount / startToFinishDistance;
+                this.transform.position = Vector3.Lerp(m_StartPosition, m_TargetPosition, m_LerpPercentage);
+            }
+            else if (m_MovementState == MovementState.MovingToZapGrid)
+            {
+                GameMaster.Instance.m_DeathStar.SetIsMoving(false);
                 m_LerpAmount += Time.deltaTime * m_SpeedMultiplier * m_VerticalMoveSpeed;
                 m_LerpPercentage = m_LerpAmount / startToFinishDistance;
                 this.transform.position = Vector3.Lerp(m_StartPosition, m_TargetPosition, m_LerpPercentage);
@@ -136,28 +145,36 @@ namespace Player
             // check to see if we reached target
             if (m_LerpPercentage >= 1.0f)
             {
-                if (m_MovementState == MovementState.MovingHorizontal)
-                {
-                    SetMovementState(MovementState.MovingHorizontal);
-                }
-                else if (m_MovementState == MovementState.MovingVertical)
-                {
-                    SetMovementState(MovementState.MovingHorizontal);
-                }
-                else if (m_MovementState == MovementState.MovingInDeadSpace)
-                {
-                    // this happens when reached dead space target location
-                    m_TargetPosition = this.transform.position;
-                    m_StartPosition = this.transform.position;
-                    m_FakeTrailParticleSystem.gameObject.SetActive(true);
-                    GameMaster.Instance.m_WarpZoneManager.SetInputEnabled(true);
-                    GameMaster.Instance.m_UIManager.m_WarpStorePanel.Show();
-                    GameMaster.Instance.m_BackDropManager.ShowWarpStoreColors();
-                }
-
+                decideNextMovementType();
                 SetSpeedMultiplier(1.0f, true);
                 m_LerpAmount = 0.0f;
                 fillMovementData();
+            }
+        }
+
+        private void decideNextMovementType()
+        {
+            if (m_MovementState == MovementState.MovingHorizontal)
+            {
+                SetMovementState(MovementState.MovingHorizontal);
+            }
+            else if (m_MovementState == MovementState.MovingVertical)
+            {
+                SetMovementState(MovementState.MovingHorizontal);
+            }
+            else if (m_MovementState == MovementState.MovingToWarpZone)
+            {
+                m_TargetPosition = this.transform.position;
+                m_StartPosition = this.transform.position;
+                m_FakeTrailParticleSystem.gameObject.SetActive(true);
+                GameMaster.Instance.m_WarpZoneManager.SetInputEnabled(true);
+                GameMaster.Instance.m_UIManager.m_WarpStorePanel.Show();
+            }
+            else if (m_MovementState == MovementState.MovingToZapGrid)
+            {
+                SetMovementState(MovementState.MovingHorizontal);
+                GameMaster.Instance.m_DeathStar.ResetPosition();
+                GameMaster.Instance.m_DeathStar.SetIsMoving(true);
             }
         }
 
@@ -166,51 +183,62 @@ namespace Player
         {
             if (m_MovementState == MovementState.MovingHorizontal)
             {
-                // switch next and curr zap if we have a next zap
-                if (m_NextZap != null)
-                {
-                    m_StartPosition = m_NextZap.GetOffsetPosition();
-                    m_CurrZap = m_NextZap;
-                    m_CurrCol = m_NextCol;
-                }
-
-                // check to make sure we don't go out of bounds
-                ZapGrid currZapGrid = GameMaster.Instance.m_ZapManager.GetZapGrid();
-                if (currZapGrid != null)
-                {
-                    if (m_IsMovingRight)
-                    {
-                        if (m_NextCol + 1 < currZapGrid.GetNumCols(m_CurrRow))
-                        {
-                            m_NextCol++;
-                        }
-                        else
-                        {
-                            m_IsMovingRight = false;
-                            m_NextCol--;
-                        }
-                    }
-                    else
-                    {
-                        if (m_NextCol - 1 >= 0)
-                        {
-                            m_NextCol--;
-                        }
-                        else
-                        {
-                            m_IsMovingRight = true;
-                            m_NextCol++;
-                        }
-                    }
-
-                    m_NextZap = currZapGrid.GetZap(m_CurrRow, m_NextCol);
-                    m_TargetPosition = m_NextZap.GetOffsetPosition();
-                }
+                MoveHorizontally();
             }
             else if (m_MovementState == MovementState.MovingVertical)
             {
                 Zap zapMovedThrough = MoveVertically(1);
                 zapMovedThrough.ApplyImmediateEffect();
+            }
+            else if (m_MovementState == MovementState.MovingToZapGrid)
+            {
+                ZapGrid currZapGrid = GameMaster.Instance.m_ZapManager.GetZapGrid();
+                m_TargetPosition = currZapGrid.GetZap(0, 0).GetOffsetPosition();
+            }
+        }
+
+        public void MoveHorizontally()
+        {
+            // switch next and curr zap if we have a next zap
+            if (m_NextZap != null)
+            {
+                m_StartPosition = m_NextZap.GetOffsetPosition();
+                m_CurrZap = m_NextZap;
+                m_CurrCol = m_NextCol;
+            }
+
+            // check to make sure we don't go out of bounds
+            ZapGrid currZapGrid = GameMaster.Instance.m_ZapManager.GetZapGrid();
+            if (currZapGrid != null)
+            {
+                if (m_IsMovingRight)
+                {
+                    if (m_NextCol + 1 < currZapGrid.GetNumCols(m_CurrRow))
+                    {
+                        m_NextCol++;
+                    }
+                    else
+                    {
+                        m_IsMovingRight = false;
+                        m_NextCol--;
+                    }
+                }
+                else
+                {
+                    if (m_NextCol - 1 >= 0)
+                    {
+                        m_NextCol--;
+                    }
+                    else
+                    {
+                        m_IsMovingRight = true;
+                        m_NextCol++;
+                    }
+                }
+
+                m_NextZap = currZapGrid.GetZap(m_CurrRow, m_NextCol);
+                m_TargetPosition = m_NextZap.GetOffsetPosition();
+                m_StartPosition = this.transform.position;
             }
         }
 
@@ -271,7 +299,7 @@ namespace Player
                 }
                 else
                 {
-                    MoveToDeadZone();
+                    MoveToWarpZone();
                 }
 
                 return zapMovedThrough;
@@ -280,11 +308,10 @@ namespace Player
             return null;
         }
 
-        public void InterruptAndMoveTo(Zap targetZap)
+        public void MoveTo(Zap targetZap)
         {
             m_CurrZap = targetZap;
             m_NextZap = targetZap;
-            // NEED TO SET COLS AND ROW MAYBE SHOULD STORE IN ZAP
             m_NextCol = targetZap.Col;
             m_CurrRow = targetZap.Row;
             m_StartPosition = this.transform.position;
@@ -294,20 +321,50 @@ namespace Player
             m_LerpAmount = 0.0f;
         }
 
-        public void MoveToDeadZone()
+        public void MoveToWarpZone()
         {
             // Move to next zap grid
             WarpZone newDeadZone = GameMaster.Instance.m_WarpZoneManager.SpawnDeadZone();
             m_CurrZap = null;
             m_NextZap = null;
-            // NEED TO SET COLS AND ROW MAYBE SHOULD STORE IN ZAP
             m_NextCol = 0;
             m_CurrRow = 0;
             m_StartPosition = this.transform.position;
             m_TargetPosition = newDeadZone.transform.position;
-            SetMovementState(MovementState.MovingInDeadSpace);
+            SetMovementState(MovementState.MovingToWarpZone);
             SetSpeedMultiplier(1.0f, false);
             m_LerpAmount = 0.0f;
+            GameMaster.Instance.m_BackDropManager.ShowWarpStoreColors();
+        }
+
+        public void MoveToZapGridOriginal()
+        {
+            m_CurrZap = null;
+            m_NextZap = null;
+            m_PrevMovementState = MovementState.MovingHorizontal;
+            m_MovementState = MovementState.MovingHorizontal;
+            m_StartPosition = this.transform.position;
+            m_SpeedMultiplier = 1.0f;
+            m_IsMovingRight = true;
+            m_CurrRow = 0;
+            m_CurrCol = 0;
+            m_CanMove = true;
+            m_FakeTrailParticleSystem.gameObject.SetActive(false);
+        }
+
+        public void MoveToZapGrid()
+        {
+            m_CurrZap = null;
+            m_NextZap = null;
+            m_PrevMovementState = MovementState.MovingToZapGrid;
+            m_MovementState = MovementState.MovingToZapGrid;
+            m_StartPosition = this.transform.position;
+            m_SpeedMultiplier = 1.0f;
+            m_IsMovingRight = true;
+            m_CurrRow = 0;
+            m_CurrCol = 0;
+            m_CanMove = true;
+            m_FakeTrailParticleSystem.gameObject.SetActive(false);
         }
     }
 }

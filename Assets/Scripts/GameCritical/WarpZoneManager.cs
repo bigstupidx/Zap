@@ -24,6 +24,7 @@ namespace GameCritical
         {
             if (m_IsInputEnabled)
             {
+                // PC INPUT
                 if (Input.GetKeyDown(KeyCode.UpArrow))
                 {
                     GameMaster.Instance.m_ZapManager.SpawnNextZapGrid();
@@ -32,6 +33,20 @@ namespace GameCritical
                     GameMaster.Instance.m_CameraFollow.ResetOffset(m_CamOffsetResetTime);
                     GameMaster.Instance.m_UIManager.m_WarpStorePanel.Hide();
                     GameMaster.Instance.m_BackDropManager.ShowNormalColors();
+                }
+
+                // TOUCH INPUT
+                for (int i = 0; i < Input.touchCount; ++i)
+                {
+                    if (Input.GetTouch(i).phase == TouchPhase.Began)
+                    {
+                        GameMaster.Instance.m_ZapManager.SpawnNextZapGrid();
+                        m_WarpZone.SetWarpParticleSystem(false);
+                        SetInputEnabled(false);
+                        GameMaster.Instance.m_CameraFollow.ResetOffset(m_CamOffsetResetTime);
+                        GameMaster.Instance.m_UIManager.m_WarpStorePanel.Hide();
+                        GameMaster.Instance.m_BackDropManager.ShowNormalColors();
+                    }
                 }
             }
         }

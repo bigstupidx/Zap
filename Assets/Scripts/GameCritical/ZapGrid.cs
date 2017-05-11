@@ -19,8 +19,6 @@ namespace GameCritical
         private float m_RowGapDistance = 1.5f;
 
         [SerializeField]
-        private float m_ZDistanceFromCamera = 1.0f;
-        [SerializeField]
         private float m_YDistanceFromCamera = 4.0f;
 
         [SerializeField]
@@ -40,11 +38,6 @@ namespace GameCritical
 
         private List<List<Zap>> m_ZapGrid;
         private Vector3 m_TopMiddle;
-
-        void Start()
-        {
-            Init();
-        }
 
         public Vector3 GetTopMiddle()
         {
@@ -141,6 +134,13 @@ namespace GameCritical
             Destroy(this.gameObject);
         }
 
+        public void Init(int rows, int cols)
+        {
+            m_Rows = rows;
+            m_Cols = cols;
+            Init();
+        }
+
         public void Init()
         {
             // pre fill the zap grid before shuffling.
@@ -196,7 +196,7 @@ namespace GameCritical
             float zapWidth = .675f / m_Cols;
             Vector3 botLeftInWorldSpace = Camera.main.ScreenToWorldPoint(new Vector3(0, 0, 0));
             Vector3 origin = botLeftInWorldSpace + new Vector3(0, m_YDistanceFromCamera, 0);
-            origin.z = m_ZDistanceFromCamera;
+            origin.z = 1.0f;
             this.transform.position = origin;
 
             for (int i = 0; i < m_Rows + 1; i++)

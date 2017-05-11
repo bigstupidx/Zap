@@ -6,18 +6,19 @@ namespace GameCritical
 {
     public class DeathStarZap : Zap
     {
+        [SerializeField]
+        [Tooltip("Multiplier that changes how fast the death star moves")]
+        private float m_SpeedMultiplier;
+
         public override void ApplyImmediateEffect()
         {
             base.ApplyImmediateEffect();
-            GameMaster.Instance.m_DeathStar.SetSpeedMultiplier(1.5f, true);
+            GameMaster.Instance.m_DeathStar.SetSpeedMultiplier(m_SpeedMultiplier, true);
         }
 
         public override void ApplyCollisionEffect()
         {
             base.ApplyCollisionEffect();
-            GameMaster.Instance.m_UIManager.SpawnPopUpText(m_PopUpText, 
-                this.transform.position + new Vector3(Width / 2.0f, 0, 0),
-                Color.black);
         }
     }
 }

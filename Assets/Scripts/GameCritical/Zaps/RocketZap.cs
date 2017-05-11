@@ -8,7 +8,7 @@ namespace GameCritical
     public class RocketZap : Zap
     {
         [SerializeField]
-        private int m_NumberOfRowsToJump = 3;
+        private int m_NumberOfRowsToJump = 50;
 
         [SerializeField]
         private float m_SpeedMultiplier = 0.075f;

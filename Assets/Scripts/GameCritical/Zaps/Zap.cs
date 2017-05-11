@@ -50,15 +50,24 @@ namespace GameCritical
                 if(m_HasPoints)
                 {
                     UIManager m_UIManager = GameMaster.Instance.m_UIManager;
-                    if(m_UIManager)
+                    StatsManager m_StatsManager = GameMaster.Instance.m_StatsManager;
+                    if (m_UIManager && m_StatsManager)
                     {
-                        m_UIManager.m_ZapScore.AddToScore(m_Points);
+                        m_StatsManager.AddToScore(m_Points);
                         m_UIManager.SpawnPopUpText(
                             m_Points.ToString(),
                             this.transform.position + new Vector3(Width / 2.0f, 0, 0),
                             m_Color);
                     }
                 }
+
+                if (m_HasPopUpText)
+                {
+                    GameMaster.Instance.m_UIManager.SpawnPopUpText(m_PopUpText,
+                        this.transform.position + new Vector3(Width / 2.0f, 0, 0),
+                        m_PopUpColor);
+                }
+
                 ApplyCollisionEffect();
             }
         }

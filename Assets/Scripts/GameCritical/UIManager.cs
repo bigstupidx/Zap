@@ -10,8 +10,9 @@ namespace GameCritical
     public class UIManager : MonoBehaviour
     {
 
-        public ZapScore m_ZapScore;
+        public InfoPanel m_InfoPanel;
         public WarpStorePanel m_WarpStorePanel;
+        public MainMenuPanel m_MainMenuPanel;
 
         [SerializeField]
         private PopUpText m_PopUpTextPrefab;
@@ -21,13 +22,17 @@ namespace GameCritical
         // Use this for initialization
         void Awake()
         {
-            if (m_ZapScore == null)
+            if (m_InfoPanel == null)
             {
-                m_ZapScore = FindObjectOfType<ZapScore>();
+                m_InfoPanel = FindObjectOfType<InfoPanel>();
             }
             if (m_WarpStorePanel == null)
             {
                 m_WarpStorePanel = FindObjectOfType<WarpStorePanel>();
+            }
+            if (m_MainMenuPanel == null)
+            {
+                m_MainMenuPanel = FindObjectOfType<MainMenuPanel>();
             }
         }
 

@@ -15,7 +15,7 @@ namespace GameCritical
         public override void ApplyCollisionEffect()
         {
             base.ApplyCollisionEffect();
-            GameMaster.Instance.m_PlayerMovement.InterruptAndMoveTo(this);
+            GameMaster.Instance.m_PlayerMovement.MoveTo(this);
         }
     }
 }

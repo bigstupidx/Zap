@@ -1,6 +1,8 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Player;
+using UnityEngine.UI;
 
 namespace GameCritical
 {
@@ -11,6 +13,9 @@ namespace GameCritical
 
         [SerializeField]
         private float m_Speed;
+
+        [SerializeField]
+        private Vector3 m_StartOffsetPosition = new Vector3(0, -1.0f, 0);
 
         private float m_SpeedMultiplier;
         private bool m_IsMoving;
@@ -30,24 +35,34 @@ namespace GameCritical
             }
         }
 
+        public void ResetPosition()
+        {
+            Vector3 bottomOfScreen = Camera.main.ScreenToWorldPoint(new Vector3(Screen.width / 2, 0, 0));
+            bottomOfScreen.z = 0;
+            this.transform.position = bottomOfScreen + m_StartOffsetPosition;
+            SetSpeedMultiplier(1.0f, false);
+        }
+
         public void SetIsMoving(bool isMoving)
         {
             m_IsMoving = isMoving;
         }
 
-        public void SetSpeedMultiplier(float multiplier, bool shouldMultiplyByCurrentSpeed)
+        public void SetSpeedMultiplier(float multiplier, bool shouldAddToCurrentSpeed)
         {
-            m_SpeedMultiplier = (shouldMultiplyByCurrentSpeed) ? m_SpeedMultiplier * multiplier: multiplier;
+            m_SpeedMultiplier = (shouldAddToCurrentSpeed) ? m_SpeedMultiplier + multiplier: multiplier;
+            GameMaster.Instance.m_UIManager.m_InfoPanel.SetDeathStarMultiplierText(m_SpeedMultiplier);
         }
 
         void OnTriggerEnter2D(Collider2D col)
         {
             if (col.tag == "Player")
             {
-                if (m_CanKillPlayer)
+                PlayerStats playerStats = col.gameObject.GetComponent<PlayerStats>();
+                if (playerStats && m_CanKillPlayer)
                 {
                     SetIsMoving(false);
-                    Destroy(col.gameObject);
+                    playerStats.Kill();
                 }
             }
         }
