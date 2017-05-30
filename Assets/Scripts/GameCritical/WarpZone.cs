@@ -20,7 +20,11 @@ namespace GameCritical
         void Start()
         {
             GameMaster.Instance.m_CameraFollow.SetOffset(m_CamOffset, m_LerpTimeToCamOffset);
-            GameMaster.Instance.m_DeathStar.SetIsMoving(false);
+            DeathStar deathStar = GameMaster.Instance.m_DeathStar;
+            if(deathStar)
+            {
+                deathStar.SetIsMoving(false);
+            }
             SetWarpParticleSystem(true);
         }
 

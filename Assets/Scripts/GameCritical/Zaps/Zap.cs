@@ -18,6 +18,9 @@ namespace GameCritical
         public string m_PopUpText;
 
         [SerializeField]
+        protected ParticleSystem m_ActiveParticleSystem;
+
+        [SerializeField]
         private Color m_Color;
 
         public float Width { get { return m_SpriteRenderer.bounds.size.x; } }
@@ -28,7 +31,7 @@ namespace GameCritical
         private int m_Col;
         public int Col { get { return m_Col; } set { m_Col = value; } }
 
-        private SpriteRenderer m_SpriteRenderer;
+        protected SpriteRenderer m_SpriteRenderer;
 
         void Awake()
         {
@@ -36,39 +39,46 @@ namespace GameCritical
             m_SpriteRenderer.color = m_Color;
         }
 
-        public virtual void ApplyImmediateEffect()
-        {
+        public virtual void ApplyImmediateEffect() { }
 
+        public virtual void ApplyCollisionEffect(GameObject go)
+        {
+            AddAndShowPoints();
+            ShowPopUptext();
         }
 
-        public virtual void ApplyCollisionEffect() { }
+        public void AddAndShowPoints()
+        {
+            if (m_HasPoints)
+            {
+                UIManager m_UIManager = GameMaster.Instance.m_UIManager;
+                StatsManager m_StatsManager = GameMaster.Instance.m_StatsManager;
+                if (m_UIManager && m_StatsManager)
+                {
+                    m_StatsManager.AddToScore(m_Points);
+                    m_UIManager.SpawnPopUpText(
+                        m_Points.ToString(),
+                        this.transform.position + new Vector3(Width / 2.0f, 0, 0),
+                        m_Color);
+                }
+            }
+        }
+
+        public void ShowPopUptext()
+        {
+            if (m_HasPopUpText)
+            {
+                GameMaster.Instance.m_UIManager.SpawnPopUpText(m_PopUpText,
+                    this.transform.position + new Vector3(Width / 2.0f, 0, 0),
+                    m_PopUpColor);
+            }
+        }
 
         void OnTriggerEnter2D(Collider2D col)
         {
             if (col.tag == "Player")
             {
-                if(m_HasPoints)
-                {
-                    UIManager m_UIManager = GameMaster.Instance.m_UIManager;
-                    StatsManager m_StatsManager = GameMaster.Instance.m_StatsManager;
-                    if (m_UIManager && m_StatsManager)
-                    {
-                        m_StatsManager.AddToScore(m_Points);
-                        m_UIManager.SpawnPopUpText(
-                            m_Points.ToString(),
-                            this.transform.position + new Vector3(Width / 2.0f, 0, 0),
-                            m_Color);
-                    }
-                }
-
-                if (m_HasPopUpText)
-                {
-                    GameMaster.Instance.m_UIManager.SpawnPopUpText(m_PopUpText,
-                        this.transform.position + new Vector3(Width / 2.0f, 0, 0),
-                        m_PopUpColor);
-                }
-
-                ApplyCollisionEffect();
+                ApplyCollisionEffect(col.gameObject);
             }
         }
 
@@ -82,13 +92,13 @@ namespace GameCritical
             return m_OffsetPosition;
         }
 
-        public void SetWidth(float width)
+        public virtual void SetWidth(float width)
         {
             Vector3 currScale = this.transform.localScale;
             this.transform.localScale = new Vector3(width, currScale.y, currScale.z);
         }
 
-        public void SetHeight(float height)
+        public virtual void SetHeight(float height)
         {
             Vector3 currScale = this.transform.localScale;
             this.transform.localScale = new Vector3(currScale.x, height, currScale.z);

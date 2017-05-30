@@ -9,13 +9,13 @@ namespace Player
     [RequireComponent(typeof(Rigidbody2D))]
     public class PlayerMovement : MonoBehaviour
     {
-
         public enum MovementState
         {
             MovingVertical,
             MovingHorizontal,
             MovingToWarpZone,
-            MovingToZapGrid
+            MovingToZapGrid,
+            MovingRocketJump
         }
         private MovementState m_MovementState;
         private MovementState m_PrevMovementState;
@@ -32,8 +32,6 @@ namespace Player
 
         private Vector3 m_TargetPosition;
         private Vector3 m_StartPosition;
-        private Vector3 m_P1;
-        private Vector3 m_P2;
         private float m_SpeedMultiplier = 1.0f;
         private float m_LerpAmount = 0.0f;
         private float m_LerpTime = 1.0f;
@@ -47,12 +45,16 @@ namespace Player
 
         private Rigidbody2D m_Rigidbody;
         private TrailRenderer m_TrailRenderer;
+        private SpriteRenderer m_SpriteRenderer;
+        private PlayerScaler m_PlayerScaler;
 
         // Use this for initialization
         void Start()
         {
             m_Rigidbody = GetComponent<Rigidbody2D>();
             m_TrailRenderer = GetComponent<TrailRenderer>();
+            m_SpriteRenderer = GetComponent<SpriteRenderer>();
+            m_PlayerScaler = GetComponent<PlayerScaler>();
             MoveToZapGrid();
             m_TrailRenderer.sortingLayerName = "Foreground";
             m_TrailRenderer.sortingOrder = 0;
@@ -133,10 +135,24 @@ namespace Player
                 m_LerpAmount += Time.deltaTime * m_SpeedMultiplier * m_VerticalMoveSpeed;
                 m_LerpPercentage = m_LerpAmount / startToFinishDistance;
                 this.transform.position = Vector3.Lerp(m_StartPosition, m_TargetPosition, m_LerpPercentage);
+                // Lerp size of player to original size
+                m_PlayerScaler.LerpToOriginalScale(m_LerpPercentage);
             }
             else if (m_MovementState == MovementState.MovingToZapGrid)
             {
-                GameMaster.Instance.m_DeathStar.SetIsMoving(false);
+                DeathStar deathStar = GameMaster.Instance.m_DeathStar;
+                if (deathStar)
+                {
+                    deathStar.SetIsMoving(false);
+                }
+                m_LerpAmount += Time.deltaTime * m_SpeedMultiplier * m_VerticalMoveSpeed;
+                m_LerpPercentage = m_LerpAmount / startToFinishDistance;
+                this.transform.position = Vector3.Lerp(m_StartPosition, m_TargetPosition, m_LerpPercentage);
+                // Scale player to match zap grid size.
+                m_PlayerScaler.LerpToZapScale(m_LerpPercentage);
+            }
+            else if (m_MovementState == MovementState.MovingRocketJump)
+            {
                 m_LerpAmount += Time.deltaTime * m_SpeedMultiplier * m_VerticalMoveSpeed;
                 m_LerpPercentage = m_LerpAmount / startToFinishDistance;
                 this.transform.position = Vector3.Lerp(m_StartPosition, m_TargetPosition, m_LerpPercentage);
@@ -145,6 +161,7 @@ namespace Player
             // check to see if we reached target
             if (m_LerpPercentage >= 1.0f)
             {
+                m_PlayerScaler.ResetPlayerScaler();
                 decideNextMovementType();
                 SetSpeedMultiplier(1.0f, true);
                 m_LerpAmount = 0.0f;
@@ -173,8 +190,17 @@ namespace Player
             else if (m_MovementState == MovementState.MovingToZapGrid)
             {
                 SetMovementState(MovementState.MovingHorizontal);
-                GameMaster.Instance.m_DeathStar.ResetPosition();
-                GameMaster.Instance.m_DeathStar.SetIsMoving(true);
+                DeathStar deathStar = GameMaster.Instance.m_DeathStar;
+                if (deathStar)
+                {
+                    deathStar.ResetPosition();
+                    deathStar.SetIsMoving(true);
+                }
+            }
+            else if (m_MovementState == MovementState.MovingRocketJump)
+            {
+                GameMaster.Instance.m_PlayerStats.SetInvicible(false);
+                SetMovementState(MovementState.MovingHorizontal);
             }
         }
 
@@ -187,7 +213,12 @@ namespace Player
             }
             else if (m_MovementState == MovementState.MovingVertical)
             {
-                Zap zapMovedThrough = MoveVertically(1);
+                Zap zapMovedThrough = getZapCurrentlyUnderneath();
+                bool isRocketZap = zapMovedThrough is RocketZap;
+                if(!isRocketZap)
+                {
+                    MoveVertically();
+                }
                 zapMovedThrough.ApplyImmediateEffect();
             }
             else if (m_MovementState == MovementState.MovingToZapGrid)
@@ -242,24 +273,43 @@ namespace Player
             }
         }
 
+        private bool underneathCurrentZap()
+        {
+            bool res = transform.position.x <= (m_CurrZap.transform.position.x + m_CurrZap.Width) &&
+                transform.position.x >= m_CurrZap.transform.position.x;
+            return res;
+        }
+
+        private Zap getZapCurrentlyUnderneath()
+        {
+            if(underneathCurrentZap())
+            {
+                return m_CurrZap;
+            }
+            else
+            {
+                return m_NextZap;
+            }
+        }
+
         // returns the zap we move through initially when moving up.
-        public Zap MoveVertically(int numRows)
+        public Zap MoveVertically()
         {
             ZapGrid currZapGrid = GameMaster.Instance.m_ZapManager.GetZapGrid();
 
             if (currZapGrid)
             {
                 // don't allow player to jump higher than number of rows in zap grid.
-                m_CurrRow += numRows;
-                m_CurrRow = Mathf.Clamp(m_CurrRow, 0, currZapGrid.GetNumRows());
+                //m_CurrRow = Mathf.Clamp(m_CurrRow, 0, currZapGrid.GetNumRows());
+                m_CurrRow++;
+
 
                 /* get correct zap on new line to go to 
                     this will compare the distance between the curr and next zap
                     if next zap is closer then go to it and vice versa. */
                 Zap zapOnNewLine = null;
                 Zap zapMovedThrough = null;
-                bool underneathCurrZap = transform.position.x <= (m_CurrZap.transform.position.x + m_CurrZap.Width) &&
-                    transform.position.x >= m_CurrZap.transform.position.x;
+                bool underneathCurrZap = underneathCurrentZap();
                 if (underneathCurrZap)
                 {
                     // handles to make sure that we can't repeatedly make up for increment issues when moving vertically.
@@ -321,6 +371,32 @@ namespace Player
             m_LerpAmount = 0.0f;
         }
 
+        public void MoveRocketJump(int numRows)
+        {
+            ZapGrid currGrid = GameMaster.Instance.m_ZapManager.GetZapGrid();
+            if(currGrid)
+            {
+                m_CurrRow += numRows;
+                m_CurrRow = Mathf.Clamp(m_CurrRow, 0, currGrid.GetNumRows() - 1);
+
+                bool underneathCurrZap = underneathCurrentZap();
+                Zap next  = m_NextZap;
+                Zap curr = m_CurrZap;
+                if (underneathCurrZap)
+                {
+                    m_NextZap = currGrid.GetZap(m_CurrRow, m_CurrCol);
+                }
+                else
+                {
+                    m_NextZap = currGrid.GetZap(m_CurrRow, m_NextCol);
+                }
+                m_CurrZap = m_NextZap;
+                m_TargetPosition = m_NextZap.GetOffsetPosition();
+                m_StartPosition = this.transform.position;
+                m_LerpAmount = 0.0f;
+            }
+        }
+
         public void MoveToWarpZone()
         {
             // Move to next zap grid
@@ -332,24 +408,21 @@ namespace Player
             m_StartPosition = this.transform.position;
             m_TargetPosition = newDeadZone.transform.position;
             SetMovementState(MovementState.MovingToWarpZone);
-            SetSpeedMultiplier(1.0f, false);
+            SetSpeedMultiplier(0.45f, false);
             m_LerpAmount = 0.0f;
             GameMaster.Instance.m_BackDropManager.ShowWarpStoreColors();
-        }
 
-        public void MoveToZapGridOriginal()
-        {
-            m_CurrZap = null;
-            m_NextZap = null;
-            m_PrevMovementState = MovementState.MovingHorizontal;
-            m_MovementState = MovementState.MovingHorizontal;
-            m_StartPosition = this.transform.position;
-            m_SpeedMultiplier = 1.0f;
-            m_IsMovingRight = true;
-            m_CurrRow = 0;
-            m_CurrCol = 0;
-            m_CanMove = true;
-            m_FakeTrailParticleSystem.gameObject.SetActive(false);
+            // show flawless completion notification if grid completion flawless.
+            StatsManager statsManager = GameMaster.Instance.m_StatsManager;
+            if (statsManager && statsManager.GetFlawlessGridRun())
+            {
+                UIManager uiManager = GameMaster.Instance.m_UIManager;
+                if(uiManager)
+                {
+                    uiManager.SpawnUINotification("FLAWLESS RUN!\n+500 pts", true);
+                    statsManager.AddToScore(500);
+                }
+            }
         }
 
         public void MoveToZapGrid()

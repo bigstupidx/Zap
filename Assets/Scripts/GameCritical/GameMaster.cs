@@ -15,6 +15,7 @@ namespace GameCritical
         public UIManager m_UIManager;
         public WarpZoneManager m_WarpZoneManager;
         public PlayerMovement m_PlayerMovement;
+        public PlayerStats m_PlayerStats;
         public BackdropManager m_BackDropManager;
         public StatsManager m_StatsManager;
 
@@ -64,6 +65,10 @@ namespace GameCritical
             if (m_StatsManager == null)
             {
                 m_StatsManager = FindObjectOfType<StatsManager>();
+            }
+            if (m_PlayerStats == null)
+            {
+                m_PlayerStats = FindObjectOfType<PlayerStats>();
             }
         }
     }

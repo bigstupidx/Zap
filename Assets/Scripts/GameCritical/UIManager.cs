@@ -9,7 +9,6 @@ namespace GameCritical
 {
     public class UIManager : MonoBehaviour
     {
-
         public InfoPanel m_InfoPanel;
         public WarpStorePanel m_WarpStorePanel;
         public MainMenuPanel m_MainMenuPanel;
@@ -18,6 +17,11 @@ namespace GameCritical
         private PopUpText m_PopUpTextPrefab;
         [SerializeField]
         private Vector3 m_PopUpTextOffset;
+
+        [SerializeField]
+        private NotificationPanel m_NotificationPanelPrefab;
+        [SerializeField]
+        private RectTransform m_NotificationSpawn;
 
         // Use this for initialization
         void Awake()
@@ -34,6 +38,15 @@ namespace GameCritical
             {
                 m_MainMenuPanel = FindObjectOfType<MainMenuPanel>();
             }
+        }
+
+        public void SpawnUINotification(string message, bool isGoodNotification)
+        {
+            NotificationPanel notificationInstance = (NotificationPanel)Instantiate(m_NotificationPanelPrefab,
+                m_NotificationSpawn.position,
+                Quaternion.identity,
+                this.transform);
+            notificationInstance.SetText(message, isGoodNotification);
         }
 
         public void SpawnPopUpText(string str, Vector3 position, Color color)

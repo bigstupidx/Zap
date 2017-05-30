@@ -11,9 +11,9 @@ namespace GameCritical
             base.ApplyImmediateEffect();
         }
 
-        public override void ApplyCollisionEffect()
+        public override void ApplyCollisionEffect(GameObject go)
         {
-            base.ApplyCollisionEffect();
+            base.ApplyCollisionEffect(go);
         }
     }
 }

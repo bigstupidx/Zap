@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Player;
 
 namespace GameCritical
 {
@@ -9,13 +10,20 @@ namespace GameCritical
         public override void ApplyImmediateEffect()
         {
             base.ApplyImmediateEffect();
-            GameMaster.Instance.m_PlayerMovement.SetSpeedMultiplier(1.0f, false);
         }
 
-        public override void ApplyCollisionEffect()
+        public override void ApplyCollisionEffect(GameObject go)
         {
-            base.ApplyCollisionEffect();
-            GameMaster.Instance.m_PlayerMovement.MoveTo(this);
+            base.ApplyCollisionEffect(go);
+            PlayerStats playerStats = go.GetComponent<PlayerStats>();
+            if(playerStats)
+            {
+                bool isInvicible = playerStats.GetInvicible();
+                if(!isInvicible)
+                {
+                    GameMaster.Instance.m_PlayerMovement.MoveTo(this);
+                }
+            }
         }
     }
 }
