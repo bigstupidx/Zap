@@ -39,6 +39,19 @@ namespace GameCritical
             m_SpriteRenderer.color = m_Color;
         }
 
+        void Start()
+        {
+            centerParticleSystem();
+        }
+
+        private void centerParticleSystem()
+        {
+            if (m_ActiveParticleSystem)
+            {
+                m_ActiveParticleSystem.transform.position = this.transform.position + new Vector3(this.Width / 2.0f, this.Height / 2.0f, 0);
+            }
+        }
+
         public virtual void ApplyImmediateEffect() { }
 
         public virtual void ApplyCollisionEffect(GameObject go)
@@ -96,12 +109,14 @@ namespace GameCritical
         {
             Vector3 currScale = this.transform.localScale;
             this.transform.localScale = new Vector3(width, currScale.y, currScale.z);
+            centerParticleSystem();
         }
 
         public virtual void SetHeight(float height)
         {
             Vector3 currScale = this.transform.localScale;
             this.transform.localScale = new Vector3(currScale.x, height, currScale.z);
+            centerParticleSystem();
         }
     }
 }
