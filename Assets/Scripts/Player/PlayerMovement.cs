@@ -166,6 +166,15 @@ namespace Player
                 SetSpeedMultiplier(1.0f, true);
                 m_LerpAmount = 0.0f;
                 fillMovementData();
+
+                // If we get to the end of the grid then go to warp zone
+                if (m_CurrZap != null)
+                {
+                    if (m_CurrZap.GetComponent<EndZap>())
+                    {
+                        MoveToWarpZone();
+                    }
+                }
             }
         }
 

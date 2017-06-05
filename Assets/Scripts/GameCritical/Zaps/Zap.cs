@@ -46,9 +46,17 @@ namespace GameCritical
 
         private void centerParticleSystem()
         {
-            if (m_ActiveParticleSystem)
+            if(m_ActiveParticleSystem)
             {
-                m_ActiveParticleSystem.transform.position = this.transform.position + new Vector3(this.Width / 2.0f, this.Height / 2.0f, 0);
+                centerObjectOnZap(m_ActiveParticleSystem.gameObject);
+            }
+        }
+
+        public void centerObjectOnZap(GameObject go)
+        {
+            if (go != null)
+            {
+                go.transform.position = this.transform.position + new Vector3(this.Width / 2.0f, this.Height / 2.0f, 0);
             }
         }
 
@@ -105,18 +113,52 @@ namespace GameCritical
             return m_OffsetPosition;
         }
 
+        public Vector3[] GetAllChildrenScales()
+        {
+            int numChildren = this.transform.childCount;
+            Vector3[] scales = new Vector3[numChildren];
+            for (int i = 0; i < numChildren; i++)
+            {
+                scales[i] = this.transform.GetChild(i).localScale;
+            }
+            return scales;
+        }
+
+        public void SetAllChildrenScales(Vector3 scaleRatios)
+        {
+            int numChildren = this.transform.childCount;
+            for (int i = 0; i < numChildren; i++)
+            {
+                Vector3 scale = this.transform.GetChild(i).localScale;
+                this.transform.GetChild(i).localScale = new Vector3(
+                    scale.x * scaleRatios.x, 
+                    scale.y * scaleRatios.y,
+                    scale.z * scaleRatios.z);
+            }
+        }
+
         public virtual void SetWidth(float width)
         {
             Vector3 currScale = this.transform.localScale;
             this.transform.localScale = new Vector3(width, currScale.y, currScale.z);
+            Vector3 scaleRatios = new Vector3(
+                currScale.x / this.transform.localScale.x,
+                currScale.y / this.transform.localScale.y,
+                currScale.z / this.transform.localScale.z);
             centerParticleSystem();
+            SetAllChildrenScales(scaleRatios);
         }
 
         public virtual void SetHeight(float height)
         {
             Vector3 currScale = this.transform.localScale;
             this.transform.localScale = new Vector3(currScale.x, height, currScale.z);
+            Vector3 scaleRatios = new Vector3(
+                currScale.x / this.transform.localScale.x,
+                currScale.y / this.transform.localScale.y,
+                currScale.z / this.transform.localScale.z);
             centerParticleSystem();
+            SetAllChildrenScales(scaleRatios);
         }
     }
 }

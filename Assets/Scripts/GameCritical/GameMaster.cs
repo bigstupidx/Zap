@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using Player;
 using UI;
+using Database;
 
 namespace GameCritical
 {
@@ -18,6 +19,7 @@ namespace GameCritical
         public PlayerStats m_PlayerStats;
         public BackdropManager m_BackDropManager;
         public StatsManager m_StatsManager;
+        public DatabaseManager m_DatabaseManager;
 
         public DeathStar m_DeathStar;
         public CameraFollow m_CameraFollow;
@@ -38,6 +40,10 @@ namespace GameCritical
                 }
             }
 
+            if (m_DatabaseManager == null)
+            {
+                m_DatabaseManager = FindObjectOfType<DatabaseManager>();
+            }
             if (m_PlayerMovement == null)
             {
                 m_PlayerMovement = FindObjectOfType<PlayerMovement>();
