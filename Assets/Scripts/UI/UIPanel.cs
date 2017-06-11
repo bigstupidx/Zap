@@ -15,14 +15,16 @@ namespace UI
 
         private AudioSource m_AudioSource;
 
-        // Use this for initialization
-        void Start()
+        void Awake()
         {
-            if(m_HideOnStart)
+            if (m_HideOnStart)
             {
                 Hide();
             }
+        }
 
+        void Start()
+        {
             m_AudioSource = this.GetComponent<AudioSource>();
         }
 

@@ -194,7 +194,7 @@ namespace Player
                 m_StartPosition = this.transform.position;
                 m_FakeTrailParticleSystem.gameObject.SetActive(true);
                 GameMaster.Instance.m_WarpZoneManager.SetInputEnabled(true);
-                GameMaster.Instance.m_UIManager.m_WarpStorePanel.Show();
+                GameMaster.Instance.m_UIManager.m_ShopCanvas.m_WarpStorePanel.Show();
             }
             else if (m_MovementState == MovementState.MovingToZapGrid)
             {

@@ -1,7 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using Obstacles;
 
 namespace GameCritical
 {
@@ -29,12 +28,6 @@ namespace GameCritical
         private List<float> m_ZapPrefabChance;
         [SerializeField]
         private List<int> m_ZapPrefabsForced;
-
-        [SerializeField]
-        private List<Obstacle> m_ObstaclePrefabs;
-        [SerializeField]
-        [Tooltip("Chance of obstacle spawning per Zap")]
-        private float m_ChanceOfObstacle = 0.05f;
 
         private List<List<Zap>> m_ZapGrid;
         private Vector3 m_TopMiddle;
@@ -72,30 +65,6 @@ namespace GameCritical
                 }
             }
             return null;
-        }
-
-        public Obstacle GetRandomObstaclePrefab()
-        {
-            if (m_ObstaclePrefabs == null || m_ObstaclePrefabs.Count <= 0)
-            {
-                return null;
-            }
-
-            int index = Mathf.FloorToInt(Random.Range(0, m_ObstaclePrefabs.Count));
-            return m_ObstaclePrefabs[index];
-        }
-
-        private void SpawnRandomObstacle(int row, int col, float chance)
-        {
-            if(Random.Range(0,1.0f) <= chance)
-            {
-                Obstacle randomObstacle = GetRandomObstaclePrefab();
-                if(randomObstacle != null)
-                {
-                    Obstacle newObstacle = (Obstacle)Instantiate(randomObstacle);
-                    newObstacle.SetPosition(row, col);
-                }
-            }
         }
 
         public Zap GetRandomZapPrefab()

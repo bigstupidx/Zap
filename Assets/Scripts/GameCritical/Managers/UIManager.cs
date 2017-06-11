@@ -10,8 +10,8 @@ namespace GameCritical
     public class UIManager : MonoBehaviour
     {
         public InfoPanel m_InfoPanel;
-        public WarpStorePanel m_WarpStorePanel;
         public MainMenuPanel m_MainMenuPanel;
+        public ShopCanvas m_ShopCanvas;
 
         [SerializeField]
         private PopUpText m_PopUpTextPrefab;
@@ -29,10 +29,6 @@ namespace GameCritical
             if (m_InfoPanel == null)
             {
                 m_InfoPanel = FindObjectOfType<InfoPanel>();
-            }
-            if (m_WarpStorePanel == null)
-            {
-                m_WarpStorePanel = FindObjectOfType<WarpStorePanel>();
             }
             if (m_MainMenuPanel == null)
             {
