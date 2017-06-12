@@ -8,16 +8,41 @@ namespace GameCritical
 {
     public class StatsManager : MonoBehaviour
     {
-        private int m_Score;
-        public int Score { get { return m_Score; } }
+        private int m_Score = 0;
+        private int m_NumZaps = 0;
 
         private bool m_FlawlessGridRun; // if this is true that means the player didnt hit anything bad in the current grid.
+
+        private ZapScorer m_ZapScorer;
+        private ZapBanker m_ZapBanker;
+
+        void Awake()
+        {
+            InfoPanel infoPanel = GameMaster.Instance.m_UIManager.m_InfoPanel;
+            if(infoPanel == null)
+            {
+                infoPanel = FindObjectOfType<InfoPanel>();
+            }
+
+            m_ZapBanker = infoPanel.m_ZapBanker;
+            m_ZapScorer = infoPanel.m_ZapScorer;
+            if (m_ZapScorer == null)
+            {
+                m_ZapScorer = FindObjectOfType<ZapScorer>();
+            }
+            if(m_ZapBanker == null)
+            {
+                m_ZapBanker = FindObjectOfType<ZapBanker>();
+            }
+        }
 
         // Use this for initialization
         void Start()
         {
             m_Score = 0;
             m_FlawlessGridRun = true;
+            m_ZapScorer.UpdateScoreString(m_Score);
+            m_ZapBanker.UpdateZapsString(m_NumZaps);
         }
 
         public bool GetFlawlessGridRun()
@@ -30,22 +55,30 @@ namespace GameCritical
             m_FlawlessGridRun = isFlawless;
         }
 
+        public void AddZaps(int zapsToAdd)
+        {
+            m_NumZaps += zapsToAdd;
+            if (m_ZapBanker != null)
+            {
+                m_ZapBanker.UpdateZapsString(m_NumZaps);
+            }
+        }
+
         public void AddToScore(int scoreToAdd)
         {
             m_Score += scoreToAdd;
-            ZapScorer zapScorer = GameMaster.Instance.m_UIManager.m_InfoPanel.m_ZapScorer;
-            if(zapScorer)
+            if(m_ZapScorer != null)
             {
-                zapScorer.UpdateScore(m_Score);
+                m_ZapScorer.UpdateScoreString(m_Score);
                 // If player hit a bad zap then disable flawless grid run bonus.
                 if (scoreToAdd < 0)
                 {
                     SetFlawlessGridRun(false);
-                    zapScorer.PlayScoreAnimation(false);
+                    m_ZapScorer.PlayScoreAnimation(false);
                 }
                 else
                 {
-                    zapScorer.PlayScoreAnimation(true);
+                    m_ZapScorer.PlayScoreAnimation(true);
                 }
             }
         }

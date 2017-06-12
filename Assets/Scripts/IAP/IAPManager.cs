@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Purchasing;
+using GameCritical;
 
 // Placing the Purchaser class in the CompleteProject namespace allows it to interact with ScoreManager, 
 // one of the existing Survival Shooter scripts.
@@ -16,6 +17,8 @@ namespace IAP
         private static IExtensionProvider m_StoreExtensionProvider; // The store-specific Purchasing subsystems.
         public static string PRODUCT_50_ZAPS = "zaps50";
         public static string PRODUCT_100_ZAPS = "zaps100";
+        public static string PRODUCT_250_ZAPS = "zaps250";
+        public static string PRODUCT_1000_ZAPS = "zaps1000";
 
         private void Awake()
         {
@@ -58,6 +61,8 @@ namespace IAP
             // Add products
             builder.AddProduct(PRODUCT_50_ZAPS, ProductType.Consumable);
             builder.AddProduct(PRODUCT_100_ZAPS, ProductType.Consumable);
+            builder.AddProduct(PRODUCT_250_ZAPS, ProductType.Consumable);
+            builder.AddProduct(PRODUCT_1000_ZAPS, ProductType.Consumable);
 
             UnityPurchasing.Initialize(this, builder);
         }
@@ -67,13 +72,21 @@ namespace IAP
             return m_StoreController != null && m_StoreExtensionProvider != null;
         }
 
-        public void Buy50Gold()
+        public void Buy50Zaps()
         {
             BuyProductID(PRODUCT_50_ZAPS);
         }
-        public void Buy100Gold()
+        public void Buy100Zaps()
         {
             BuyProductID(PRODUCT_100_ZAPS);
+        }
+        public void Buy250Zaps()
+        {
+            BuyProductID(PRODUCT_250_ZAPS);
+        }
+        public void Buy1000Zaps()
+        {
+            BuyProductID(PRODUCT_1000_ZAPS);
         }
 
         private void BuyProductID(string productId)
@@ -129,17 +142,43 @@ namespace IAP
             Debug.Log("OnInitializeFailed InitializationFailureReason:" + error);
         }
 
+        private void AddZaps(int numZaps)
+        {
+            StatsManager statsManager = GameMaster.Instance.m_StatsManager;
+            if (statsManager == null)
+            {
+                statsManager = FindObjectOfType<StatsManager>();
+            }
+
+            if (statsManager != null)
+            {
+                statsManager.AddZaps(numZaps);
+            }
+        }
+
 
         public PurchaseProcessingResult ProcessPurchase(PurchaseEventArgs args)
         {
             // A consumable product has been purchased by this user.
             if (String.Equals(args.purchasedProduct.definition.id, PRODUCT_50_ZAPS, StringComparison.Ordinal))
             {
-                Debug.Log("You've just bought 50 gold! good times!");
+                Debug.Log("You've just bought 50 zaps! good times!");
+                AddZaps(50);
             }
             else if (String.Equals(args.purchasedProduct.definition.id, PRODUCT_100_ZAPS, StringComparison.Ordinal))
             {
-                Debug.Log("You've just bought 100 gold! good times!");
+                Debug.Log("You've just bought 100 zaps! good times!");
+                AddZaps(100);
+            }
+            else if (String.Equals(args.purchasedProduct.definition.id, PRODUCT_250_ZAPS, StringComparison.Ordinal))
+            {
+                Debug.Log("You've just bought 250 zaps! good times!");
+                AddZaps(250);
+            }
+            else if (String.Equals(args.purchasedProduct.definition.id, PRODUCT_1000_ZAPS, StringComparison.Ordinal))
+            {
+                Debug.Log("You've just bought 1000 zaps! good times!");
+                AddZaps(1000);
             }
             else
             {

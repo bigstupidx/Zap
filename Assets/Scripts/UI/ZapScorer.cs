@@ -6,6 +6,8 @@ using GameCritical;
 
 namespace UI
 {
+    [RequireComponent(typeof(Text))]
+    [RequireComponent(typeof(Animation))]
     public class ZapScorer : MonoBehaviour
     {
         [SerializeField]
@@ -23,8 +25,7 @@ namespace UI
         private Text m_Text;
         private Animation m_Animation;
 
-        // Use this for initialization
-        void Start()
+        void Awake()
         {
             m_Text = GetComponent<Text>();
             m_Animation = GetComponent<Animation>();
@@ -47,7 +48,7 @@ namespace UI
             }
         }
 
-        public void UpdateScore(int totalScore)
+        public void UpdateScoreString(int totalScore)
         {
             m_Text.text = m_ScoreString + totalScore;
         }

@@ -8,6 +8,7 @@ namespace UI
     public class InfoPanel : MonoBehaviour {
 
         public ZapScorer m_ZapScorer;
+        public ZapBanker m_ZapBanker;
         public Text m_DeathStartMultiplierText;
         public string m_DeathStarMultiplierStr;
 
@@ -15,6 +16,10 @@ namespace UI
             if(m_ZapScorer == null)
             {
                 m_ZapScorer = FindObjectOfType<ZapScorer>();
+            }
+            if (m_ZapBanker == null)
+            {
+                m_ZapBanker = FindObjectOfType<ZapBanker>();
             }
         }
 
