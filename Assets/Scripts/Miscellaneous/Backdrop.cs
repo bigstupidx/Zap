@@ -18,16 +18,6 @@ namespace Miscellaneous
         {
             m_SpriteRenderer = this.GetComponent<SpriteRenderer>();
             m_Material = m_SpriteRenderer.material;
-
-            // scale background to screen width.
-            float height = Camera.main.orthographicSize * 2;
-            float width = height * Screen.width / Screen.height; // basically height * screen aspect ratio
-
-            Sprite s = m_SpriteRenderer.sprite;
-            float unitWidth = s.textureRect.width / s.pixelsPerUnit;
-            float unitHeight = s.textureRect.height / s.pixelsPerUnit;
-
-            m_SpriteRenderer.transform.localScale = new Vector3(width / unitWidth, height / unitHeight);
         }
 
         public Color GetFirstColor()

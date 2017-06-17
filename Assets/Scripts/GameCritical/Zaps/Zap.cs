@@ -79,8 +79,8 @@ namespace GameCritical
                     m_StatsManager.AddToScore(m_Points);
                     m_UIManager.SpawnPopUpText(
                         m_Points.ToString(),
-                        this.transform.position + new Vector3(Width / 2.0f, 0, 0),
-                        m_Color);
+                        this.transform.position + new Vector3(Width / 2.0f, Height * 2.0f, 0),
+                        m_PopUpColor);
                 }
             }
         }
@@ -90,7 +90,7 @@ namespace GameCritical
             if (m_HasPopUpText)
             {
                 GameMaster.Instance.m_UIManager.SpawnPopUpText(m_PopUpText,
-                    this.transform.position + new Vector3(Width / 2.0f, 0, 0),
+                    this.transform.position + new Vector3(Width / 2.0f, Height * 2.0f, 0),
                     m_PopUpColor);
             }
         }

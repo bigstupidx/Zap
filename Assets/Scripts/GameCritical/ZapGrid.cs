@@ -18,9 +18,6 @@ namespace GameCritical
         private float m_RowGapDistance = 1.5f;
 
         [SerializeField]
-        private float m_YDistanceFromCamera = 4.0f;
-
-        [SerializeField]
         private Zap m_EndZapPrefab;
         [SerializeField]
         private List<Zap> m_ZapPrefabs;
@@ -30,12 +27,6 @@ namespace GameCritical
         private List<int> m_ZapPrefabsForced;
 
         private List<List<Zap>> m_ZapGrid;
-        private Vector3 m_TopMiddle;
-
-        public Vector3 GetTopMiddle()
-        {
-            return m_TopMiddle;
-        }
 
         public int GetNumCols(int row)
         {
@@ -164,9 +155,8 @@ namespace GameCritical
             }
 
             // Do one time calculations for grid before spawning zaps.
-            bool hasSetStartingPosition = false;
-            Vector3 botLeftInWorldSpace = Camera.main.ScreenToWorldPoint(new Vector3(0, 0, 0));
-            Vector3 origin = botLeftInWorldSpace + new Vector3(0, m_YDistanceFromCamera, 0);
+            Vector3 topLeftInWorldSpace = Camera.main.ScreenToWorldPoint(new Vector3(0, Camera.main.pixelHeight, 0));
+            Vector3 origin = topLeftInWorldSpace;
             origin.z = 1.0f;
             this.transform.position = origin;
             float zapWidth = GetZapWidth(m_EndZapPrefab, m_Cols);
@@ -199,15 +189,6 @@ namespace GameCritical
                         zap.Row = i;
                         zap.Col = j;
                         m_ZapGrid[i][j] = zap;
-
-                        // Specify the top middle position of the zap grid
-                        if(!hasSetStartingPosition)
-                        {
-                            hasSetStartingPosition = true;
-                            m_TopMiddle = this.transform.position +
-                                new Vector3(m_Cols * zap.Width / 2.0f, 0, 0) +
-                                new Vector3(0,m_Rows * m_ZapHeight + m_Rows * m_RowGapDistance, 0);
-                        }
 
                         // spawn things randomly on zap
                         // SpawnRandomObstacle(i, j, m_ChanceOfObstacle);

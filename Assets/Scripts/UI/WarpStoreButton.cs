@@ -13,6 +13,9 @@ namespace UI
         [SerializeField]
         [Tooltip("Reference to image container that will change its image")]
         private Image m_MainImage;
+        [SerializeField]
+        [Range(0,1.0f)]
+        private float m_PercentOfParent = 1.0f;
 
         [SerializeField]
         [Tooltip("Background to display")]
@@ -35,6 +38,8 @@ namespace UI
 
         private void Start()
         {
+            // set background image
+            m_BackgroundImage = GetComponent<Image>();
             if (m_BackgroundImage != null)
             {
                 if (m_Background != null)
@@ -43,14 +48,19 @@ namespace UI
                 }
             }
 
+            // set main image
             if (m_MainImage != null)
             {
                 if(m_Main != null)
                 {
                     m_MainImage.sprite = m_Main;
+                    m_MainImage.rectTransform.sizeDelta =
+                        new Vector2(m_BackgroundImage.rectTransform.sizeDelta.x * m_PercentOfParent,
+                        m_BackgroundImage.rectTransform.sizeDelta.y * m_PercentOfParent);
                 }
             }
 
+            // instantiate banner
             if(m_Banner != null)
             {
                 m_Banner = Instantiate(
@@ -61,6 +71,7 @@ namespace UI
                 m_Banner.SetText(m_Text);
             }
 
+            // bind onclick() listener
             Button button = this.GetComponent<Button>();
             if(button != null)
             {

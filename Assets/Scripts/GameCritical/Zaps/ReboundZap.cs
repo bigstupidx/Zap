@@ -48,7 +48,6 @@ namespace GameCritical
             }
             else
             {
-                m_ActiveParticleSystem.Play();
                 PlayerStats playerStats = go.GetComponent<PlayerStats>();
                 if (playerStats)
                 {
@@ -67,6 +66,7 @@ namespace GameCritical
                             // Show the popuptext "REBOUND"
                             ShowPopUptext();
                             Destroy(m_NumberText.gameObject);
+                            m_ActiveParticleSystem.Play();
                             // Change the color of the zap to show that it has been hit.
                             if (m_SpriteRenderer)
                             {

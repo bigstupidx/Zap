@@ -7,6 +7,8 @@ using GameCritical;
 namespace Player
 {
     [RequireComponent(typeof(Rigidbody2D))]
+    [RequireComponent(typeof(PlayerDecorations))]
+    [RequireComponent(typeof(PlayerScaler))]
     public class PlayerMovement : MonoBehaviour
     {
         public enum MovementState
@@ -27,8 +29,7 @@ namespace Player
         private float m_VerticalMoveSpeed = 0.1f;
         [SerializeField]
         private LayerMask m_TouchInputMask;
-        [SerializeField]
-        private ParticleSystem m_FakeTrailParticleSystem;
+
 
         private Vector3 m_TargetPosition;
         private Vector3 m_StartPosition;
@@ -44,20 +45,18 @@ namespace Player
         private bool m_CanMove; // if true then cannot go to next line
 
         private Rigidbody2D m_Rigidbody;
-        private TrailRenderer m_TrailRenderer;
         private SpriteRenderer m_SpriteRenderer;
         private PlayerScaler m_PlayerScaler;
+        private PlayerDecorations m_PlayerDecorations;
 
         // Use this for initialization
         void Start()
         {
             m_Rigidbody = GetComponent<Rigidbody2D>();
-            m_TrailRenderer = GetComponent<TrailRenderer>();
             m_SpriteRenderer = GetComponent<SpriteRenderer>();
             m_PlayerScaler = GetComponent<PlayerScaler>();
+            m_PlayerDecorations = GetComponent<PlayerDecorations>();
             MoveToZapGrid();
-            m_TrailRenderer.sortingLayerName = "Foreground";
-            m_TrailRenderer.sortingOrder = 0;
         }
 
         // Update is called once per frame
@@ -192,7 +191,10 @@ namespace Player
             {
                 m_TargetPosition = this.transform.position;
                 m_StartPosition = this.transform.position;
-                m_FakeTrailParticleSystem.gameObject.SetActive(true);
+                if(!m_PlayerDecorations.GetWarpZonePS().isPlaying)
+                {
+                    m_PlayerDecorations.ShowWarpZonePS();
+                }
                 GameMaster.Instance.m_WarpZoneManager.SetInputEnabled(true);
                 GameMaster.Instance.m_UIManager.m_ShopCanvas.m_WarpStorePanel.Show();
             }
@@ -224,7 +226,7 @@ namespace Player
             {
                 Zap zapMovedThrough = getZapCurrentlyUnderneath();
                 bool isRocketZap = zapMovedThrough is RocketZap;
-                if(!isRocketZap)
+                if (!isRocketZap)
                 {
                     MoveVertically();
                 }
@@ -446,7 +448,7 @@ namespace Player
             m_CurrRow = 0;
             m_CurrCol = 0;
             m_CanMove = true;
-            m_FakeTrailParticleSystem.gameObject.SetActive(false);
+            m_PlayerDecorations.ShowMainPS();
         }
     }
 }

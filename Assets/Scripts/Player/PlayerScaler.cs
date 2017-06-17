@@ -9,7 +9,9 @@ namespace Player
     {
 
         [SerializeField]
-        private float m_MaxScale = 0.04f;
+        [Tooltip("How big the player will be relative to the zaps as a percentage")]
+        [Range(0.0f, 0.5f)]
+        private float m_SizePercentage = 0.4f;
 
         private Vector3 m_StartScale;
         private Vector3 m_CurrScale;
@@ -27,6 +29,7 @@ namespace Player
         public void ResetPlayerScaler()
         {
             m_IsScaling = false;
+            m_CurrScale = this.transform.localScale;
         }
 
         public void LerpToZapScale(float lerpPercentage)
@@ -40,7 +43,7 @@ namespace Player
                 float unitWidth = s.textureRect.width / s.pixelsPerUnit;
                 float unitHeight = s.textureRect.height / s.pixelsPerUnit;
                 m_CurrScale = this.transform.localScale;
-                m_TargetScale = zapWidth / unitWidth / 2.0f;
+                m_TargetScale = zapWidth / unitWidth * m_SizePercentage;
                 m_IsScaling = true;
             }
             LerpScale(m_TargetScale, lerpPercentage);
@@ -55,7 +58,6 @@ namespace Player
         private void LerpScale(float targetScale, float lerpPercentage)
         {
             // scale player size
-            targetScale = Mathf.Clamp(targetScale, 0.0f, m_MaxScale);
             this.transform.localScale = Vector3.Lerp(m_CurrScale, new Vector3(targetScale, targetScale, targetScale), lerpPercentage);
 
             // scale trailer renderer size

@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Utlities;
 
 namespace GameCritical
 {
@@ -58,8 +59,8 @@ namespace GameCritical
 
         public WarpZone SpawnDeadZone()
         {
-            Vector3 spawnPos = GameMaster.Instance.m_ZapManager.GetZapGrid().GetTopMiddle();
-            m_WarpZone = (WarpZone)Instantiate(m_WarpZonePrefab, spawnPos + m_WarpZonePrefab.GetOriginOffsetPosition(), Quaternion.identity);
+            Vector3 topMiddleInWorldSpace = ScreenUtilities.GetWSofSSPosition(0.5f, 1.0f);
+            m_WarpZone = (WarpZone)Instantiate(m_WarpZonePrefab, topMiddleInWorldSpace + m_WarpZonePrefab.GetOriginOffsetPosition(), Quaternion.identity);
             return m_WarpZone;
         }
 
