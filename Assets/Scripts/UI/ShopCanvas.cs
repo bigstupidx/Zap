@@ -7,6 +7,7 @@ namespace UI
     public class ShopCanvas : MonoBehaviour
     {
         public WarpStorePanel m_WarpStorePanel;
+        public GameObject m_FailedPurchaseModal;
 
         // Use this for initialization
         void Start()

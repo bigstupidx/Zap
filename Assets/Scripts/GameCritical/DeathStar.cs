@@ -17,8 +17,19 @@ namespace GameCritical
         [SerializeField]
         private Vector3 m_StartOffsetPosition = new Vector3(0, -1.0f, 0);
 
+        [SerializeField]
+        private ParticleSystem m_ParticleSystem;
+
         private float m_SpeedMultiplier;
         private bool m_IsMoving;
+
+        void Awake()
+        {
+            if (m_ParticleSystem == null)
+            {
+                m_ParticleSystem = GetComponentInChildren<ParticleSystem>();
+            }
+        }
 
         void Start()
         {
@@ -46,6 +57,10 @@ namespace GameCritical
         public void SetIsMoving(bool isMoving)
         {
             m_IsMoving = isMoving;
+            if (isMoving)
+                m_ParticleSystem.Play();
+            else
+                m_ParticleSystem.Stop();
         }
 
         public void SetSpeedMultiplier(float multiplier, bool shouldAddToCurrentSpeed)

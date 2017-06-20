@@ -23,7 +23,10 @@ namespace GameCritical
 
         void Start()
         {
-            m_ActiveParticleSystem.Stop();
+            if(m_ActiveParticleSystem)
+            {
+                m_ActiveParticleSystem.Stop();
+            }
             m_HasBeenHit = false;
             centerObjectOnZap(m_NumberText.gameObject);
             m_MaxHits = Random.Range(1, m_MaxHits + 1);
@@ -66,7 +69,10 @@ namespace GameCritical
                             // Show the popuptext "REBOUND"
                             ShowPopUptext();
                             Destroy(m_NumberText.gameObject);
-                            m_ActiveParticleSystem.Play();
+                            if(m_ActiveParticleSystem)
+                            {
+                                m_ActiveParticleSystem.Play();
+                            }
                             // Change the color of the zap to show that it has been hit.
                             if (m_SpriteRenderer)
                             {

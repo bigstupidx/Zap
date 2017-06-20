@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Utlities;
 
 namespace GameCritical
 {
@@ -155,12 +156,12 @@ namespace GameCritical
             }
 
             // Do one time calculations for grid before spawning zaps.
-            Vector3 topLeftInWorldSpace = Camera.main.ScreenToWorldPoint(new Vector3(0, Camera.main.pixelHeight, 0));
+            Vector3 topLeftInWorldSpace = Camera.main.ScreenToWorldPoint(
+                new Vector3(0, 1.5f * ScreenUtilities.GetDistanceInWS(1.0f), 0));
             Vector3 origin = topLeftInWorldSpace;
             origin.z = 1.0f;
             this.transform.position = origin;
             float zapWidth = GetZapWidth(m_EndZapPrefab, m_Cols);
-            //float zapWidth = .675f / m_Cols;
 
             for (int i = 0; i < m_Rows + 1; i++)
             {

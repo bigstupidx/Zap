@@ -7,7 +7,7 @@ namespace UI
     public class WarpPanel : UIPanel
     {
         [SerializeField]
-        private List<WarpStoreButton> m_Options;
+        protected List<WarpStoreButton> m_Options;
 
         [SerializeField]
         private WarpStorePanel.ActionType m_PrevPanelActionType = WarpStorePanel.ActionType.OPEN_MAIN_MENU;

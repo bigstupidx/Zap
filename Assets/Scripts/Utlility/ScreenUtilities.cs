@@ -15,5 +15,12 @@ namespace Utlities
                     Camera.main.pixelHeight * Mathf.Clamp(yPercentage, 0.0f, 1.0f),
                     0));
         }
+
+        public static float GetDistanceInWS(float percentageOfScreen)
+        {
+            float unitsPerPercent = (Camera.main.ScreenToWorldPoint(new Vector3(0, 0.0f, 0)) - 
+                Camera.main.ScreenToWorldPoint(new Vector3(0, Camera.main.pixelHeight, 0))).magnitude;
+            return percentageOfScreen * unitsPerPercent;
+        }
     }
 }

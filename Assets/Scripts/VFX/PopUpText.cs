@@ -13,6 +13,8 @@ namespace VFX
         private float m_TargetUniformScale;
         [SerializeField]
         private float m_LerpTime;
+        [SerializeField]
+        private bool m_ShouldFadeOut;
 
         private Vector3 m_InitialScale;
         private Vector3 m_TargetScale;
@@ -53,7 +55,17 @@ namespace VFX
         private void countDownDeathTimer()
         {
             m_CurrLifetime += Time.deltaTime;
-            if(m_CurrLifetime >= m_Lifetime)
+
+            if(m_ShouldFadeOut)
+            {
+                m_Text.color = new Color(
+                    m_Text.color.r,
+                    m_Text.color.g,
+                    m_Text.color.b,
+                    Mathf.Lerp(1.0f, 0.0f, m_CurrLifetime));
+            }
+
+            if (m_CurrLifetime >= m_Lifetime)
             {
                 Destroy(this.gameObject);
             }

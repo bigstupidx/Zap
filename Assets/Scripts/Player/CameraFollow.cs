@@ -40,31 +40,26 @@ namespace Player
 
         public void ResetOffset(float timeToTargetOffset)
         {
-            m_CurrLerpTime = timeToTargetOffset;
-            m_CurrOffset = m_Offset;
-            m_LerpAmount = 0.0f;
+            SetOffset(m_Offset, timeToTargetOffset);
         }
 
-        // Update is called once per frame
-        void Update()
+        void LateUpdate()
         {
             if (m_PlayerMovement != null)
             {
                 m_LerpAmount += Time.deltaTime;
                 float lerpPercentage = m_LerpAmount / m_CurrLerpTime;
 
-                // lerp to specified offset position so camera doesn't snap there
-                //m_CurrOffset = Vector3.Lerp(this.m_PreviousOffset, this.m_CurrOffset, lerpPercentage);
-
                 Vector3 target = m_PlayerMovement.transform.position;
                 target.x = 0;
                 target.z = 0;
                 this.transform.position = Vector3.Lerp(this.transform.position, target + m_CurrOffset, lerpPercentage);
 
+                // Once we lerp to position then follow target 100% until ordered to move somewhere else
                 if (lerpPercentage >= 1.0f)
                 {
                     m_CurrLerpTime = m_LerpTime;
-                    m_LerpAmount = 0.0f;
+                    //m_LerpAmount = 0.0f;
                 }
             }
         }

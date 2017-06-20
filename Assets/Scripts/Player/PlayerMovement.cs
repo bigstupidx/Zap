@@ -24,9 +24,11 @@ namespace Player
         private bool m_IsMovingRight;
 
         [SerializeField]
-        private float m_HorizontalMoveSpeed = 0.05f;
+        private float m_HorizontalMoveSpeed = 540.0f;
         [SerializeField]
-        private float m_VerticalMoveSpeed = 0.1f;
+        private float m_VerticalMoveSpeed = 540.0f;
+        [SerializeField]
+        private float m_ToWarpZoneSpeed = 100.0f;
         [SerializeField]
         private LayerMask m_TouchInputMask;
 
@@ -122,16 +124,13 @@ namespace Player
             }
             else if (m_MovementState == MovementState.MovingVertical)
             {
-                // Double lerp
                 m_LerpAmount += Time.deltaTime * m_SpeedMultiplier * m_VerticalMoveSpeed;
                 m_LerpPercentage = m_LerpAmount / startToFinishDistance;
                 this.transform.position = Vector3.Lerp(m_StartPosition, m_TargetPosition, m_LerpPercentage);
-                //this.transform.position = Vector3.Lerp(Vector3.Lerp(m_StartPosition, m_P1, m_LerpPercentage),
-                //  Vector3.Lerp(m_StartPosition, m_P2, m_LerpPercentage), m_LerpPercentage);
             }
             else if (m_MovementState == MovementState.MovingToWarpZone)
             {
-                m_LerpAmount += Time.deltaTime * m_SpeedMultiplier * m_VerticalMoveSpeed;
+                m_LerpAmount += Time.deltaTime * m_SpeedMultiplier * m_ToWarpZoneSpeed;
                 m_LerpPercentage = m_LerpAmount / startToFinishDistance;
                 this.transform.position = Vector3.Lerp(m_StartPosition, m_TargetPosition, m_LerpPercentage);
                 // Lerp size of player to original size
@@ -167,13 +166,13 @@ namespace Player
                 fillMovementData();
 
                 // If we get to the end of the grid then go to warp zone
-                if (m_CurrZap != null)
+                /*if (m_CurrZap != null)
                 {
                     if (m_CurrZap.GetComponent<EndZap>())
                     {
                         MoveToWarpZone();
                     }
-                }
+                }*/
             }
         }
 
@@ -185,6 +184,12 @@ namespace Player
             }
             else if (m_MovementState == MovementState.MovingVertical)
             {
+                ZapGrid currZapGrid = GameMaster.Instance.m_ZapManager.GetZapGrid();
+                if (m_CurrRow == currZapGrid.GetNumRows())
+                {
+                    MoveToWarpZone();
+                    return;
+                }
                 SetMovementState(MovementState.MovingHorizontal);
             }
             else if (m_MovementState == MovementState.MovingToWarpZone)
@@ -357,10 +362,6 @@ namespace Player
                     m_LerpAmount = 0.0f;
                     m_StartPosition = this.transform.position;
                     m_TargetPosition = zapOnNewLine.GetOffsetPosition();
-                }
-                else
-                {
-                    MoveToWarpZone();
                 }
 
                 return zapMovedThrough;

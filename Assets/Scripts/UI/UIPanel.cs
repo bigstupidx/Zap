@@ -4,7 +4,6 @@ using UnityEngine;
 
 namespace UI
 {
-    [RequireComponent(typeof(AudioSource))]
     public class UIPanel : MonoBehaviour
     {
         [SerializeField]

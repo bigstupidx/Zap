@@ -16,6 +16,7 @@ namespace GameCritical
         public UIManager m_UIManager;
         public WarpZoneManager m_WarpZoneManager;
         public PlayerMovement m_PlayerMovement;
+        public PlayerDecorations m_PlayerDecorations;
         public PlayerStats m_PlayerStats;
         public BackdropManager m_BackDropManager;
         public StatsManager m_StatsManager;
@@ -40,6 +41,10 @@ namespace GameCritical
                 }
             }
 
+            if (m_PlayerDecorations == null)
+            {
+                m_PlayerDecorations = FindObjectOfType<PlayerDecorations>();
+            }
             if (m_DatabaseManager == null)
             {
                 m_DatabaseManager = FindObjectOfType<DatabaseManager>();

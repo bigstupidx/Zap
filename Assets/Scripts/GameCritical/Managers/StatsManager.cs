@@ -55,6 +55,11 @@ namespace GameCritical
             m_FlawlessGridRun = isFlawless;
         }
 
+        public int GetZaps()
+        {
+            return m_NumZaps;
+        }
+
         public void AddZaps(int zapsToAdd)
         {
             m_NumZaps += zapsToAdd;
