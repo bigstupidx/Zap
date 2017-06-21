@@ -16,15 +16,10 @@ namespace UI
         private int m_Price;
 
         [SerializeField]
-        private ParticleSystem m_TrailPSPrefab;
+        private StatusIcon m_StatusPrefab;
+        protected StatusIcon m_StatusInstance;
         [SerializeField]
-        private RotatingTrail m_RotatingTrailObject;
-
-        [SerializeField]
-        private StatusIcon m_LockPrefab;
-        private StatusIcon m_LockInstance;
-        [SerializeField]
-        private bool m_IsUnlocked = false;
+        protected bool m_IsUnlocked = false;
         [SerializeField]
         private Color m_LockedColor;
         [SerializeField]
@@ -38,19 +33,19 @@ namespace UI
             UnlockButtonEvent += this.handleUnlockButtonPress;
         }
 
-        private void handleUnlockButtonPress(UnlockableButton button)
+        public void handleUnlockButtonPress(UnlockableButton button)
         {
-            if(this != button)
+            if (this != button)
             {
-                if(m_IsUnlocked)
+                if (m_IsUnlocked)
                 {
-                    m_LockInstance.SetUnlocked();
+                    m_StatusInstance.SetUnlocked();
                 }
             }
             else
             {
-                GameMaster.Instance.m_PlayerDecorations.SetTrailPS(m_TrailPSPrefab);
-                m_LockInstance.SetEquipped();
+                equip();
+                m_StatusInstance.SetEquipped();
             }
         }
 
@@ -66,16 +61,12 @@ namespace UI
                 m_PriceBannerInstance.SetText(m_Price.ToString());
             }
 
-            // instantiate particle system
-            ParticleSystem ps = Instantiate(m_TrailPSPrefab, m_RotatingTrailObject.transform);
-            ps.transform.localPosition = Vector3.zero;
-
             // instantiate lock prefab
-            if(m_LockPrefab != null)
+            if(m_StatusPrefab != null)
             {
-                m_LockInstance = Instantiate(m_LockPrefab, this.transform) as StatusIcon;
-                m_LockInstance.transform.localPosition = Vector3.zero;
-                m_LockInstance.SetLocked();
+                m_StatusInstance = Instantiate(m_StatusPrefab, this.transform) as StatusIcon;
+                m_StatusInstance.transform.localPosition = Vector3.zero;
+                m_StatusInstance.SetLocked();
                 m_BackgroundImage.color = m_LockedColor;
             }
             else
@@ -92,7 +83,8 @@ namespace UI
             }
             else
             {
-                equip();
+                // change which button has check mark on it and fire off equip event
+                UnlockButtonEvent(this);
             }
         }
 
@@ -125,15 +117,14 @@ namespace UI
                 statManager.AddZaps(-m_Price);
                 m_IsUnlocked = true;
                 m_BackgroundImage.color = m_UnlockedColor;
-                m_LockInstance.SetUnlocked();
+                m_StatusInstance.SetUnlocked();
                 Destroy(m_PriceBannerInstance.gameObject);
             }
         }
 
-        private void equip()
+        public virtual void equip()
         {
-            // change which button has check mark on it
-            UnlockButtonEvent(this);
+
         }
     }
 }

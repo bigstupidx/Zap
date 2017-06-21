@@ -88,13 +88,6 @@ namespace GameCritical
             Destroy(this.gameObject);
         }
 
-        public void Init(int rows, int cols)
-        {
-            m_Rows = rows;
-            m_Cols = cols;
-            Init();
-        }
-
         private float GetZapWidth(Zap zap, int numCols)
         {
             float height = Camera.main.orthographicSize * 2;
@@ -103,6 +96,13 @@ namespace GameCritical
             float unitWidth = s.textureRect.width / s.pixelsPerUnit;
             float unitHeight = s.textureRect.height / s.pixelsPerUnit;
             return width / unitWidth / numCols;
+        }
+
+        public void Init(int rows, int cols)
+        {
+            m_Rows = rows;
+            m_Cols = cols;
+            Init();
         }
 
         public void Init()
