@@ -19,6 +19,9 @@ namespace UI
             m_RotatingTrailObject = this.GetComponentInChildren<RotatingTrail>();
             ParticleSystem ps = Instantiate(m_TrailPSPrefab, m_RotatingTrailObject.transform);
             ps.transform.localPosition = Vector3.zero;
+
+            // make status icon in center
+            m_StatusInstance.SetCenterLocked();
         }
 
         public override void equip()

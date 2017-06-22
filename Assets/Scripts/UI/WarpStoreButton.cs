@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using Utility;
 
 namespace UI
 {
@@ -12,7 +13,7 @@ namespace UI
         private Sprite m_Main;
         [SerializeField]
         [Tooltip("Reference to image container that will change its image")]
-        private Image m_MainImage;
+        protected Image m_MainImage;
 
         [SerializeField]
         [Tooltip("Background to display")]
@@ -22,9 +23,6 @@ namespace UI
         [SerializeField]
         [Tooltip("Text to display describing button")]
         protected string m_Text;
-        [SerializeField]
-        [Tooltip("Reference to banner that contains text over button")]
-        private Banner m_Banner;
 
         [Tooltip("Action type that defines what will happen when button is pressed")]
         public WarpStorePanel.ActionType m_ActionType;
@@ -66,15 +64,15 @@ namespace UI
             }
 
             // instantiate banner
-            if(m_Banner != null)
+            if (Constants.Instance.TextBannerPrefab != null)
             {
-                m_Banner = Instantiate(m_Banner,this.transform);
+                Banner banner = Instantiate(Constants.Instance.TextBannerPrefab, this.transform);
                 if(m_RectTransform == null)
                 {
                     m_RectTransform = this.GetComponent<RectTransform>();
                 }
-                m_Banner.transform.localPosition = new Vector3(0, -m_RectTransform.rect.height / 2.0f, 0);
-                m_Banner.SetText(m_Text);
+                banner.transform.localPosition = new Vector3(0, -m_RectTransform.rect.height / 2.0f, 0);
+                banner.SetText(m_Text);
             }
 
             // bind onclick() listener

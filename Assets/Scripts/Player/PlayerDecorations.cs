@@ -15,9 +15,12 @@ namespace Player
         private ParticleSystem m_StartingTrailPS;
         private ParticleSystem m_CurrTrailPS;
         private TrailRenderer m_TrailRenderer;
+        private SpriteRenderer m_SpriteRenderer;
 
         void Awake()
         {
+            m_SpriteRenderer = this.GetComponent<SpriteRenderer>();
+
             // set trail renderer to foreground layer
             m_TrailRenderer = GetComponent<TrailRenderer>();
             m_TrailRenderer.sortingLayerName = m_PSSortingLayer;
@@ -29,6 +32,12 @@ namespace Player
             psr.sortingOrder = -1;
 
             SetTrailPS(m_StartingTrailPS);
+        }
+
+        public void SetCharacter(Sprite sprite, Color color)
+        {
+            m_SpriteRenderer.sprite = sprite;
+            m_SpriteRenderer.color = color;
         }
 
         public void SetTrailPS(ParticleSystem newTrailPSPrefab)

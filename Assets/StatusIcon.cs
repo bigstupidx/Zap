@@ -7,7 +7,9 @@ using UnityEngine.UI;
 public class StatusIcon : MonoBehaviour {
 
     [SerializeField]
-    private Sprite m_LockSprite;
+    private Sprite m_LockCenterSprite;
+    [SerializeField]
+    private Sprite m_LockTopRightSprite;
     [SerializeField]
     private Sprite m_CheckmarkSprite;
     [SerializeField]
@@ -18,17 +20,22 @@ public class StatusIcon : MonoBehaviour {
     void Awake ()
     {
         m_Image = GetComponent<Image>();
-        m_Image.sprite = m_LockSprite;
+        m_Image.sprite = m_LockTopRightSprite;
     }
 
     public void SetUnlocked()
     {
         m_Image.sprite = m_TransparentSprite;
     }
-	
-	public void SetLocked ()
+
+    public void SetCenterLocked()
     {
-        m_Image.sprite = m_LockSprite;
+        m_Image.sprite = m_LockCenterSprite;
+    }
+
+    public void SetTopRightLocked ()
+    {
+        m_Image.sprite = m_LockTopRightSprite;
     }
 
     public void SetEquipped ()
