@@ -64,7 +64,7 @@ namespace Player
         // Update is called once per frame
         void Update()
         {
-            if (m_CanMove)
+            if (m_CanMove) // don't allow payer to move up until they reach the grid.
             {
                 if (m_CurrZap != null && m_NextZap != null)
                 {
@@ -87,14 +87,16 @@ namespace Player
                 }
             }
 
-            if(m_MovementState == MovementState.MovingHorizontal ||
+            /*
+             * FORCES PLAYER TO START AT FIRST ZAP WHEN APPROACHING ZAP GRID.
+             * if(m_MovementState == MovementState.MovingHorizontal ||
                 m_MovementState == MovementState.MovingToZapGrid)
             {
                 if (m_NextZap == null)
                 {
                     fillMovementData();
                 }
-            }
+            }*/
 
             lerpToTarget();
         }
@@ -315,9 +317,9 @@ namespace Player
 
             if (currZapGrid)
             {
-                // don't allow player to jump higher than number of rows in zap grid.
-                //m_CurrRow = Mathf.Clamp(m_CurrRow, 0, currZapGrid.GetNumRows());
                 m_CurrRow++;
+                // don't allow player to jump higher than number of rows in zap grid. Else argumentoutofrange exception
+                m_CurrRow = Mathf.Clamp(m_CurrRow, 0, currZapGrid.GetNumRows());
 
 
                 /* get correct zap on new line to go to 

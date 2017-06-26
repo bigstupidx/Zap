@@ -28,7 +28,6 @@ namespace GameCritical
             SetInputEnabled(false);
             GameMaster.Instance.m_CameraFollow.ResetOffset(m_CamOffsetResetTime);
             GameMaster.Instance.m_UIManager.m_ShopCanvas.m_WarpStorePanel.Hide();
-            GameMaster.Instance.m_BackDropManager.ShowNormalColors();
         }
 
         void Update()

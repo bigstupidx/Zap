@@ -69,6 +69,12 @@ namespace Player
             this.m_CurrTrailPS.Stop();
         }
 
+        public void HideAll()
+        {
+            m_CurrTrailPS.Stop();
+            m_TrailRenderer.enabled = false;
+        }
+
         public ParticleSystem GetWarpZonePS() { return m_WarpZonePS; }
         public ParticleSystem GetTrailPS() { return m_CurrTrailPS; }
         public TrailRenderer GetTrailRenderer() { return m_TrailRenderer; }

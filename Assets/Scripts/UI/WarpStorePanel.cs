@@ -48,7 +48,7 @@ namespace UI
 
         private void Start()
         {
-            TriggerAction(ActionType.OPEN_MAIN_MENU);
+            ShowPanel(m_MainMenuPanel);
         }
 
         public void TriggerAction(ActionType action)
@@ -118,9 +118,9 @@ namespace UI
         }
 
         // UI panel functions
-        private void ShowPanel(WarpPanel warpPanel)
+        private void ShowPanel(WarpPanel warpPanelPrefab)
         {
-            if (warpPanel == null)
+            if (warpPanelPrefab == null)
             {
                 Debug.LogWarning("WARNING: new warp panel is null");
                 return;
@@ -129,11 +129,14 @@ namespace UI
             if (m_CurrPanel != null)
             {
                 m_CurrPanel.Hide();
+                Destroy(m_CurrPanel.gameObject);
             }
 
-            m_CurrPanel = warpPanel;
-            m_ScrollRect.content = warpPanel.GetRectTransform();
-            warpPanel.Show();
+            WarpPanel warpPanelInstance = Instantiate(warpPanelPrefab, m_ScrollRect.transform);
+            warpPanelInstance.transform.localPosition = Vector3.zero;
+            m_CurrPanel = warpPanelInstance;
+            m_ScrollRect.content = warpPanelInstance.GetRectTransform();
+            warpPanelInstance.Show();
         }
         private void OpenMainMenuPanel()
         {

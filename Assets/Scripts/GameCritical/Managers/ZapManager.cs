@@ -8,63 +8,69 @@ namespace GameCritical
     {
         [SerializeField]
         [Tooltip("starting number of rows per grid")]
-        private int m_Rows = 8;
+        private int m_StartRows = 8;
+        [SerializeField]
+        [Tooltip("starting number of cols per grid")]
+        private int m_StartCols = 3;
+        [SerializeField]
+        [Tooltip("starting number of grids per stage")]
+        private int m_StartGrids = 1;
+
         [SerializeField]
         [Tooltip("rows incremented per level")]
         private int m_RowsIncrement = 4;
-
-        [SerializeField]
-        [Tooltip("starting number of cols per grid")]
-        private int m_Cols = 3;
+        private int m_CurrRows; // current number of rows in the grid we are on
         [SerializeField]
         [Tooltip("cols incremented per level")]
         private int m_ColsIncrement = 2;
-
-        [SerializeField]
-        [Tooltip("starting number of grids per stage")]
-        private int m_Grids = 5;
+        private int m_CurrCols; // current number of cols in the grid we are on
         [SerializeField]
         [Tooltip("grids incremented per stage")]
         private int m_GridsIncrement = 0;
-        private int m_CurrGrid = 1;
-
+        private int m_CurrGrids = 0; // total number of grids in this stage
+        private int m_CurrGridIndex = 0; // current grid that we are on
 
         [SerializeField]
-        private List<ZapGrid> m_ZapGridsLvl1;
-
-        private int m_ZapGridIndex;
+        private ZapGrid m_ZapGridPrefab;
         private ZapGrid m_CurrZapGrid;
 
         void Start()
         {
-            m_ZapGridIndex = 0;
+            m_CurrCols = m_StartCols;
+            m_CurrRows = m_StartRows;
+            m_CurrGrids = m_StartGrids;
+            m_CurrGridIndex = 0;
             SpawnNextZapGrid();
         }
 
         private void scaleDifficulty()
         {
-            if (m_CurrGrid <= m_Grids)
+            if (m_CurrGridIndex + 1 < m_CurrGrids)
             {
                 levelScale();
             }
             else
             {
                 stageScale();
-                m_CurrGrid = 1;
             }
         }
 
         // scales difficulty after a stage
         private void stageScale()
         {
-            m_Grids += m_GridsIncrement;
+            m_CurrGrids += m_GridsIncrement;
+            m_CurrRows = m_StartRows;
+            m_CurrCols = m_StartCols;
+            m_CurrGridIndex = 0;
+            GameMaster.Instance.m_BackDropManager.ShowNextStageColors();
         }
 
         // scales difficulty after a level
         private void levelScale()
         {
-            m_Rows += m_RowsIncrement;
-            m_Cols += m_ColsIncrement;
+            m_CurrGridIndex++;
+            m_CurrRows += m_RowsIncrement;
+            m_CurrCols += m_ColsIncrement;
         }
 
         public void SpawnNextZapGrid()
@@ -72,19 +78,15 @@ namespace GameCritical
             if(m_CurrZapGrid != null)
             {
                 Destroy(m_CurrZapGrid);
+                // scale difficulty for next level
+                scaleDifficulty();
             }
 
-            ZapGrid zapGridPrefab = m_ZapGridsLvl1[m_ZapGridIndex % m_ZapGridsLvl1.Count];
-            if(zapGridPrefab != null)
+            if (m_ZapGridPrefab != null)
             {
-                m_CurrZapGrid = (ZapGrid)Instantiate(zapGridPrefab);
-                m_CurrZapGrid.Init(m_Rows, m_Cols);
+                m_CurrZapGrid = (ZapGrid)Instantiate(m_ZapGridPrefab);
+                m_CurrZapGrid.Init(m_CurrRows, m_CurrCols);
                 GameMaster.Instance.m_PlayerMovement.MoveToZapGrid();
-                m_ZapGridIndex++;
-
-                // scale difficulty for next level
-                m_CurrGrid++;
-                scaleDifficulty();
             }
         }
 

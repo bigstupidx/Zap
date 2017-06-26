@@ -11,11 +11,11 @@ namespace GameCritical
         [SerializeField]
         private Backdrop m_Backdrop;
 
-
         [SerializeField]
-        private Color m_NormalColor1;
+        private List<Color> m_StartColors;
         [SerializeField]
-        private Color m_NormalColor2;
+        private List<Color> m_EndColors;
+        private int m_CurrColorIndex = -1;
 
         [SerializeField]
         private Color m_WarpStoreColor1;
@@ -31,6 +31,11 @@ namespace GameCritical
         private Color m_NextColor1;
         private Color m_NextColor2;
         private bool m_IsLerping;
+
+        void Awake()
+        {
+            m_CurrColorIndex = 0;
+        }
 
         void Start()
         {
@@ -70,9 +75,15 @@ namespace GameCritical
             m_NextColor2 = col2;
         }
 
-        public void ShowNormalColors()
+        public void ShowNextStageColors()
         {
-            ChangeColors(m_NormalColor1, m_NormalColor2);
+            if(m_CurrColorIndex + 1 <= m_StartColors.Count && m_CurrColorIndex + 1 <= m_EndColors.Count)
+            {
+                m_CurrColorIndex++;
+                Color startColor = m_StartColors[m_CurrColorIndex];
+                Color endColor = m_EndColors[m_CurrColorIndex];
+                ChangeColors(startColor, endColor);
+            }
         }
 
         public void ShowWarpStoreColors()

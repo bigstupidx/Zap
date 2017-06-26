@@ -39,6 +39,12 @@ namespace Player
             StartCoroutine(EndGameAfterDeathAnimation());
             m_PlayerMovement.enabled = false;
             m_SpriteRenderer.enabled = false;
+
+            PlayerDecorations pd = GetComponent<PlayerDecorations>();
+            if (pd)
+            {
+                pd.HideAll();
+            }
         }
 
         IEnumerator EndGameAfterDeathAnimation()
