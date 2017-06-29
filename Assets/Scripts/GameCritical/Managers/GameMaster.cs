@@ -5,6 +5,7 @@ using UnityEngine.SceneManagement;
 using Player;
 using UI;
 using Database;
+using DadEvents;
 
 namespace GameCritical
 {
@@ -21,6 +22,7 @@ namespace GameCritical
         public BackdropManager m_BackDropManager;
         public StatsManager m_StatsManager;
         public DatabaseManager m_DatabaseManager;
+        public DadEventManager m_DadEventManager;
 
         public DeathStar m_DeathStar;
         public CameraFollow m_CameraFollow;
@@ -80,6 +82,10 @@ namespace GameCritical
             if (m_PlayerStats == null)
             {
                 m_PlayerStats = FindObjectOfType<PlayerStats>();
+            }
+            if (m_DadEventManager == null)
+            {
+                m_DadEventManager = FindObjectOfType<DadEventManager>();
             }
         }
     }

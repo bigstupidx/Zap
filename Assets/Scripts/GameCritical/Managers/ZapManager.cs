@@ -58,7 +58,11 @@ namespace GameCritical
         // scales difficulty after a stage
         private void stageScale()
         {
+            // increment
             m_CurrGrids += m_GridsIncrement;
+            m_StartCols += m_RowsIncrement;
+
+            // configure new settings
             m_CurrRows = m_StartRows;
             m_CurrCols = m_StartCols;
             m_CurrGridIndex = 0;
@@ -68,9 +72,11 @@ namespace GameCritical
         // scales difficulty after a level
         private void levelScale()
         {
+            // increment
             m_CurrGridIndex++;
             m_CurrRows += m_RowsIncrement;
             m_CurrCols += m_ColsIncrement;
+            GameMaster.Instance.m_BackDropManager.ShowStageColors();
         }
 
         public void SpawnNextZapGrid()

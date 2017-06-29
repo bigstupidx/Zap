@@ -425,6 +425,7 @@ namespace Player
             SetSpeedMultiplier(0.45f, false);
             m_LerpAmount = 0.0f;
             GameMaster.Instance.m_BackDropManager.ShowWarpStoreColors();
+            GameMaster.Instance.m_DadEventManager.StopEvents();
 
             // show flawless completion notification if grid completion flawless.
             StatsManager statsManager = GameMaster.Instance.m_StatsManager;
@@ -452,6 +453,7 @@ namespace Player
             m_CurrCol = 0;
             m_CanMove = true;
             m_PlayerDecorations.ShowMainPS();
+            GameMaster.Instance.m_DadEventManager.StartEvents();
         }
     }
 }

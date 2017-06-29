@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using GameCritical;
-using Utlities;
+using Utility;
 
 namespace GameCritical
 {

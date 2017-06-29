@@ -1,7 +1,8 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using Utlities;
+using Utility;
+using DadEvents;
 
 namespace GameCritical
 {
@@ -26,6 +27,8 @@ namespace GameCritical
         private List<float> m_ZapPrefabChance;
         [SerializeField]
         private List<int> m_ZapPrefabsForced;
+        [SerializeField]
+        private List<DadEvent> m_DadEvents;
 
         private List<List<Zap>> m_ZapGrid;
 
@@ -37,7 +40,6 @@ namespace GameCritical
             }
             return 0;
         }
-
         public int GetNumRows()
         {
             if (m_ZapGrid != null)
@@ -46,7 +48,6 @@ namespace GameCritical
             }
             return 0;
         }
-
         public Zap GetZap(int row, int col)
         {
             if (m_ZapGrid != null)
@@ -58,7 +59,6 @@ namespace GameCritical
             }
             return null;
         }
-
         public Zap GetRandomZapPrefab()
         {
             if (m_ZapPrefabs == null || m_ZapPrefabs.Count <= 0)
@@ -82,12 +82,6 @@ namespace GameCritical
 
             return resZapPrefab;
         }
-
-        void OnDestroy()
-        {
-            Destroy(this.gameObject);
-        }
-
         private float GetZapWidth(Zap zap, int numCols)
         {
             float height = Camera.main.orthographicSize * 2;
@@ -96,6 +90,11 @@ namespace GameCritical
             float unitWidth = s.textureRect.width / s.pixelsPerUnit;
             float unitHeight = s.textureRect.height / s.pixelsPerUnit;
             return width / unitWidth / numCols;
+        }
+
+        void OnDestroy()
+        {
+            Destroy(this.gameObject);
         }
 
         public void Init(int rows, int cols)

@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace Utlities
+namespace Utility
 {
     public static class ScreenUtilities
     {

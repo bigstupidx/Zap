@@ -52,7 +52,7 @@ namespace Player
 
                 Vector3 target = m_PlayerMovement.transform.position;
                 target.x = 0;
-                target.z = 0;
+                target.z = this.transform.position.z;
                 this.transform.position = Vector3.Lerp(this.transform.position, target + m_CurrOffset, lerpPercentage);
 
                 // Once we lerp to position then follow target 100% until ordered to move somewhere else

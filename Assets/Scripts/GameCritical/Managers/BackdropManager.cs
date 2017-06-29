@@ -86,6 +86,13 @@ namespace GameCritical
             }
         }
 
+        public void ShowStageColors()
+        {
+            Color startColor = m_StartColors[m_CurrColorIndex];
+            Color endColor = m_EndColors[m_CurrColorIndex];
+            ChangeColors(startColor, endColor);
+        }
+
         public void ShowWarpStoreColors()
         {
             ChangeColors(m_WarpStoreColor1, m_WarpStoreColor2);
