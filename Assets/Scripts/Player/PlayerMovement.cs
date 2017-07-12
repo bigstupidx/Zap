@@ -17,7 +17,8 @@ namespace Player
             MovingHorizontal,
             MovingToWarpZone,
             MovingToZapGrid,
-            MovingRocketJump
+            MovingRocketJump,
+            MovingBounceBackFromZap,
         }
         private MovementState m_MovementState;
         private MovementState m_PrevMovementState;
@@ -117,16 +118,11 @@ namespace Player
         {
             float startToFinishDistance = (m_TargetPosition - m_StartPosition).magnitude;
 
-            if (m_MovementState == MovementState.MovingHorizontal)
+            if (m_MovementState == MovementState.MovingHorizontal || m_MovementState == MovementState.MovingVertical ||
+                m_MovementState == MovementState.MovingRocketJump || m_MovementState == MovementState.MovingBounceBackFromZap)
             {
                 // Lerp normal
                 m_LerpAmount += Time.deltaTime * m_SpeedMultiplier * m_HorizontalMoveSpeed;
-                m_LerpPercentage = m_LerpAmount / startToFinishDistance;
-                this.transform.position = Vector3.Lerp(m_StartPosition, m_TargetPosition, m_LerpPercentage);
-            }
-            else if (m_MovementState == MovementState.MovingVertical)
-            {
-                m_LerpAmount += Time.deltaTime * m_SpeedMultiplier * m_VerticalMoveSpeed;
                 m_LerpPercentage = m_LerpAmount / startToFinishDistance;
                 this.transform.position = Vector3.Lerp(m_StartPosition, m_TargetPosition, m_LerpPercentage);
             }
@@ -151,19 +147,13 @@ namespace Player
                 // Scale player to match zap grid size.
                 m_PlayerScaler.LerpToZapScale(m_LerpPercentage);
             }
-            else if (m_MovementState == MovementState.MovingRocketJump)
-            {
-                m_LerpAmount += Time.deltaTime * m_SpeedMultiplier * m_VerticalMoveSpeed;
-                m_LerpPercentage = m_LerpAmount / startToFinishDistance;
-                this.transform.position = Vector3.Lerp(m_StartPosition, m_TargetPosition, m_LerpPercentage);
-            }
 
             // check to see if we reached target
             if (m_LerpPercentage >= 1.0f)
             {
                 m_PlayerScaler.ResetPlayerScaler();
                 decideNextMovementType();
-                SetSpeedMultiplier(1.0f, true);
+                //SetSpeedMultiplier(1.0f, true);
                 m_LerpAmount = 0.0f;
                 fillMovementData();
 
@@ -182,6 +172,11 @@ namespace Player
         {
             if (m_MovementState == MovementState.MovingHorizontal)
             {
+                SetMovementState(MovementState.MovingHorizontal);
+            }
+            else if (m_MovementState == MovementState.MovingBounceBackFromZap)
+            {
+                SetSpeedMultiplier(1.0f, true);
                 SetMovementState(MovementState.MovingHorizontal);
             }
             else if (m_MovementState == MovementState.MovingVertical)
@@ -372,7 +367,7 @@ namespace Player
             return null;
         }
 
-        public void MoveTo(Zap targetZap)
+        public void MoveTo(Zap targetZap, MovementState movementState)
         {
             m_CurrZap = targetZap;
             m_NextZap = targetZap;
@@ -380,7 +375,7 @@ namespace Player
             m_CurrRow = targetZap.Row;
             m_StartPosition = this.transform.position;
             m_TargetPosition = targetZap.GetOffsetPosition();
-            SetMovementState(MovementState.MovingHorizontal);
+            SetMovementState(movementState);
             SetSpeedMultiplier(1.0f, false);
             m_LerpAmount = 0.0f;
         }
@@ -422,7 +417,7 @@ namespace Player
             m_StartPosition = this.transform.position;
             m_TargetPosition = newDeadZone.transform.position;
             SetMovementState(MovementState.MovingToWarpZone);
-            SetSpeedMultiplier(0.45f, false);
+            SetSpeedMultiplier(2.0f, false);
             m_LerpAmount = 0.0f;
             GameMaster.Instance.m_BackDropManager.ShowWarpStoreColors();
             GameMaster.Instance.m_DadEventManager.StopEvents();

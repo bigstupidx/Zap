@@ -21,7 +21,8 @@ namespace GameCritical
                 bool isInvicible = playerStats.GetInvicible();
                 if(!isInvicible)
                 {
-                    GameMaster.Instance.m_PlayerMovement.MoveTo(this);
+                    GameMaster.Instance.m_PlayerMovement.SetMovementState(PlayerMovement.MovementState.MovingBounceBackFromZap);
+                    GameMaster.Instance.m_PlayerMovement.MoveTo(this, PlayerMovement.MovementState.MovingBounceBackFromZap);
                 }
             }
         }

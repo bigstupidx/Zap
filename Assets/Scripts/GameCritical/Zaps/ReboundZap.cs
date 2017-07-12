@@ -59,7 +59,7 @@ namespace GameCritical
                     if (!isInvicible)
                     {
                         // Make the ball bounce back to the original location it was at.
-                        GameMaster.Instance.m_PlayerMovement.MoveTo(this);
+                        GameMaster.Instance.m_PlayerMovement.MoveTo(this, PlayerMovement.MovementState.MovingBounceBackFromZap);
                         m_MaxHits--;
                         m_NumberText.text = m_MaxHits.ToString();
                         if (m_MaxHits <= 0)
