@@ -8,7 +8,7 @@ namespace GameCritical
     public class RocketZap : Zap
     {
         [SerializeField]
-        private int m_NumberOfRowsToJump = 50;
+        private int m_NumberOfRowsToJump = 3;
 
         [SerializeField]
         private float m_SpeedMultiplier = 0.075f;
@@ -24,7 +24,7 @@ namespace GameCritical
             base.ApplyImmediateEffect();
             GameMaster.Instance.m_PlayerStats.SetInvicible(true);
             GameMaster.Instance.m_PlayerMovement.SetMovementState(PlayerMovement.MovementState.MovingRocketJump);
-            GameMaster.Instance.m_PlayerMovement.SetSpeedMultiplier(m_SpeedMultiplier, false);
+            GameMaster.Instance.m_PlayerMovement.SetSpeedMultiplier(m_SpeedMultiplier, true);
             GameMaster.Instance.m_PlayerMovement.MoveRocketJump(m_NumberOfRowsToJump);
         }
 

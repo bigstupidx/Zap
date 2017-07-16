@@ -11,7 +11,10 @@ namespace Player
         [SerializeField]
         [Tooltip("How big the player will be relative to the zaps as a percentage")]
         [Range(0.0f, 0.5f)]
-        private float m_SizePercentage = 0.4f;
+        private float m_SizePercentage = 0.5f;
+        [SerializeField]
+        [Tooltip("Maximum scale the player cannot be larger than")]
+        private float m_MaxScale = 1.85f;
 
         private Vector3 m_StartScale;
         private Vector3 m_CurrScale;
@@ -44,6 +47,7 @@ namespace Player
                 float unitHeight = s.textureRect.height / s.pixelsPerUnit;
                 m_CurrScale = this.transform.localScale;
                 m_TargetScale = zapWidth / unitWidth * m_SizePercentage;
+                m_TargetScale = Mathf.Clamp(m_TargetScale, 0.0f, m_MaxScale);
                 m_IsScaling = true;
             }
             LerpScale(m_TargetScale, lerpPercentage);

@@ -62,7 +62,7 @@ namespace DadEvents
             }
 
             yield return new WaitForSeconds(m_SpawnTime);
-            //StartCoroutine(spawnLaser());
+            StartCoroutine(spawnLaser());
         }
     }
 }

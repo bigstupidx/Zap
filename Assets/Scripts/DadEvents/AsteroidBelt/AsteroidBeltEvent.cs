@@ -46,13 +46,6 @@ namespace DadEvents
             Destroy(this.gameObject);
         }
 
-        private IEnumerator changeBlinkSpeed(Blink exclamationBlinker)
-        {
-            yield return new WaitForSeconds(m_ExclamationTime / m_BlinkIntervalMultiplierShortener);
-            exclamationBlinker.MultiplyBlinkTime(0.5f);
-            StartCoroutine(changeBlinkSpeed(exclamationBlinker));
-        }
-
 
         private IEnumerator spawnAsteroidBelt()
         {
@@ -75,7 +68,7 @@ namespace DadEvents
                 this.transform);
 
             // make sure blinking increases speed
-            StartCoroutine(changeBlinkSpeed(exclamationInstance));
+            StartCoroutine(exclamationInstance.ChangeBlinkSpeed(exclamationInstance, m_ExclamationTime / 1.5f));
 
             // wait for certain time before spawning asteroid
             yield return new WaitForSeconds(m_ExclamationTime);

@@ -2,42 +2,74 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-[RequireComponent(typeof(AudioSource))]
 public class MusicManager : MonoBehaviour {
 
     [SerializeField]
-    private List<AudioClip> m_Soundtracks;
-    private AudioClip m_CurrentSoundtrack;
+    private List<AudioClip> m_BGSoundtracks;
+    [SerializeField]
+    [Range(0,1)]
+    private float m_BGVolume = 1.0f;
+    private AudioClip m_CurrentBGSoundtrack;
+    private int m_BGSoundtrackIndex;
+    private AudioSource m_BGAudioSource;
 
-    private int m_SoundtrackIndex;
+    [SerializeField]
+    private List<AudioClip> m_FGSoundtracks;
+    [SerializeField]
+    [Range(0, 1)]
+    private float m_FGVolume = 1.0f;
+    private AudioClip m_CurrentFGSoundtrack;
+    private int m_FGSoundtrackIndex;
+    private AudioSource m_FGAudioSource;
 
-    private AudioSource m_AudioSource;
-
-    void Awake()
+    void Start ()
     {
-        m_AudioSource = GetComponent<AudioSource>();
-        PlayNextSoundTrack();
-    }
-
-	void Start ()
-    {
-        m_SoundtrackIndex = 0;
+        m_BGAudioSource = AudioManager.Instance.Spawn2DAudio();
+        m_FGAudioSource = AudioManager.Instance.Spawn2DAudio();
+        m_BGSoundtrackIndex = -1;
+        m_FGSoundtrackIndex = -1;
 	}
 
     void Update()
     {
-        if(!m_AudioSource.isPlaying)
+        if(!m_BGAudioSource.isPlaying)
         {
-            PlayNextSoundTrack();
+            PlayNextBGTrack();
+        }
+
+        if (!m_FGAudioSource.isPlaying)
+        {
+            PlayNextFGTrack();
         }
     }
-	
-	public void PlayNextSoundTrack()
+
+    public void PlayNextFGTrack()
     {
-        m_SoundtrackIndex++;
-        m_SoundtrackIndex = m_SoundtrackIndex % m_Soundtracks.Count;
-        m_CurrentSoundtrack = m_Soundtracks[m_SoundtrackIndex];
-        m_AudioSource.clip = m_CurrentSoundtrack;
-        m_AudioSource.Play();
+        m_CurrentFGSoundtrack = GetNextFGTrack();
+        m_FGAudioSource.clip = m_CurrentFGSoundtrack;
+        m_FGAudioSource.volume = m_FGVolume;
+        m_FGAudioSource.Play();
+    }
+
+    private AudioClip GetNextFGTrack()
+    {
+        m_FGSoundtrackIndex++;
+        m_FGSoundtrackIndex = m_FGSoundtrackIndex % m_FGSoundtracks.Count;
+        return m_FGSoundtracks[m_FGSoundtrackIndex];
+    }
+
+    public void PlayNextBGTrack()
+    {
+        m_CurrentBGSoundtrack = GetNextBGTrack();
+        m_BGAudioSource.clip = m_CurrentBGSoundtrack;
+        m_BGAudioSource.volume = m_BGVolume;
+        m_BGAudioSource.Play();
+    }
+
+    private AudioClip GetNextBGTrack()
+    {
+        m_BGSoundtrackIndex++;
+        m_BGSoundtrackIndex = m_BGSoundtrackIndex % m_BGSoundtracks.Count;
+        return m_BGSoundtracks[m_BGSoundtrackIndex];
     }
 }

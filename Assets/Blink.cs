@@ -24,6 +24,13 @@ public class Blink : MonoBehaviour {
         m_NewBlinkTime = m_BlinkTime;
     }
 
+    public IEnumerator ChangeBlinkSpeed(Blink exclamationBlinker, float blinkSpeedChangeInterval)
+    {
+        yield return new WaitForSeconds(blinkSpeedChangeInterval);
+        exclamationBlinker.MultiplyBlinkTime(0.5f);
+        StartCoroutine(ChangeBlinkSpeed(exclamationBlinker, blinkSpeedChangeInterval / 2.0f));
+    }
+
     public void MultiplyBlinkTime(float multiplier)
     {
         if(multiplier > 0)
@@ -32,7 +39,6 @@ public class Blink : MonoBehaviour {
         }
     }
 	
-	// Update is called once per frame
 	void Update () {
         m_CurrTime += Time.deltaTime;
         if (m_IsFadingIn)

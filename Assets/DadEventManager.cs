@@ -43,7 +43,7 @@ namespace DadEvents
 
         public void PlayRandomEvent()
         {
-            int randIndex = (int) (Random.Range(0.0f, m_Events.Count - 1));
+            int randIndex = (int) (Random.Range(0, m_Events.Count));
             DadEvent evtPrefab = m_Events [randIndex];
             DadEvent evtInstance = Instantiate(evtPrefab);
             m_CurrentEvents.Add(evtInstance);
