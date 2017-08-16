@@ -9,8 +9,6 @@ namespace Player
 
         [SerializeField]
         private ParticleSystem m_DeathParticleSystem;
-        [SerializeField]
-        private float m_GameRestartDelay = 1.8f;
         private bool m_Invincible = false;
 
         private PlayerMovement m_PlayerMovement;
@@ -36,22 +34,17 @@ namespace Player
         public void Kill()
         {
             Instantiate(m_DeathParticleSystem, this.transform.position, Quaternion.identity);
-            StartCoroutine(EndGameAfterDeathAnimation());
             m_PlayerMovement.enabled = false;
             m_SpriteRenderer.enabled = false;
+            Destroy(this.gameObject);
 
             PlayerDecorations pd = GetComponent<PlayerDecorations>();
             if (pd)
             {
                 pd.HideAll();
             }
-        }
 
-        IEnumerator EndGameAfterDeathAnimation()
-        {
-            yield return new WaitForSeconds(m_GameRestartDelay);
-            GameCritical.GameMaster.Instance.m_UIManager.m_MainMenuPanel.Show();
-            Destroy(this.gameObject);
+            GameCritical.GameMaster.Instance.EndGame();
         }
     }
 }

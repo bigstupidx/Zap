@@ -11,6 +11,7 @@ namespace GameCritical
     {
         public InfoPanel m_InfoPanel;
         public MainMenuPanel m_MainMenuPanel;
+        public FadePanel m_FadePanel;
         public ShopCanvas m_ShopCanvas;
 
         [SerializeField]
@@ -33,6 +34,10 @@ namespace GameCritical
             if (m_MainMenuPanel == null)
             {
                 m_MainMenuPanel = FindObjectOfType<MainMenuPanel>();
+            }
+            if (m_FadePanel == null)
+            {
+                m_FadePanel = FindObjectOfType<FadePanel>();
             }
         }
 

@@ -13,6 +13,8 @@ namespace GameCritical
     {
         public static GameMaster Instance;
 
+        public string m_GameSceneStr;
+
         public ZapManager m_ZapManager;
         public UIManager m_UIManager;
         public WarpZoneManager m_WarpZoneManager;
@@ -23,6 +25,7 @@ namespace GameCritical
         public StatsManager m_StatsManager;
         public DatabaseManager m_DatabaseManager;
         public DadEventManager m_DadEventManager;
+        public PrefabManager m_PrefabManager;
 
         public DeathStar m_DeathStar;
         public CameraFollow m_CameraFollow;
@@ -67,7 +70,7 @@ namespace GameCritical
             {
                 m_CameraFollow = FindObjectOfType<CameraFollow>();
             }
-            if(m_WarpZoneManager == null)
+            if (m_WarpZoneManager == null)
             {
                 m_WarpZoneManager = FindObjectOfType<WarpZoneManager>();
             }
@@ -87,6 +90,42 @@ namespace GameCritical
             {
                 m_DadEventManager = FindObjectOfType<DadEventManager>();
             }
+            if (m_PrefabManager == null)
+            {
+                m_PrefabManager = FindObjectOfType<PrefabManager>();
+            }
+        }
+
+        void Start()
+        {
+            InitGame();
+        }
+
+        public void InitGame()
+        {
+            m_UIManager.m_FadePanel.StartGameFadeIn();
+            m_DeathStar.gameObject.SetActive(false);
+            m_PlayerMovement.gameObject.SetActive(false);
+            m_DadEventManager.enabled = false;
+        }
+
+        public void PlayGame()
+        {
+            //SceneManager.LoadScene(m_GameSceneStr);
+            m_DeathStar.gameObject.SetActive(true);
+            m_PlayerMovement.gameObject.SetActive(true);
+            m_DadEventManager.enabled = true;
+        }
+
+        public void EndGame()
+        {
+            m_UIManager.m_FadePanel.EndGameFadeOut();
+        }
+
+
+        public void ReloadGameScene()
+        {
+            SceneManager.LoadScene(m_GameSceneStr);
         }
     }
 }

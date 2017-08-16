@@ -25,6 +25,13 @@ namespace GameCritical
                     GameMaster.Instance.m_PlayerMovement.MoveTo(this, PlayerMovement.MovementState.MovingBounceBackFromZap);
                 }
             }
+
+            // make camera shake
+            CameraFollow camFollow = GameMaster.Instance.m_CameraFollow;
+            if (camFollow != null)
+            {
+                camFollow.Shake();
+            }
         }
     }
 }

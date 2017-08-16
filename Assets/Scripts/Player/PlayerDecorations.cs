@@ -4,7 +4,6 @@ using UnityEngine;
 
 namespace Player
 {
-    [RequireComponent(typeof(TrailRenderer))]
     public class PlayerDecorations : MonoBehaviour
     {
         [SerializeField]
@@ -14,17 +13,11 @@ namespace Player
         [SerializeField]
         private ParticleSystem m_StartingTrailPS;
         private ParticleSystem m_CurrTrailPS;
-        private TrailRenderer m_TrailRenderer;
         private SpriteRenderer m_SpriteRenderer;
 
         void Awake()
         {
             m_SpriteRenderer = this.GetComponent<SpriteRenderer>();
-
-            // set trail renderer to foreground layer
-            m_TrailRenderer = GetComponent<TrailRenderer>();
-            m_TrailRenderer.sortingLayerName = m_PSSortingLayer;
-            m_TrailRenderer.sortingOrder = 0;
 
             // set warp zone particle system to foreground layer
             ParticleSystemRenderer psr = m_WarpZonePS.GetComponent<ParticleSystemRenderer>();
@@ -72,11 +65,9 @@ namespace Player
         public void HideAll()
         {
             m_CurrTrailPS.Stop();
-            m_TrailRenderer.enabled = false;
         }
 
         public ParticleSystem GetWarpZonePS() { return m_WarpZonePS; }
         public ParticleSystem GetTrailPS() { return m_CurrTrailPS; }
-        public TrailRenderer GetTrailRenderer() { return m_TrailRenderer; }
     }
 }

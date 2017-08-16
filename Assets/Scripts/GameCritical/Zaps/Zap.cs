@@ -33,15 +33,28 @@ namespace GameCritical
 
         protected SpriteRenderer m_SpriteRenderer;
 
+        private bool m_Occupied;
+
         void Awake()
         {
             m_SpriteRenderer = GetComponent<SpriteRenderer>();
             m_SpriteRenderer.color = m_Color;
+            m_Occupied = false;
         }
 
         void Start()
         {
             centerParticleSystem();
+        }
+
+        public void SetOccupied(bool occupied)
+        {
+            m_Occupied = occupied;
+        }
+
+        public bool GetIsOccupied()
+        {
+            return m_Occupied;
         }
 
         private void centerParticleSystem()

@@ -35,8 +35,7 @@ namespace GameCritical
                 m_ZapBanker = FindObjectOfType<ZapBanker>();
             }
         }
-
-        // Use this for initialization
+        
         void Start()
         {
             m_Score = 0;

@@ -7,12 +7,10 @@ namespace UI
 {
     public class MainMenuPanel : UIPanel
     {
-        [SerializeField]
-        private string m_GameSceneStr;
-
         public void PlayGame()
         {
-            SceneManager.LoadScene(m_GameSceneStr);
+            GameCritical.GameMaster.Instance.PlayGame();
+            this.Hide();
         }
     }
 }

@@ -31,6 +31,14 @@ namespace GameCritical
         private int m_CurrGridIndex = 0; // current grid that we are on
 
         [SerializeField]
+        [Tooltip("maximum number of zap moneys per grid")]
+        private int m_MaxZapMoneyPerGrid = 1;
+        [SerializeField]
+        [Tooltip("probability per zap money that it will exist in the grid")]
+        [Range(0,1)]
+        private float m_ZapMoneyProbability = 0.1f;
+
+        [SerializeField]
         private ZapGrid m_ZapGridPrefab;
         private ZapGrid m_CurrZapGrid;
 
@@ -91,7 +99,7 @@ namespace GameCritical
             if (m_ZapGridPrefab != null)
             {
                 m_CurrZapGrid = (ZapGrid)Instantiate(m_ZapGridPrefab);
-                m_CurrZapGrid.Init(m_CurrRows, m_CurrCols);
+                m_CurrZapGrid.Init(m_CurrRows, m_CurrCols, m_MaxZapMoneyPerGrid, m_ZapMoneyProbability);
                 GameMaster.Instance.m_PlayerMovement.MoveToZapGrid();
             }
         }

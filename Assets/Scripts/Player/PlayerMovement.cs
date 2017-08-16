@@ -52,13 +52,17 @@ namespace Player
         private PlayerScaler m_PlayerScaler;
         private PlayerDecorations m_PlayerDecorations;
 
-        // Use this for initialization
-        void Start()
+        void Awake()
         {
             m_Rigidbody = GetComponent<Rigidbody2D>();
             m_SpriteRenderer = GetComponent<SpriteRenderer>();
             m_PlayerScaler = GetComponent<PlayerScaler>();
             m_PlayerDecorations = GetComponent<PlayerDecorations>();
+        }
+
+        // Use this for initialization
+        void Start()
+        {
             MoveToZapGrid();
         }
 
@@ -116,6 +120,12 @@ namespace Player
 
         private void lerpToTarget()
         {
+            // make sure target and start position are set before lerping
+            if(m_TargetPosition == null || m_StartPosition == null)
+            {
+                return;
+            }
+
             float startToFinishDistance = (m_TargetPosition - m_StartPosition).magnitude;
 
             if (m_MovementState == MovementState.MovingHorizontal || m_MovementState == MovementState.MovingVertical ||

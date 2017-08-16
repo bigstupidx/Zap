@@ -8,9 +8,7 @@ namespace GameCritical
 {
     public class ZapGrid : MonoBehaviour
     {
-        [SerializeField]
         private int m_Rows = 60;
-        [SerializeField]
         private int m_Cols = 5;
         [SerializeField]
         private float m_ZapHeight = 0.1f;
@@ -27,10 +25,11 @@ namespace GameCritical
         private List<float> m_ZapPrefabChance;
         [SerializeField]
         private List<int> m_ZapPrefabsForced;
-        [SerializeField]
-        private List<DadEvent> m_DadEvents;
 
         private List<List<Zap>> m_ZapGrid;
+        private int m_MaxZapMoneys;
+        private float m_ZapMoneyProbability;
+        private ZapMoney m_ZapMoneyPrefab;
 
         public int GetNumCols(int row)
         {
@@ -92,15 +91,33 @@ namespace GameCritical
             return width / unitWidth / numCols;
         }
 
+        void Awake()
+        {
+            PrefabManager m_PrefabManager = GameMaster.Instance.m_PrefabManager;
+            if(m_PrefabManager != null)
+            {
+                m_ZapMoneyPrefab = m_PrefabManager.m_ZapMoneyPrefab;
+            }
+        }
+
         void OnDestroy()
         {
             Destroy(this.gameObject);
         }
 
-        public void Init(int rows, int cols)
+        public Zap GetRandomZap()
+        {
+            int randRow = Random.Range(0, m_Rows);
+            int randCol = Random.Range(0, m_Cols);
+            return GetZap(randRow, randCol);
+        }
+
+        public void Init(int rows, int cols, int maxZapMoneys, float zapMoneyProbability)
         {
             m_Rows = rows;
             m_Cols = cols;
+            m_MaxZapMoneys = maxZapMoneys;
+            m_ZapMoneyProbability = zapMoneyProbability;
             Init();
         }
 
@@ -192,6 +209,25 @@ namespace GameCritical
 
                         // spawn things randomly on zap
                         // SpawnRandomObstacle(i, j, m_ChanceOfObstacle);
+                    }
+                }
+            }
+
+            // randomly determine if there is zap money on this zap
+            for(int i= 0; i < m_MaxZapMoneys; i++)
+            {
+                float randomPercentChance = Random.Range(0.0f, 1.0f);
+                if (randomPercentChance <= m_ZapMoneyProbability)
+                {
+                    Zap randomZap = GetRandomZap();
+                    if (randomZap != null && !randomZap.GetIsOccupied())
+                    {
+                        ZapMoney zapMoney = Instantiate(
+                            m_ZapMoneyPrefab,
+                            randomZap.GetOffsetPosition(),
+                            Quaternion.identity,
+                            this.transform);
+                        randomZap.SetOccupied(true);
                     }
                 }
             }
