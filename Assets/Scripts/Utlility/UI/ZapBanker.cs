@@ -15,11 +15,11 @@ namespace UI
         private AnimationClip m_PositiveAnimation;
 
         [SerializeField]
-        private Image m_ZapCurrencyImage;
-
-        [SerializeField]
         private AnimationClip m_NegativeAnimation;
         private Animation m_Animation;
+
+        [SerializeField]
+        private Transform m_ZapSpinnerLocation;
 
         private Text m_Text;
 
@@ -31,7 +31,7 @@ namespace UI
 
         public Vector3 GetImagePosition()
         {
-            return m_ZapCurrencyImage.transform.position;
+            return m_ZapSpinnerLocation.transform.position;
         }
 
         private void PlayZapScoreAnimation(bool isPositiveChange)

@@ -48,7 +48,6 @@ namespace GameCritical
             m_CurrRows = m_StartRows;
             m_CurrGrids = m_StartGrids;
             m_CurrGridIndex = 0;
-            SpawnNextZapGrid();
         }
 
         private void scaleDifficulty()

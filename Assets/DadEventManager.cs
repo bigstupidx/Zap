@@ -27,11 +27,6 @@ namespace DadEvents
                 m_Events = new List<DadEvent>();
             }
         }
-        
-        void Start()
-        {
-            StartEvents();
-        }
 
         private IEnumerator eventTimer()
         {

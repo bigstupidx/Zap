@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using VFX;
 
 namespace Player
 {
@@ -12,6 +13,8 @@ namespace Player
         private ParticleSystem m_WarpZonePS;
         [SerializeField]
         private ParticleSystem m_StartingTrailPS;
+        [SerializeField]
+        private LockdownCircle m_LockdownCircle;
         private ParticleSystem m_CurrTrailPS;
         private SpriteRenderer m_SpriteRenderer;
 
@@ -25,6 +28,27 @@ namespace Player
             psr.sortingOrder = -1;
 
             SetTrailPS(m_StartingTrailPS);
+
+            if(m_LockdownCircle == null)
+            {
+                m_LockdownCircle = GetComponentInChildren<LockdownCircle>();
+            }
+        }
+
+        public void ActivateLockdown()
+        {
+            if(m_LockdownCircle != null)
+            {
+                m_LockdownCircle.PlayLockdown();
+            }
+        }
+
+        public void DeactivateLockdown()
+        {
+            if (m_LockdownCircle != null)
+            {
+                m_LockdownCircle.StopLockdown();
+            }
         }
 
         public void SetCharacter(Sprite sprite, Color color)

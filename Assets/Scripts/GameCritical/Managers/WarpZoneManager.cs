@@ -39,15 +39,6 @@ namespace GameCritical
                 {
                     ExitWarpZone();
                 }
-
-                // TOUCH INPUT
-                for (int i = 0; i < Input.touchCount; ++i)
-                {
-                    if (Input.GetTouch(i).phase == TouchPhase.Began)
-                    {
-                        ExitWarpZone();
-                    }
-                }
             }
         }
 

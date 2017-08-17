@@ -60,12 +60,6 @@ namespace Player
             m_PlayerDecorations = GetComponent<PlayerDecorations>();
         }
 
-        // Use this for initialization
-        void Start()
-        {
-            MoveToZapGrid();
-        }
-
         // Update is called once per frame
         void Update()
         {
@@ -224,6 +218,11 @@ namespace Player
             {
                 GameMaster.Instance.m_PlayerStats.SetInvicible(false);
                 SetMovementState(MovementState.MovingHorizontal);
+                m_CanMove = true;
+                if(m_PlayerDecorations != null)
+                {
+                    m_PlayerDecorations.DeactivateLockdown();
+                }
             }
         }
 
@@ -413,6 +412,9 @@ namespace Player
                 m_TargetPosition = m_NextZap.GetOffsetPosition();
                 m_StartPosition = this.transform.position;
                 m_LerpAmount = 0.0f;
+
+                // don't let player move while rocket jumpin
+                m_CanMove = false;
             }
         }
 

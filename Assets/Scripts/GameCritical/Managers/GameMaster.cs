@@ -98,15 +98,20 @@ namespace GameCritical
 
         void Start()
         {
+            InitMobileSettings();
             InitGame();
         }
 
-        public void InitGame()
+        private void InitMobileSettings()
+        {
+            Screen.orientation = ScreenOrientation.Portrait;
+        }
+
+        private void InitGame()
         {
             m_UIManager.m_FadePanel.StartGameFadeIn();
             m_DeathStar.gameObject.SetActive(false);
             m_PlayerMovement.gameObject.SetActive(false);
-            m_DadEventManager.enabled = false;
         }
 
         public void PlayGame()
@@ -114,6 +119,8 @@ namespace GameCritical
             //SceneManager.LoadScene(m_GameSceneStr);
             m_DeathStar.gameObject.SetActive(true);
             m_PlayerMovement.gameObject.SetActive(true);
+            m_ZapManager.SpawnNextZapGrid();
+            m_PlayerMovement.MoveToZapGrid();
             m_DadEventManager.enabled = true;
         }
 

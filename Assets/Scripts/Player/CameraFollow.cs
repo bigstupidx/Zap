@@ -88,7 +88,11 @@ namespace Player
 
         public void Shake()
         {
-            m_NumShakes += m_NumShakesPerShake;
+            Shake(m_NumShakesPerShake);
+        }
+
+        public void Shake(int numShakes)
+        {
             StartCoroutine(shake());
         }
 

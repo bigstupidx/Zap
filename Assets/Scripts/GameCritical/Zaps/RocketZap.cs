@@ -23,9 +23,17 @@ namespace GameCritical
         {
             base.ApplyImmediateEffect();
             GameMaster.Instance.m_PlayerStats.SetInvicible(true);
-            GameMaster.Instance.m_PlayerMovement.SetMovementState(PlayerMovement.MovementState.MovingRocketJump);
-            GameMaster.Instance.m_PlayerMovement.SetSpeedMultiplier(m_SpeedMultiplier, true);
-            GameMaster.Instance.m_PlayerMovement.MoveRocketJump(m_NumberOfRowsToJump);
+            PlayerMovement playerMovement = GameMaster.Instance.m_PlayerMovement;
+            playerMovement.SetMovementState(PlayerMovement.MovementState.MovingRocketJump);
+            playerMovement.SetSpeedMultiplier(m_SpeedMultiplier, true);
+            playerMovement.MoveRocketJump(m_NumberOfRowsToJump);
+
+            // play lockdown animation 
+            PlayerDecorations playerDecorations = GameMaster.Instance.m_PlayerDecorations;
+            if (playerDecorations != null)
+            {
+                playerDecorations.ActivateLockdown();
+            }
         }
 
         void OnDestroy()

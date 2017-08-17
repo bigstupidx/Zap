@@ -17,11 +17,5 @@ namespace UI
                 m_WarpStorePanel = FindObjectOfType<WarpStorePanel>();
             }
         }
-
-        // Update is called once per frame
-        void Update()
-        {
-
-        }
     }
 }

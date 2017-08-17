@@ -19,6 +19,8 @@ public class ZapMoney : MonoBehaviour {
     private StatsManager m_StatsManager;
     private DeathStar m_DeathStar;
 
+    private bool m_IsKillable = true;
+
     void Awake()
     {
         m_CircleCollider2D = GetComponent<CircleCollider2D>();
@@ -44,7 +46,9 @@ public class ZapMoney : MonoBehaviour {
         float randomRotateX = Random.Range(-m_RandomRotationMax, m_RandomRotationMax);
         float randomRotateZ = Random.Range(-m_RandomRotationMax, m_RandomRotationMax);
         this.transform.Rotate(new Vector3(randomRotateX, 1, randomRotateZ) * m_RotateSpeed);
-        if(m_DeathStar.transform.position.y >= this.transform.position.y)
+
+        // destroy zap money if death star hits it
+        if(m_IsKillable && m_DeathStar.transform.position.y >= this.transform.position.y)
         {
             if(m_ZapExplodePS != null)
             {
@@ -58,6 +62,7 @@ public class ZapMoney : MonoBehaviour {
     {
         if(col.gameObject.tag == "Player")
         {
+            m_IsKillable = false;
             m_CircleCollider2D.enabled = false;
             StartCoroutine(MoveToZapUICounter());
         }
