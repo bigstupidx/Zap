@@ -21,7 +21,6 @@ namespace DadEvents
         private float m_SlowMultiplier = 0.75f;
         [SerializeField]
         private float m_ShootTime;
-        private float m_CurrShootTime;
 
         [SerializeField]
         private ParticleSystem m_OutterPS;
@@ -34,17 +33,14 @@ namespace DadEvents
         private BoxCollider2D m_BoxCollider2D;
 
         private Vector3 m_TargetPosition;
-
-        private bool m_IsShooting;
+        
         private bool m_IsOnRight;
-        private bool m_IsShootingOut;
 
         void Awake()
         {
             m_SpriteRenderer = GetComponent<SpriteRenderer>();
             m_LineRenderer = GetComponent<LineRenderer>();
             m_BoxCollider2D = GetComponent<BoxCollider2D>();
-            m_CurrShootTime = 0;
             m_LineRenderer.SetPosition(0, this.transform.position);
             m_LineRenderer.SetPosition(1, this.transform.position);
             m_TargetPosition = this.transform.position;
@@ -107,8 +103,7 @@ namespace DadEvents
         private void shootLaser()
         {
             m_OutterPS.Play();
-            m_IsShooting = true;
-            m_IsShootingOut = true;
+            StartCoroutine(shootOut());
         }
 
         private void positionBoxCollider2D()
@@ -120,7 +115,7 @@ namespace DadEvents
             m_OutterPS.transform.localPosition = localSpaceLineRendererVector;
         }
 
-        public void OnTriggerEnter2D(Collider2D col)
+        public void OnTriggerStay2D(Collider2D col)
         {
             if(col.gameObject.tag == "Player")
             {
@@ -144,32 +139,43 @@ namespace DadEvents
             }
         }
 
-        void Update()
+        private IEnumerator shootOut()
         {
-            if (m_IsShooting)
+            float currShootTime = 0;
+            float shootPercentage = 0;
+
+            while (shootPercentage < 1.0f)
             {
-                m_CurrShootTime += Time.deltaTime;
-                float shootPercentage = m_CurrShootTime / m_ShootTime;
-                Vector3 currVector =  (m_IsShootingOut) ? 
-                    Vector3.Lerp(this.transform.position, m_TargetPosition, shootPercentage): 
-                    Vector3.Lerp(m_TargetPosition, this.transform.position, shootPercentage);
+                currShootTime += Time.deltaTime;
+                shootPercentage = currShootTime / m_ShootTime;
+                Vector3 currVector = Vector3.Lerp(this.transform.position, m_TargetPosition, shootPercentage);
                 m_LineRenderer.SetPosition(1, currVector);
-                if(shootPercentage >= 1.0f)
-                {
-                    if(m_IsShootingOut) // was shooting out to target position
-                    {
-                        m_IsShootingOut = false;
-                        m_CurrShootTime = 0.0f;
-                    }
-                    else // was becoming smaller and going to start position
-                    {
-                        m_CurrShootTime = 1.0f;
-                        m_IsShooting = false;
-                        m_OutterPS.Stop();
-                    }
-                }
+                yield return null;
             }
 
+            StartCoroutine(shootIn());
+        } 
+
+        private IEnumerator shootIn()
+        {
+            float currShootTime = 0;
+            float shootPercentage = 0;
+
+            while (shootPercentage < 1.0f)
+            {
+                currShootTime += Time.deltaTime;
+                shootPercentage = currShootTime / m_ShootTime;
+                Vector3 currVector = Vector3.Lerp(m_TargetPosition, this.transform.position, shootPercentage);
+                m_LineRenderer.SetPosition(1, currVector);
+                yield return null;
+            }
+
+            m_OutterPS.Stop();
+            Destroy(this.gameObject);
+        }
+
+        void Update()
+        {
             positionBoxCollider2D();
         }
     }

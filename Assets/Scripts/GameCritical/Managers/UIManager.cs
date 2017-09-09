@@ -13,6 +13,7 @@ namespace GameCritical
         public MainMenuPanel m_MainMenuPanel;
         public FadePanel m_FadePanel;
         public ShopCanvas m_ShopCanvas;
+        public LevelPanel m_LevelPanel;
 
         [SerializeField]
         private PopUpText m_PopUpTextPrefab;
@@ -24,7 +25,6 @@ namespace GameCritical
         [SerializeField]
         private RectTransform m_NotificationSpawn;
 
-        // Use this for initialization
         void Awake()
         {
             if (m_InfoPanel == null)
@@ -38,6 +38,14 @@ namespace GameCritical
             if (m_FadePanel == null)
             {
                 m_FadePanel = FindObjectOfType<FadePanel>();
+            }
+            if (m_LevelPanel == null)
+            {
+                m_LevelPanel = FindObjectOfType<LevelPanel>();
+            }
+            if (m_ShopCanvas == null)
+            {
+                m_ShopCanvas = FindObjectOfType<ShopCanvas>();
             }
         }
 

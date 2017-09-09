@@ -16,9 +16,10 @@ namespace GameCritical
             GameMaster.Instance.m_DeathStar.SetSpeedMultiplier(m_SpeedMultiplier, true);
         }
 
-        public override void ApplyCollisionEffect(GameObject go)
+        public override void ApplyCollisionEffect(Collision2D col)
         {
-            base.ApplyCollisionEffect(go);
+            base.ApplyCollisionEffect(col);
+            GameObject go = col.gameObject;
         }
     }
 }

@@ -88,6 +88,7 @@ namespace GameCritical
 
         public void SpawnNextZapGrid()
         {
+            // if previous grid not null then scale difficulty
             if(m_CurrZapGrid != null)
             {
                 Destroy(m_CurrZapGrid);

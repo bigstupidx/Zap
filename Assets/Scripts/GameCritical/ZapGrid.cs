@@ -27,9 +27,11 @@ namespace GameCritical
         private List<int> m_ZapPrefabsForced;
 
         private List<List<Zap>> m_ZapGrid;
+        private List<Zap> m_DangerousZaps; // list of zaps that are targets for auto turret
         private int m_MaxZapMoneys;
         private float m_ZapMoneyProbability;
         private ZapMoney m_ZapMoneyPrefab;
+        private float m_ZapWidth;
 
         public int GetNumCols(int row)
         {
@@ -81,7 +83,11 @@ namespace GameCritical
 
             return resZapPrefab;
         }
-        private float GetZapWidth(Zap zap, int numCols)
+        public float GetZapWidth()
+        {
+            return m_ZapWidth;
+        }
+        private float CalculateZapWidth(Zap zap, int numCols)
         {
             float height = Camera.main.orthographicSize * 2;
             float width = height * Screen.width / Screen.height; // basically height * screen aspect ratio
@@ -98,6 +104,7 @@ namespace GameCritical
             {
                 m_ZapMoneyPrefab = m_PrefabManager.m_ZapMoneyPrefab;
             }
+            m_DangerousZaps = new List<Zap>();
         }
 
         void OnDestroy()
@@ -112,6 +119,11 @@ namespace GameCritical
             return GetZap(randRow, randCol);
         }
 
+        public List<Zap> GetDangerousZaps()
+        {
+            return m_DangerousZaps;
+        }
+
         public void Init(int rows, int cols, int maxZapMoneys, float zapMoneyProbability)
         {
             m_Rows = rows;
@@ -119,6 +131,29 @@ namespace GameCritical
             m_MaxZapMoneys = maxZapMoneys;
             m_ZapMoneyProbability = zapMoneyProbability;
             Init();
+        }
+
+        // replaces zap at location i j with zap
+        public void DestroyAndReplaceZap(int i, int j, Zap zap)
+        {
+            // get previous zap and all data from it into new zap
+            Zap previousZap = GetZap(i, j);
+            zap.IsDangerousZap = previousZap.IsDangerousZap;
+            zap.SetWidth(m_ZapWidth);
+            zap.SetHeight(m_ZapHeight);
+            zap.SetOffsetDistance(m_OffsetDistance);
+            zap.Row = i;
+            zap.Col = j;
+            
+            // remove previous zap from dangerous zaps and destroy it
+            if (previousZap.IsDangerousZap)
+            {
+                m_DangerousZaps.Remove(previousZap);
+            }
+            Destroy(previousZap.gameObject);
+
+
+            m_ZapGrid[i][j] = zap;
         }
 
         public void Init()
@@ -177,7 +212,7 @@ namespace GameCritical
             Vector3 origin = topLeftInWorldSpace;
             origin.z = 1.0f;
             this.transform.position = origin;
-            float zapWidth = GetZapWidth(m_EndZapPrefab, m_Cols);
+            m_ZapWidth = CalculateZapWidth(m_EndZapPrefab, m_Cols);
 
             for (int i = 0; i < m_Rows + 1; i++)
             {
@@ -199,8 +234,12 @@ namespace GameCritical
                     if (zapPrefab != null)
                     {
                         Zap zap = (Zap)Instantiate(zapPrefab, this.transform);
+                        if(zap.IsDangerousZap)
+                        {
+                            m_DangerousZaps.Add(zap);
+                        }
                         zap.transform.position = spawnPos;
-                        zap.SetWidth(zapWidth);
+                        zap.SetWidth(m_ZapWidth);
                         zap.SetHeight(m_ZapHeight);
                         zap.SetOffsetDistance(m_OffsetDistance);
                         zap.Row = i;

@@ -222,6 +222,7 @@ namespace Player
                 if(m_PlayerDecorations != null)
                 {
                     m_PlayerDecorations.DeactivateLockdown();
+                    m_PlayerDecorations.DeactivateAtmosphereFire();
                 }
             }
         }
@@ -461,6 +462,10 @@ namespace Player
             m_CanMove = true;
             m_PlayerDecorations.ShowMainPS();
             GameMaster.Instance.m_DadEventManager.StartEvents();
+
+            // Increase level UI displayed to user
+            GameMaster.Instance.m_UIManager.m_LevelPanel.IncrementLevelText();
+
         }
     }
 }

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using Player;
+using UnityEngine.UI;
 
 namespace GameCritical
 {
@@ -27,15 +28,21 @@ namespace GameCritical
             {
                 m_ActiveParticleSystem.Stop();
             }
+
             m_HasBeenHit = false;
-            centerObjectOnZap(m_NumberText.gameObject);
-            m_MaxHits = Random.Range(1, m_MaxHits + 1);
-            m_NumberText.text = m_MaxHits.ToString();
-            MeshRenderer renderer = m_NumberText.GetComponent<MeshRenderer>();
-            if(renderer)
+
+            // null check because this zap breaks and when it does does not have numbertext i think
+            if(m_NumberText != null)
             {
-                renderer.sortingLayerName = m_NumberSortingLayer;
+                centerObjectOnZap(m_NumberText.gameObject);
+                m_NumberText.text = m_MaxHits.ToString();
+                MeshRenderer renderer = m_NumberText.GetComponent<MeshRenderer>();
+                if (renderer)
+                {
+                    renderer.sortingLayerName = m_NumberSortingLayer;
+                }
             }
+            m_MaxHits = Random.Range(1, m_MaxHits + 1);
         }
 
         public override void ApplyImmediateEffect()
@@ -43,14 +50,16 @@ namespace GameCritical
             base.ApplyImmediateEffect();
         }
 
-        public override void ApplyCollisionEffect(GameObject go)
+        public override void ApplyCollisionEffect(Collision2D col)
         {
             if(m_HasBeenHit)
             {
                 AddAndShowPoints();
+                BreakZap(col);
             }
             else
             {
+                GameObject go = col.gameObject;
                 PlayerStats playerStats = go.GetComponent<PlayerStats>();
                 if (playerStats)
                 {

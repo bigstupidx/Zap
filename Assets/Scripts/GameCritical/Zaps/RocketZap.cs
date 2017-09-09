@@ -33,6 +33,7 @@ namespace GameCritical
             if (playerDecorations != null)
             {
                 playerDecorations.ActivateLockdown();
+                playerDecorations.ActivateAtmosphereFire();
             }
         }
 
@@ -44,9 +45,10 @@ namespace GameCritical
             }
         }
 
-        public override void ApplyCollisionEffect(GameObject go)
+        public override void ApplyCollisionEffect(Collision2D col)
         {
-            base.ApplyCollisionEffect(go);
+            base.ApplyCollisionEffect(col);
+            BreakZap(col);
         }
 
         public override void SetWidth(float width)

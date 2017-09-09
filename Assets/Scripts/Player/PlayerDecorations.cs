@@ -15,6 +15,8 @@ namespace Player
         private ParticleSystem m_StartingTrailPS;
         [SerializeField]
         private LockdownCircle m_LockdownCircle;
+        [SerializeField]
+        private AtmosphereFire m_AtmosphereFire;
         private ParticleSystem m_CurrTrailPS;
         private SpriteRenderer m_SpriteRenderer;
 
@@ -33,6 +35,17 @@ namespace Player
             {
                 m_LockdownCircle = GetComponentInChildren<LockdownCircle>();
             }
+        }
+
+        public void DeactivateAtmosphereFire()
+        {
+            m_AtmosphereFire.Stop();
+        }
+
+
+        public void ActivateAtmosphereFire()
+        {
+            m_AtmosphereFire.Play();
         }
 
         public void ActivateLockdown()

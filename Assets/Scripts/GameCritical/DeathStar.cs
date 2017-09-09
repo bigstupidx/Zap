@@ -23,6 +23,10 @@ namespace GameCritical
         private float m_SpeedMultiplier;
         private bool m_IsMoving;
 
+        private Player.PlayerMovement m_PlayerMovement;
+        private Player.PlayerStats m_PlayerStats;
+        private float m_PlayerColliderRadius;
+
         void Awake()
         {
             if (m_ParticleSystem == null)
@@ -35,6 +39,13 @@ namespace GameCritical
         {
             m_SpeedMultiplier = 1.0f;
             m_IsMoving = true;
+            m_PlayerMovement = GameMaster.Instance.m_PlayerMovement;
+            m_PlayerStats = GameMaster.Instance.m_PlayerStats;
+            CircleCollider2D playerCircleCollider = m_PlayerMovement.GetComponent<CircleCollider2D>();
+            if(playerCircleCollider != null)
+            {
+                m_PlayerColliderRadius = playerCircleCollider.radius;
+            }
         }
 
         // Update is called once per frame
@@ -43,6 +54,20 @@ namespace GameCritical
             if(m_IsMoving)
             {
                 this.transform.position += new Vector3(0, m_Speed, 0) * Time.deltaTime * m_SpeedMultiplier;
+            }
+
+            // Kill player if death star overlaps
+            if(m_CanKillPlayer)
+            {
+                if (m_PlayerMovement != null && m_PlayerStats != null)
+                {
+                    float playerY = m_PlayerMovement.transform.position.y;
+                    if (playerY - m_PlayerColliderRadius < this.transform.position.y)
+                    {
+                        m_PlayerStats.Kill();
+                        SetIsMoving(false);
+                    }
+                }
             }
         }
 
@@ -67,19 +92,6 @@ namespace GameCritical
         {
             m_SpeedMultiplier = (shouldAddToCurrentSpeed) ? m_SpeedMultiplier + multiplier: multiplier;
             GameMaster.Instance.m_UIManager.m_InfoPanel.SetDeathStarMultiplierText(m_SpeedMultiplier);
-        }
-
-        void OnTriggerEnter2D(Collider2D col)
-        {
-            if (col.tag == "Player")
-            {
-                PlayerStats playerStats = col.gameObject.GetComponent<PlayerStats>();
-                if (playerStats && m_CanKillPlayer)
-                {
-                    SetIsMoving(false);
-                    playerStats.Kill();
-                }
-            }
         }
     }
 }

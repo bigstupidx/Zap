@@ -35,10 +35,6 @@ namespace Player
             {
                 m_PlayerMovement = FindObjectOfType<PlayerMovement>();
             }
-            if(m_PlayerMovement)
-            {
-                Debug.Log("PLAYER MOVEMET NOT NULL)");
-            }
         }
 
         // Use this for initialization
