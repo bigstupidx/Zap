@@ -1,14 +1,25 @@
 ﻿using UnityEngine;
 using GameCritical;
 using System.Collections;
+using Utility;
 
 namespace Boosters
 {
     [RequireComponent(typeof(SpriteRenderer))]
     public class AutoTurretBullet : MonoBehaviour
     {
+        [SerializeField]
+        private float m_ZapTransitionTime = 0.5f;
+
         private Zap m_TargetZap;
         private float m_BulletLerpTime = 0;
+
+        private GoodZap goodZap;
+
+        private void Start()
+        {
+            goodZap = Resources.Load<GoodZap>(PrefabFinder.ZAPS + "GoodZap");
+        }
 
         public void SetTarget(Zap zap, float bulletLerpTime)
         {
@@ -39,11 +50,10 @@ namespace Boosters
             }
 
             // spawn green zap in place of previous zap
-            GoodZap goodZap = Resources.Load<GoodZap>(PrefabFinder.ZAPS + "GoodZap");
             GoodZap instance = Instantiate(goodZap, m_TargetZap.transform.position, m_TargetZap.transform.rotation);
             ZapGrid currZapGrid = GameMaster.Instance.m_ZapManager.GetZapGrid();
-            currZapGrid.DestroyAndReplaceZap(m_TargetZap.Row, m_TargetZap.Col, instance);
-            Destroy(this.gameObject);
+            StartCoroutine(currZapGrid.DestroyAndReplaceZap(m_TargetZap.Row, m_TargetZap.Col, instance, m_ZapTransitionTime, this));
+            //Destroy(this.gameObject);
         }
 
     }

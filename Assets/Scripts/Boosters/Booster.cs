@@ -8,6 +8,9 @@ namespace Boosters
     {
         public float m_Duration = 8.0f;
 
+        [SerializeField]
+        protected Sprite m_UISprite;
+
         public virtual void Activate()
         {
             StartCoroutine(activeTimer());

@@ -51,7 +51,7 @@ namespace GameCritical
         private int m_Col;
         public int Col { get { return m_Col; } set { m_Col = value; } }
 
-        protected SpriteRenderer m_SpriteRenderer;
+        public SpriteRenderer m_SpriteRenderer;
 
         private bool m_Occupied;
 
@@ -91,6 +91,11 @@ namespace GameCritical
             {
                 go.transform.position = this.transform.position + new Vector3(this.Width / 2.0f, this.Height / 2.0f, 0);
             }
+        }
+
+        public Vector3 GetCenter()
+        {
+            return this.transform.position + new Vector3(this.Width / 2.0f, this.Height / 2.0f, 0);
         }
 
         public virtual void ApplyImmediateEffect() { }

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Utility;
 using DadEvents;
+using Boosters;
 
 namespace GameCritical
 {
@@ -99,11 +100,7 @@ namespace GameCritical
 
         void Awake()
         {
-            PrefabManager m_PrefabManager = GameMaster.Instance.m_PrefabManager;
-            if(m_PrefabManager != null)
-            {
-                m_ZapMoneyPrefab = m_PrefabManager.m_ZapMoneyPrefab;
-            }
+            m_ZapMoneyPrefab = Resources.Load<ZapMoney>(PrefabFinder.PREFABS + "Zap_Model");
             m_DangerousZaps = new List<Zap>();
         }
 
@@ -134,7 +131,7 @@ namespace GameCritical
         }
 
         // replaces zap at location i j with zap
-        public void DestroyAndReplaceZap(int i, int j, Zap zap)
+        public IEnumerator DestroyAndReplaceZap(int i, int j, Zap zap, float transitionTime, AutoTurretBullet bullet)
         {
             // get previous zap and all data from it into new zap
             Zap previousZap = GetZap(i, j);
@@ -150,10 +147,22 @@ namespace GameCritical
             {
                 m_DangerousZaps.Remove(previousZap);
             }
+
+            // Scale new zap until size of old zap and then delete old zap
+            Vector3 startNewZapScale = new Vector3(0, zap.transform.localScale.y, zap.transform.localScale.z);
+            float currTime = 0;
+            while(currTime < transitionTime)
+            {
+                currTime += Time.deltaTime;
+                zap.transform.localScale = Vector3.Lerp(startNewZapScale, previousZap.transform.localScale, currTime / transitionTime);
+                zap.m_SpriteRenderer.sortingOrder = previousZap.m_SpriteRenderer.sortingOrder + 1;
+                yield return null;
+            }
+
+            // destroy old zap and set new zap as zap in the new place of old zap in zap grid
             Destroy(previousZap.gameObject);
-
-
             m_ZapGrid[i][j] = zap;
+            Destroy(bullet.gameObject);
         }
 
         public void Init()
