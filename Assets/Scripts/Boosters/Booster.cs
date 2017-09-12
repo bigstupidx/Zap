@@ -1,15 +1,16 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using GameCritical;
 
 namespace Boosters
 {
     public abstract class Booster : MonoBehaviour
     {
         public float m_Duration = 8.0f;
+        public float m_CoolDownTime = 5.0f;
 
-        [SerializeField]
-        protected Sprite m_UISprite;
+        public Sprite m_UISprite;
 
         public virtual void Activate()
         {
@@ -18,7 +19,7 @@ namespace Boosters
 
         public virtual void Deactivate()
         {
-
+            Destroy(this.gameObject);
         }
 
         private IEnumerator activeTimer()

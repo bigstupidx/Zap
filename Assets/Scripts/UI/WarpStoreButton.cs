@@ -6,6 +6,8 @@ using Utility;
 
 namespace UI
 {
+    [RequireComponent(typeof(Image))]
+    [RequireComponent(typeof(Button))]
     public abstract class WarpStoreButton : MonoBehaviour {
 
         [SerializeField]
@@ -29,6 +31,7 @@ namespace UI
         void Awake()
         {
             m_RectTransform = this.GetComponent<RectTransform>();
+            m_Text = m_Text.ToUpper();
         }
 
         private void Start()

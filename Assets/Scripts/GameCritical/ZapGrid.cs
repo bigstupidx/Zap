@@ -153,6 +153,12 @@ namespace GameCritical
             float currTime = 0;
             while(currTime < transitionTime)
             {
+                // if the zap gets broken while it is lerping
+                if(zap == null)
+                {
+                    break;
+                }
+
                 currTime += Time.deltaTime;
                 zap.transform.localScale = Vector3.Lerp(startNewZapScale, previousZap.transform.localScale, currTime / transitionTime);
                 zap.m_SpriteRenderer.sortingOrder = previousZap.m_SpriteRenderer.sortingOrder + 1;
@@ -161,7 +167,13 @@ namespace GameCritical
 
             // destroy old zap and set new zap as zap in the new place of old zap in zap grid
             Destroy(previousZap.gameObject);
-            m_ZapGrid[i][j] = zap;
+
+            /// make sure zap wasnt destroyed while lerping size
+            if(zap != null)
+            {
+                m_ZapGrid[i][j] = zap;
+            }
+
             Destroy(bullet.gameObject);
         }
 

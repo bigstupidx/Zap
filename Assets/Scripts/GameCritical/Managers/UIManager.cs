@@ -14,6 +14,7 @@ namespace GameCritical
         public FadePanel m_FadePanel;
         public ShopCanvas m_ShopCanvas;
         public LevelPanel m_LevelPanel;
+        public BoostLoading m_BoostLoading;
 
         [SerializeField]
         private PopUpText m_PopUpTextPrefab;
@@ -46,6 +47,10 @@ namespace GameCritical
             if (m_ShopCanvas == null)
             {
                 m_ShopCanvas = FindObjectOfType<ShopCanvas>();
+            }
+            if (m_BoostLoading == null)
+            {
+                m_BoostLoading = FindObjectOfType<BoostLoading>();
             }
         }
 

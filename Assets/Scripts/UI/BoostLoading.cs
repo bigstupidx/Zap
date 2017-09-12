@@ -1,45 +1,69 @@
 ﻿using System.Collections;
 using UnityEngine;
 using UnityEngine.UI;
+using GameCritical;
 
 namespace UI
 {
-    [RequireComponent(typeof(Image))]
+    [RequireComponent(typeof(Button))]
     public class BoostLoading : MonoBehaviour
     {
-
         public Text m_PercentageText;
 
         [SerializeField]
-        private float m_ChargeTime;
-        private float m_CurrentCharge;
-
         private Image m_LoadImage;
+
+        [SerializeField]
+        private Image m_BoostImage;
+
+        private Button m_Button;
 
         private void Awake()
         {
-            m_CurrentCharge = 0;
-            m_LoadImage = GetComponent<Image>();
+            HideBoostImage();
+            m_PercentageText.text = "NO BOOST";
+            m_Button = GetComponent<Button>();
         }
 
-        void Start()
+        private void Start()
         {
-            StartCoroutine(Load());
+            m_Button.onClick.AddListener(() => GameMaster.Instance.m_PlayerBoost.StartCoroutine("ActivateCurrentBooster"));
         }
 
-        public IEnumerator Load()
+        public void SetPercentage(float percentage)
         {
-            while (m_CurrentCharge < m_ChargeTime)
+            if (m_PercentageText != null && m_LoadImage != null)
             {
-                m_CurrentCharge += Time.deltaTime;
-                if (m_PercentageText != null && m_LoadImage != null)
-                {
-                    float percentage = m_CurrentCharge / m_ChargeTime;
-                    m_LoadImage.fillAmount = percentage;
-                    m_PercentageText.text = Mathf.FloorToInt(percentage * 100.0f) + "%";
-                }
-                yield return null;
+                m_LoadImage.fillAmount = percentage;
+                m_BoostImage.gameObject.SetActive(false);
+                m_PercentageText.text = Mathf.FloorToInt(percentage * 100.0f) + "%";
             }
+
+            if(percentage >= 100.0f)
+            {
+                ShowBoostImage();
+            }
+        }
+
+        public void HideBoostImage()
+        {
+            m_BoostImage.gameObject.SetActive(false);
+        }
+
+        public void ShowBoostImage()
+        {
+            m_BoostImage.gameObject.SetActive(true);
+            m_PercentageText.text = "";
+        }
+
+        public void SetText(string text)
+        {
+            m_PercentageText.text = text;
+        }
+
+        public void SetBoostSprite(Sprite sprite)
+        {
+            m_BoostImage.sprite = sprite;
         }
     }
 }

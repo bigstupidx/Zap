@@ -16,6 +16,16 @@ namespace Boosters
 
         private GoodZap goodZap;
 
+        private SpriteRenderer m_SpriteRenderer;
+
+        [SerializeField]
+        private ParticleSystem m_ParticleSystem;
+
+        private void Awake()
+        {
+            m_SpriteRenderer = GetComponent<SpriteRenderer>();
+        }
+
         private void Start()
         {
             goodZap = Resources.Load<GoodZap>(PrefabFinder.ZAPS + "GoodZap");
@@ -49,11 +59,13 @@ namespace Boosters
                 yield return null;
             }
 
+            m_SpriteRenderer.enabled = false;
+            m_ParticleSystem.Stop();
             // spawn green zap in place of previous zap
             GoodZap instance = Instantiate(goodZap, m_TargetZap.transform.position, m_TargetZap.transform.rotation);
             ZapGrid currZapGrid = GameMaster.Instance.m_ZapManager.GetZapGrid();
             StartCoroutine(currZapGrid.DestroyAndReplaceZap(m_TargetZap.Row, m_TargetZap.Col, instance, m_ZapTransitionTime, this));
-            //Destroy(this.gameObject);
+            // Destroy(this.gameObject);
         }
 
     }

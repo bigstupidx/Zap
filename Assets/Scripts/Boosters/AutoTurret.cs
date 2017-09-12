@@ -26,14 +26,13 @@ namespace Boosters
             zapsAlreadyShotAt = new List<Zap>();
         }
 
-        private void Start()
-        {
-            Activate();
-        }
-
         public override void Activate()
         {
             base.Activate();
+
+            // center the turret on the player
+            this.transform.localPosition = Vector3.zero;
+
             startShootTimer();
         }
 

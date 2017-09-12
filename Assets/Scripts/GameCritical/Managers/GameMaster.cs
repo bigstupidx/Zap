@@ -25,6 +25,7 @@ namespace GameCritical
         public StatsManager m_StatsManager;
         public DatabaseManager m_DatabaseManager;
         public DadEventManager m_DadEventManager;
+        public PlayerBoost m_PlayerBoost;
 
         public DeathStar m_DeathStar;
         public CameraFollow m_CameraFollow;
@@ -88,6 +89,10 @@ namespace GameCritical
             if (m_DadEventManager == null)
             {
                 m_DadEventManager = FindObjectOfType<DadEventManager>();
+            }
+            if (m_PlayerBoost == null)
+            {
+                m_PlayerBoost = FindObjectOfType<PlayerBoost>();
             }
         }
 

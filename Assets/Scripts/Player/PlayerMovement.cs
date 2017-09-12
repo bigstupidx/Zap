@@ -466,6 +466,9 @@ namespace Player
             // Increase level UI displayed to user
             GameMaster.Instance.m_UIManager.m_LevelPanel.IncrementLevelText();
 
+            // start cooldown of player boost if it exists
+            GameMaster.Instance.m_PlayerBoost.Reset();
+
         }
     }
 }
