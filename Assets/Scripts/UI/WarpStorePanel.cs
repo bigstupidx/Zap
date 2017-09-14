@@ -12,6 +12,12 @@ namespace UI
         [Tooltip("Reference to Scroll Rect of the scroll view that displays content in warp store")]
         public ScrollRect m_ScrollRect;
 
+        [SerializeField]
+        private float m_SlideLerpTime;
+
+        public Vector3 m_OffScreenPosition;
+        public Vector3 m_OnScreenPosition;
+
         public SpecialUICanvas m_SpecialUICanvas;
 
         public WarpPanel m_MainMenuPanel;
@@ -47,6 +53,43 @@ namespace UI
         private void Start()
         {
             ShowPanel(m_MainMenuPanel);
+        }
+
+        public override void Hide()
+        {
+            base.Hide();
+            RectTransform rect = this.GetComponent<RectTransform>();
+            rect.anchoredPosition = m_OffScreenPosition;
+        }
+
+        private IEnumerator slideUpDownToOffset(Vector3 targetPos)
+        {
+            RectTransform rect = this.GetComponent<RectTransform>();
+            float currLerpTime = 0;
+            while(currLerpTime <= m_SlideLerpTime)
+            {
+                currLerpTime += Time.deltaTime;
+                rect.anchoredPosition = Vector3.Lerp(rect.anchoredPosition, targetPos, currLerpTime / m_SlideLerpTime);
+                yield return null;
+            }
+        }
+
+        public IEnumerator SlideOut()
+        {
+            GameMaster.Instance.m_UIManager.m_BoostLoading.SlideToInGamePosition();
+            yield return StartCoroutine(slideUpDownToOffset(m_OffScreenPosition));
+            Hide();
+        }
+
+        public override void Show()
+        {
+            if(!this.gameObject.activeInHierarchy)
+            {
+                base.Show();
+                //play slide in animation
+                StartCoroutine(slideUpDownToOffset(m_OnScreenPosition));
+                GameMaster.Instance.m_UIManager.m_BoostLoading.SlideToWarpStorePosition();
+            }
         }
 
         public void TriggerCurrencyAction(CurrencyActionType action)

@@ -27,7 +27,7 @@ namespace GameCritical
             m_WarpZone.SetWarpParticleSystem(false);
             SetInputEnabled(false);
             GameMaster.Instance.m_CameraFollow.ResetOffset(m_CamOffsetResetTime);
-            GameMaster.Instance.m_UIManager.m_ShopCanvas.m_WarpStorePanel.Hide();
+            StartCoroutine(GameMaster.Instance.m_UIManager.m_ShopCanvas.m_WarpStorePanel.SlideOut());
         }
 
         void Update()

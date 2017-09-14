@@ -10,11 +10,17 @@ namespace UI
     {
         public Text m_PercentageText;
 
+        public Vector3 m_InGamePosition;
+        public Vector3 m_WarpStorePosition;
+
         [SerializeField]
         private Image m_LoadImage;
 
         [SerializeField]
         private Image m_BoostImage;
+
+        [SerializeField]
+        private float m_SlideLerpTime = 1.0f;
 
         private Button m_Button;
 
@@ -28,6 +34,28 @@ namespace UI
         private void Start()
         {
             m_Button.onClick.AddListener(() => GameMaster.Instance.m_PlayerBoost.StartCoroutine("ActivateCurrentBooster"));
+        }
+
+        public void SlideToInGamePosition()
+        {
+            StartCoroutine(slideToPosition(m_InGamePosition));
+        }
+
+        public void SlideToWarpStorePosition()
+        {
+            StartCoroutine(slideToPosition(m_WarpStorePosition));
+        }
+
+        private IEnumerator slideToPosition(Vector3 targetPos)
+        {
+            RectTransform rect = this.GetComponent<RectTransform>();
+            float currLerpTime = 0;
+            while (currLerpTime <= m_SlideLerpTime)
+            {
+                currLerpTime += Time.deltaTime;
+                rect.anchoredPosition = Vector3.Lerp(rect.anchoredPosition, targetPos, currLerpTime / m_SlideLerpTime);
+                yield return null;
+            }
         }
 
         public void SetPercentage(float percentage)
@@ -64,6 +92,7 @@ namespace UI
         public void SetBoostSprite(Sprite sprite)
         {
             m_BoostImage.sprite = sprite;
+            ShowBoostImage();
         }
     }
 }
