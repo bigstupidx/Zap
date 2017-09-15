@@ -57,9 +57,9 @@ namespace UI
                 if(m_Main != null)
                 {
                     m_MainImage.sprite = m_Main;
-                    m_MainImage.rectTransform.sizeDelta =
+                    /*m_MainImage.rectTransform.sizeDelta =
                         new Vector2(m_BackgroundImage.rectTransform.sizeDelta.x * 1.0f,
-                        m_BackgroundImage.rectTransform.sizeDelta.y * 1.0f);
+                        m_BackgroundImage.rectTransform.sizeDelta.y * 1.0f);*/
                 }
             }
 
