@@ -11,7 +11,9 @@ namespace Player
     {
         private Booster currentBoosterInstance;
         private Booster currentBoosterPrefab;
-        private bool canActivate = false;
+
+        [HideInInspector]
+        public bool canActivate = false;
 
         void Start()
         {
@@ -62,6 +64,12 @@ namespace Player
                 BoostLoading boostLoadingUI = GameMaster.Instance.m_UIManager.m_BoostLoading;
                 boostLoadingUI.SetPercentage(100.0f);
                 canActivate = true;
+
+                // destroy previous instance of boost is there was one
+                if(currentBoosterInstance != null)
+                {
+                    Destroy(currentBoosterInstance.gameObject);
+                }
             }
         }
 

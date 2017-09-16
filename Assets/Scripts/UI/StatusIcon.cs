@@ -28,7 +28,6 @@ namespace UI
 
         public void SetUnlocked()
         {
-            m_Image = GetComponent<Image>();
             m_Image.sprite = m_TransparentSprite;
         }
 

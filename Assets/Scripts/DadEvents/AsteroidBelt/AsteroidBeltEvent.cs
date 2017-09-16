@@ -35,13 +35,13 @@ namespace DadEvents
         public override void Play()
         {
             base.Play();
-            StartCoroutine(spawnAsteroidBelt());
+            StartCoroutine("spawnAsteroidBelt");
         }
 
         public override void Stop()
         {
             base.Stop();
-            StopCoroutine(spawnAsteroidBelt());
+            StopCoroutine("spawnAsteroidBelt");
             Destroy(this.gameObject);
         }
 

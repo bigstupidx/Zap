@@ -469,6 +469,9 @@ namespace Player
             // start cooldown of player boost if it exists
             GameMaster.Instance.m_PlayerBoost.Reset();
 
+            // allow player to active the equipped ability
+            GameMaster.Instance.m_PlayerBoost.canActivate = true;
+
         }
     }
 }

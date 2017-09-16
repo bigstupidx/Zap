@@ -4,6 +4,7 @@ using UnityEngine;
 using IAP;
 using UnityEngine.UI;
 using GameCritical;
+using Player;
 
 namespace UI
 {
@@ -62,7 +63,7 @@ namespace UI
             rect.anchoredPosition = m_OffScreenPosition;
         }
 
-        private IEnumerator slideUpDownToOffset(Vector3 targetPos)
+        private IEnumerator slideTo(Vector3 targetPos)
         {
             RectTransform rect = this.GetComponent<RectTransform>();
             float currLerpTime = 0;
@@ -77,7 +78,7 @@ namespace UI
         public IEnumerator SlideOut()
         {
             GameMaster.Instance.m_UIManager.m_BoostLoading.SlideToInGamePosition();
-            yield return StartCoroutine(slideUpDownToOffset(m_OffScreenPosition));
+            yield return StartCoroutine(slideTo(m_OffScreenPosition));
             Hide();
         }
 
@@ -87,9 +88,15 @@ namespace UI
             {
                 base.Show();
                 //play slide in animation
-                StartCoroutine(slideUpDownToOffset(m_OnScreenPosition));
+                StartCoroutine(slideTo(m_OnScreenPosition));
                 GameMaster.Instance.m_UIManager.m_BoostLoading.SlideToWarpStorePosition();
             }
+
+            // disalbe player from activating equipped ability
+            PlayerBoost playerBooster = GameMaster.Instance.m_PlayerBoost;
+            playerBooster.Reset(); /* call this first to reset so that if the booster is cooling down 
+            it wont re-allow a player to press on it while in the warpstore to activate it.*/
+            playerBooster.canActivate = false; // then don't let player activate the booster in warp store.
         }
 
         public void TriggerCurrencyAction(CurrencyActionType action)

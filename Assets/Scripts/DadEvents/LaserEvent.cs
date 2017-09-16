@@ -16,13 +16,13 @@ namespace DadEvents
         public override void Play()
         {
             base.Play();
-            StartCoroutine(spawnLaser());
+            StartCoroutine("spawnLaser");
         }
 
         public override void Stop()
         {
             base.Stop();
-            StopCoroutine(spawnLaser());
+            StopCoroutine("spawnLaser");
         }
 
         private IEnumerator spawnLaser()
