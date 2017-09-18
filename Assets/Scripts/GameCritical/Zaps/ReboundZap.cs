@@ -13,36 +13,22 @@ namespace GameCritical
         private int m_MaxHits;
 
         [SerializeField]
-        private TextMesh m_NumberText;
-        private Vector3 m_NumberStartScale;
-        [SerializeField]
-        private string m_NumberSortingLayer;
-
-        [SerializeField]
         private Color m_HitColor;
         private bool m_HasBeenHit;
 
+        private Color m_ColorIncrementOnHit;
+
         void Start()
         {
-            if(m_ActiveParticleSystem)
+            if (m_ActiveParticleSystem)
             {
                 m_ActiveParticleSystem.Stop();
             }
 
             m_HasBeenHit = false;
-
-            // null check because this zap breaks and when it does does not have numbertext i think
-            if(m_NumberText != null)
-            {
-                centerObjectOnZap(m_NumberText.gameObject);
-                m_NumberText.text = m_MaxHits.ToString();
-                MeshRenderer renderer = m_NumberText.GetComponent<MeshRenderer>();
-                if (renderer)
-                {
-                    renderer.sortingLayerName = m_NumberSortingLayer;
-                }
-            }
             m_MaxHits = Random.Range(1, m_MaxHits + 1);
+
+            m_ColorIncrementOnHit = (m_HitColor - Color) / m_MaxHits;
         }
 
         public override void ApplyImmediateEffect()
@@ -70,14 +56,13 @@ namespace GameCritical
                         // Make the ball bounce back to the original location it was at.
                         GameMaster.Instance.m_PlayerMovement.MoveTo(this, PlayerMovement.MovementState.MovingBounceBackFromZap);
                         m_MaxHits--;
-                        m_NumberText.text = m_MaxHits.ToString();
+                        m_SpriteRenderer.color += m_ColorIncrementOnHit;
                         if (m_MaxHits <= 0)
                         {
                             // Set has been hit to true so that next time ball hits Zap it will break it
                             m_HasBeenHit = true;
                             // Show the popuptext "REBOUND"
                             ShowPopUptext();
-                            Destroy(m_NumberText.gameObject);
                             if(m_ActiveParticleSystem)
                             {
                                 m_ActiveParticleSystem.Play();

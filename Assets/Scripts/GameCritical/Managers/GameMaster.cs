@@ -30,6 +30,7 @@ namespace GameCritical
         public DeathStar m_DeathStar;
         public CameraFollow m_CameraFollow;
         public ParticleSystem m_WarpParticleSystem;
+        public GameObject m_HandTutorialTouchScreenObject;
 
         void Awake()
         {
@@ -116,6 +117,10 @@ namespace GameCritical
 
         public void PlayGame()
         {
+            if(m_HandTutorialTouchScreenObject != null)
+            {
+                m_HandTutorialTouchScreenObject.SetActive(true);
+            }
             //SceneManager.LoadScene(m_GameSceneStr);
             m_DeathStar.gameObject.SetActive(true);
             m_PlayerMovement.gameObject.SetActive(true);

@@ -22,6 +22,13 @@ namespace GameCritical
 
         [SerializeField]
         private Color m_Color;
+        public Color Color
+        {
+            get
+            {
+                return m_Color;
+            }
+        }
 
         [System.Serializable]
         public class BreakSettings
