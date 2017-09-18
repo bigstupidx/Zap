@@ -29,6 +29,7 @@ namespace GameCritical
 
         private List<List<Zap>> m_ZapGrid;
         private List<Zap> m_DangerousZaps; // list of zaps that are targets for auto turret
+        private List<Zap> m_LucrativeZaps; // zaps that the magnet boost will grab and pull in
         private int m_MaxZapMoneys;
         private float m_ZapMoneyProbability;
         private ZapMoney m_ZapMoneyPrefab;
@@ -102,6 +103,7 @@ namespace GameCritical
         {
             m_ZapMoneyPrefab = Resources.Load<ZapMoney>(PrefabFinder.PREFABS + "Zap_Model");
             m_DangerousZaps = new List<Zap>();
+            m_LucrativeZaps = new List<Zap>();
         }
 
         void OnDestroy()
@@ -119,6 +121,11 @@ namespace GameCritical
         public List<Zap> GetDangerousZaps()
         {
             return m_DangerousZaps;
+        }
+
+        public List<Zap> GetLucrativeZaps()
+        {
+            return m_LucrativeZaps;
         }
 
         public void Init(int rows, int cols, int maxZapMoneys, float zapMoneyProbability)
@@ -258,6 +265,10 @@ namespace GameCritical
                         if(zap.IsDangerousZap)
                         {
                             m_DangerousZaps.Add(zap);
+                        }
+                        if(zap.m_HasPoints && zap.m_Points > 0)
+                        {
+                            m_LucrativeZaps.Add(zap);
                         }
                         zap.transform.position = spawnPos;
                         zap.SetWidth(m_ZapWidth);

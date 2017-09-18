@@ -13,6 +13,9 @@ namespace UI
         [SerializeField]
         private int m_Price;
 
+        [SerializeField]
+        private string m_Description;
+
         protected bool m_IsUnlocked = false;
 
         private Banner m_PriceBannerInstance;
@@ -92,7 +95,12 @@ namespace UI
                 {
                     if (statManager.GetZaps() >= m_Price)
                     {
-                        specialUICanvas.m_ConfirmPurchasePanel.Populate(successfulPurchaseCallback, m_Text);
+                        string descriptionText = m_Text;
+                        if(m_Description != "")
+                        {
+                            descriptionText = m_Description;
+                        }
+                        specialUICanvas.m_ConfirmPurchasePanel.Populate(successfulPurchaseCallback, descriptionText.ToUpper());
                     }
                     else
                     {

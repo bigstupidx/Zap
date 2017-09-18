@@ -9,7 +9,7 @@ namespace GameCritical
     public class StatsManager : MonoBehaviour
     {
         private int m_Score = 0;
-        private int m_NumZaps = 0;
+        private int m_NumZaps = 1200;
 
         private bool m_FlawlessGridRun; // if this is true that means the player didnt hit anything bad in the current grid.
 
