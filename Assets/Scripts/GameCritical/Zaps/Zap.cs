@@ -183,7 +183,7 @@ namespace GameCritical
                     zap2.DisableCollision();
                     zap2.FadeThenDestroy();
 
-                    Destroy(this.gameObject);
+                    //Destroy(this.gameObject);
                 }
 
             }

@@ -20,6 +20,7 @@ namespace GameCritical
         {
             base.ApplyCollisionEffect(col);
             GameObject go = col.gameObject;
+            BreakZap(col);
         }
     }
 }
