@@ -26,6 +26,7 @@ namespace GameCritical
         public DatabaseManager m_DatabaseManager;
         public DadEventManager m_DadEventManager;
         public PlayerBoost m_PlayerBoost;
+        public SolarSystemSpawner m_SolarSystemSpawner;
 
         public DeathStar m_DeathStar;
         public CameraFollow m_CameraFollow;
@@ -94,6 +95,10 @@ namespace GameCritical
             if (m_PlayerBoost == null)
             {
                 m_PlayerBoost = FindObjectOfType<PlayerBoost>();
+            }
+            if(m_SolarSystemSpawner == null)
+            {
+                m_SolarSystemSpawner = FindObjectOfType<SolarSystemSpawner>();
             }
         }
 

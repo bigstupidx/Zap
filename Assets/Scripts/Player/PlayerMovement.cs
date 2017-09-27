@@ -434,6 +434,7 @@ namespace Player
             m_LerpAmount = 0.0f;
             GameMaster.Instance.m_BackDropManager.ShowWarpStoreColors();
             GameMaster.Instance.m_DadEventManager.StopEvents();
+            GameMaster.Instance.m_SolarSystemSpawner.StopSpawningSolarObjects();
 
             // show flawless completion notification if grid completion flawless.
             StatsManager statsManager = GameMaster.Instance.m_StatsManager;
@@ -471,6 +472,8 @@ namespace Player
 
             // allow player to active the equipped ability
             GameMaster.Instance.m_PlayerBoost.canActivate = true;
+
+            GameMaster.Instance.m_SolarSystemSpawner.BeginSpawningSolarObjects();
 
         }
     }
