@@ -72,9 +72,6 @@ public class SolarSystemSpawner : MonoBehaviour {
         {
             return;
         }
-
-        float randomWaitTime = Random.Range(_minSpawnTime, _maxSpawnTime);
-        Invoke("SpawnSolarObject", randomWaitTime);
         //yield return TimerHelper.instance.StartTimer(randomWaitTime);
         int randomIndex = Random.Range(0, solarObjects.Count);
 
@@ -89,5 +86,8 @@ public class SolarSystemSpawner : MonoBehaviour {
         // Spawn solar object
         SolarObject solarObjectInstance = Instantiate(solarObjectPrefab, spawnPos, Quaternion.identity, this.transform);
         _maxSolarObjects++;
+
+        float randomWaitTime = Random.Range(_minSpawnTime, _maxSpawnTime);
+        Invoke("SpawnSolarObject", randomWaitTime);
     }
 }

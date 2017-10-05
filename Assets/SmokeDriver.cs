@@ -28,7 +28,7 @@ public class SmokeDriver : MonoBehaviour {
             _smokeEffect._TurnToSmoke = currTime / randomDestroyTime;
             yield return null;
         }
-        _smokeEffect._TurnToSmoke = 1.0f;
+
         Destroy(this.gameObject);
     }
 }

@@ -16,6 +16,9 @@ namespace GameCritical
         private Color m_HitColor;
         private bool m_HasBeenHit;
 
+        [SerializeField]
+        private bool m_IsRandomHitAmount = false;
+
         private Color m_ColorIncrementOnHit;
 
         void Start()
@@ -26,7 +29,9 @@ namespace GameCritical
             }
 
             m_HasBeenHit = false;
-            m_MaxHits = Random.Range(1, m_MaxHits + 1);
+
+            if(m_IsRandomHitAmount)
+                m_MaxHits = Random.Range(1, m_MaxHits + 1);
 
             m_ColorIncrementOnHit = (m_HitColor - Color) / m_MaxHits;
         }

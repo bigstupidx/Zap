@@ -41,6 +41,7 @@ namespace GameCritical
             public float m_LowerTorque = 20.0f;
             public float m_UpperTorque = 40.0f;
             public float m_FadeTime = 1.0f;
+            public AudioClip _breakSound;
         }
         [SerializeField]
         private BreakSettings m_BS;
@@ -169,6 +170,11 @@ namespace GameCritical
                 if(zapGrid != null)
                 {
                     float zapWidth = zapGrid.GetZapWidth();
+
+                    if(m_BS._breakSound != null)
+                    {
+                        AudioManager.Instance.Spawn2DAudio(m_BS._breakSound);
+                    }
 
                     // Instantiate splitting zaps
                     Zap zap1 = Instantiate(this, this.transform.position, Quaternion.identity);

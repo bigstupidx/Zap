@@ -9,24 +9,19 @@ namespace VFX
         [SerializeField]
         private ParticleSystem m_Fire1;
 
-        [SerializeField]
-        private ParticleSystem m_Fire2;
-
         public void Play()
         {
-            if (m_Fire1 != null && m_Fire2 != null)
+            if (m_Fire1 != null)
             {
                 m_Fire1.Play();
-                m_Fire2.Play();
             }
         }
 
         public void Stop()
         {
-            if (m_Fire1 != null && m_Fire2 != null)
+            if (m_Fire1 != null)
             {
                 m_Fire1.Stop();
-                m_Fire2.Stop();
             }
         }
     }

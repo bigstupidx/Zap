@@ -79,7 +79,15 @@ namespace UI
         {
             GameMaster.Instance.m_UIManager.m_BoostLoading.SlideToInGamePosition();
             yield return StartCoroutine(slideTo(m_OffScreenPosition));
+            GameMaster.Instance.m_WarpZoneManager.SetInputEnabled(false);
             Hide();
+        }
+
+        public IEnumerator SlideIn()
+        {
+            GameMaster.Instance.m_UIManager.m_BoostLoading.SlideToWarpStorePosition();
+            yield return StartCoroutine(slideTo(m_OnScreenPosition));
+            GameMaster.Instance.m_WarpZoneManager.SetInputEnabled(true);
         }
 
         public override void Show()
@@ -88,8 +96,7 @@ namespace UI
             {
                 base.Show();
                 //play slide in animation
-                StartCoroutine(slideTo(m_OnScreenPosition));
-                GameMaster.Instance.m_UIManager.m_BoostLoading.SlideToWarpStorePosition();
+                StartCoroutine("SlideIn");
             }
 
             // disalbe player from activating equipped ability

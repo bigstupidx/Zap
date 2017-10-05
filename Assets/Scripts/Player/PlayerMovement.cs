@@ -201,7 +201,6 @@ namespace Player
                 {
                     m_PlayerDecorations.ShowWarpZonePS();
                 }
-                GameMaster.Instance.m_WarpZoneManager.SetInputEnabled(true);
                 GameMaster.Instance.m_UIManager.m_ShopCanvas.m_WarpStorePanel.Show();
             }
             else if (m_MovementState == MovementState.MovingToZapGrid)
@@ -473,7 +472,8 @@ namespace Player
             // allow player to active the equipped ability
             GameMaster.Instance.m_PlayerBoost.canActivate = true;
 
-            GameMaster.Instance.m_SolarSystemSpawner.BeginSpawningSolarObjects();
+            GameMaster.Instance.m_SolarSystemSpawner.
+                BeginSpawningSolarObjects();
 
         }
     }
