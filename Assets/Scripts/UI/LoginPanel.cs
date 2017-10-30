@@ -9,7 +9,6 @@ namespace UI
 {
     public class LoginPanel : MonoBehaviour
     {
-
         [SerializeField]
         private InputField m_UsernameInputField;
 
@@ -23,13 +22,17 @@ namespace UI
         private Button m_SignupButton;
 
         [SerializeField]
-        private LoginPanelAnimationHandler m_LoginPanelAnimationHandler;
+        private Text m_ErrorMessage;
+
+        [SerializeField]
+        private LoginSignUpPanels m_LoginPanelAnimationHandler;
 
         void Awake()
         {
+            m_ErrorMessage.text = "";
             if (m_LoginPanelAnimationHandler == null)
             {
-                m_LoginPanelAnimationHandler = FindObjectOfType<LoginPanelAnimationHandler>();
+                m_LoginPanelAnimationHandler = FindObjectOfType<LoginSignUpPanels>();
             }
         }
 
@@ -51,8 +54,17 @@ namespace UI
 
         private void login()
         {
-            Debug.Log("Login button clicked");
-            Login login = GameMaster.Instance.m_DatabaseManager.m_Login;
+            if(m_UsernameInputField.text.Length <= 0 || m_PasswordInputField.text.Length <= 0)
+            {
+                m_ErrorMessage.text = "please type a user and password";
+            }
+            else
+            {
+                m_ErrorMessage.text = "";
+            }
+
+            Debug.Log("Login request sent to database");
+            /*Login login = GameMaster.Instance.m_DatabaseManager.m_Login;
             if (login != null)
             {
                 StartCoroutine(login.LoginUser(m_UsernameInputField.text, m_PasswordInputField.text));
@@ -60,20 +72,7 @@ namespace UI
             else
             {
                 Debug.LogError("Login script can't be found by LoginPanel");
-            }
-            /*
-            Debug.Log("Login button clicked");
-            Login login = GameMaster.Instance.m_DatabaseManager.m_Login;
-            if(login != null)
-            {
-                // wait for login response
-                yield return StartCoroutine(login.LoginUser(m_UsernameInputField.text, m_PasswordInputField.text));
-            }
-            else
-            {
-                Debug.LogError("Login script can't be found by LoginPanel");
-            }
-            */
+            }*/
         }
     }
 }

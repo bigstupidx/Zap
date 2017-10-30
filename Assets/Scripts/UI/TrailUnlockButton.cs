@@ -15,6 +15,8 @@ namespace UI
         {
             base.Init();
 
+            costInZaps = true;
+
             // instantiate particle system
             m_RotatingTrailObject = this.GetComponentInChildren<RotatingTrail>();
             ParticleSystem ps = Instantiate(m_TrailPSPrefab, m_RotatingTrailObject.transform);

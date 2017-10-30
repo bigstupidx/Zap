@@ -15,6 +15,8 @@ namespace UI
         {
             base.Init();
 
+            costInZaps = false;
+
             // make status icon in center
             // m_StatusInstance.SetCenterLocked();
         }

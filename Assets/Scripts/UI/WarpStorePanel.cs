@@ -16,6 +16,9 @@ namespace UI
         [SerializeField]
         private float m_SlideLerpTime;
 
+        [SerializeField]
+        private GameObject m_WarningText;
+
         public Vector3 m_OffScreenPosition;
         public Vector3 m_OnScreenPosition;
 
@@ -54,6 +57,7 @@ namespace UI
         private void Start()
         {
             ShowPanel(m_MainMenuPanel);
+            m_WarningText.SetActive(false);
         }
 
         public override void Hide()
@@ -80,6 +84,7 @@ namespace UI
             GameMaster.Instance.m_UIManager.m_BoostLoading.SlideToInGamePosition();
             yield return StartCoroutine(slideTo(m_OffScreenPosition));
             GameMaster.Instance.m_WarpZoneManager.SetInputEnabled(false);
+            m_WarningText.SetActive(false);
             Hide();
         }
 
@@ -88,6 +93,7 @@ namespace UI
             GameMaster.Instance.m_UIManager.m_BoostLoading.SlideToWarpStorePosition();
             yield return StartCoroutine(slideTo(m_OnScreenPosition));
             GameMaster.Instance.m_WarpZoneManager.SetInputEnabled(true);
+            m_WarningText.SetActive(true);
         }
 
         public override void Show()

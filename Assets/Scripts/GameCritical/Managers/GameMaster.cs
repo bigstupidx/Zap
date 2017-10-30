@@ -27,6 +27,8 @@ namespace GameCritical
         public DadEventManager m_DadEventManager;
         public PlayerBoost m_PlayerBoost;
         public SolarSystemSpawner m_SolarSystemSpawner;
+        public NotificationManager m_NotificationManager;
+        public LoginSignUpPanels m_LoginSignupPanels;
 
         public DeathStar m_DeathStar;
         public CameraFollow m_CameraFollow;
@@ -48,6 +50,14 @@ namespace GameCritical
                 }
             }
 
+            if (m_LoginSignupPanels == null)
+            {
+                m_LoginSignupPanels = FindObjectOfType<LoginSignUpPanels>();
+            }
+            if (m_NotificationManager == null)
+            {
+                m_NotificationManager = FindObjectOfType<NotificationManager>();
+            }
             if (m_PlayerDecorations == null)
             {
                 m_PlayerDecorations = FindObjectOfType<PlayerDecorations>();
@@ -132,6 +142,7 @@ namespace GameCritical
             m_ZapManager.SpawnNextZapGrid();
             m_PlayerMovement.MoveToZapGrid();
             m_DadEventManager.enabled = true;
+            GameMaster.Instance.m_UIManager.m_BoostLoading.SlideToInGamePosition();
         }
 
         public void EndGame()

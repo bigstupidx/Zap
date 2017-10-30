@@ -67,13 +67,14 @@ namespace GameCritical
         {
             // increment
             m_CurrGrids += m_GridsIncrement;
-            m_StartCols += m_RowsIncrement;
+            m_StartCols += m_ColsIncrement;
 
             // configure new settings
             m_CurrRows = m_StartRows;
             m_CurrCols = m_StartCols;
             m_CurrGridIndex = 0;
             GameMaster.Instance.m_BackDropManager.ShowNextStageColors();
+            GameMaster.Instance.m_DeathStar.IncreaseSpeedByLevel();
         }
 
         // scales difficulty after a level

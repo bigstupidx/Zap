@@ -11,6 +11,7 @@ namespace GameCritical
         private List<DadEvent> m_Events;
         public List<DadEvent> Events { get { return m_Events; } }
 
+        public List<DadEvent> CurrentEvents { get { return m_CurrentEvents; } }
         private List<DadEvent> m_CurrentEvents;
 
         [SerializeField]

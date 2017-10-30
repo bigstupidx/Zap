@@ -68,6 +68,11 @@ namespace GameCritical
             }
         }
 
+        public int GetScore()
+        {
+            return m_Score;
+        }
+
         public void AddToScore(int scoreToAdd)
         {
             m_Score += scoreToAdd;

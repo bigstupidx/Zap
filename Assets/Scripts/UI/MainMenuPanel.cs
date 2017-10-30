@@ -14,5 +14,16 @@ namespace UI
             GameCritical.GameMaster.Instance.PlayGame();
             this.Hide();
         }
+
+        public void Rate()
+        {
+            Debug.Log("Pressed Rate Button");
+        }
+
+        public void Logout()
+        {
+            GameCritical.GameMaster.Instance.m_LoginSignupPanels.Show();
+            this.Hide();
+        }
     }
 }

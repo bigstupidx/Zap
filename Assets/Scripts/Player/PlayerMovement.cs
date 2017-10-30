@@ -442,7 +442,7 @@ namespace Player
                 UIManager uiManager = GameMaster.Instance.m_UIManager;
                 if(uiManager)
                 {
-                    uiManager.SpawnUINotification("FLAWLESS RUN!\n+500 pts", true);
+                    uiManager.SpawnUINotification("FLAWLESS RUN [+500 PTS]", true);
                     statsManager.AddToScore(500);
                 }
             }

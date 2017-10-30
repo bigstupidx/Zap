@@ -14,6 +14,9 @@ namespace UI
         public override void Init()
         {
             base.Init();
+
+            costInZaps = true;
+
             m_MainImage.sprite = m_CharacterSprite.sprite;
             m_MainImage.color = m_CharacterSprite.color;
         }

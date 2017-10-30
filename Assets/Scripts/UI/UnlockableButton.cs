@@ -14,6 +14,28 @@ namespace UI
         private int m_Price;
 
         [SerializeField]
+        private bool _costInZaps = false;
+        public bool costInZaps
+        {
+            get
+            {
+                return _costInZaps;
+            }
+            set
+            {
+                _costInZaps = value;
+                if(_costInZaps == true)
+                {
+                    m_PriceBannerInstance.m_Text.color = Constants.Instance.ZapCurrencyTextColor;
+                }
+                else
+                {
+                    m_PriceBannerInstance.m_Text.color = Constants.Instance.ScoreTextColor;
+                }
+            }
+        }
+
+        [SerializeField]
         private string m_Description;
 
         protected bool m_IsUnlocked = false;
@@ -93,7 +115,17 @@ namespace UI
                 SpecialUICanvas specialUICanvas = GameMaster.Instance.m_UIManager.m_ShopCanvas.m_WarpStorePanel.m_SpecialUICanvas;
                 if(specialUICanvas != null)
                 {
-                    if (statManager.GetZaps() >= m_Price)
+                    int totalAvailableCurrency = 0;
+                    if (_costInZaps)
+                    {
+                        totalAvailableCurrency = statManager.GetZaps();
+                    }
+                    else
+                    {
+                        totalAvailableCurrency = statManager.GetScore();
+                    }
+
+                    if (totalAvailableCurrency >= m_Price)
                     {
                         string descriptionText = m_Text;
                         if(m_Description != "")
@@ -104,7 +136,14 @@ namespace UI
                     }
                     else
                     {
-                        specialUICanvas.m_FailedPurchasePanel.Show();
+                        if(_costInZaps)
+                        {
+                            specialUICanvas.m_FailedPurchasePanelForZaps.Show();
+                        }
+                        else
+                        {
+                            specialUICanvas.m_FailedPurchasePanelForPoints.Show();
+                        }
                     }
                 }
             }
@@ -115,7 +154,14 @@ namespace UI
             StatsManager statManager = GameMaster.Instance.m_StatsManager;
             if (statManager)
             {
-                statManager.AddZaps(-m_Price);
+                if (_costInZaps)
+                {
+                    statManager.AddZaps(-m_Price);
+                }
+                else
+                {
+                    statManager.AddToScore(-m_Price);
+                }
                 m_IsUnlocked = true;
                 m_BackgroundImage.color = Constants.Instance.UnlockedColor;
                 m_StatusInstance.SetUnlocked();

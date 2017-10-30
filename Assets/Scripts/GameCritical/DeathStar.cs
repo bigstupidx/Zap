@@ -12,7 +12,16 @@ namespace GameCritical
         public bool m_CanKillPlayer;
 
         [SerializeField]
-        private float m_Speed;
+        private float m_MaxSpeed;
+
+        [SerializeField]
+        private float m_BaseSpeed;
+
+        [SerializeField]
+        private float m_CurrSpeed;
+
+        [SerializeField]
+        private float m_SpeedMultiplierPercentageIncrement;
 
         [SerializeField]
         private Vector3 m_StartOffsetPosition = new Vector3(0, -1.0f, 0);
@@ -46,6 +55,12 @@ namespace GameCritical
             {
                 m_PlayerColliderRadius = playerCircleCollider.radius;
             }
+
+            // Cap base speed
+            if(m_BaseSpeed > m_MaxSpeed)
+            {
+                m_BaseSpeed = m_MaxSpeed;
+            }
         }
 
         // Update is called once per frame
@@ -53,7 +68,7 @@ namespace GameCritical
         {
             if(m_IsMoving)
             {
-                this.transform.position += new Vector3(0, m_Speed, 0) * Time.deltaTime * m_SpeedMultiplier;
+                this.transform.position += new Vector3(0, 1, 0) * Time.deltaTime * m_SpeedMultiplier * m_CurrSpeed;
             }
 
             // Kill player if death star overlaps
@@ -71,12 +86,17 @@ namespace GameCritical
             }
         }
 
+        public void IncreaseSpeedByLevel()
+        {
+            SetSpeedMultiplier(m_SpeedMultiplierPercentageIncrement, true);
+        }
+
         public void ResetPosition()
         {
             Vector3 bottomOfScreen = Camera.main.ScreenToWorldPoint(new Vector3(Screen.width / 2, 0, 0));
             bottomOfScreen.z = 0;
             this.transform.position = bottomOfScreen + m_StartOffsetPosition;
-            SetSpeedMultiplier(1.0f, false);
+            //SetSpeedMultiplier(1.0f, false);
         }
 
         public void SetIsMoving(bool isMoving)
@@ -88,10 +108,24 @@ namespace GameCritical
                 m_ParticleSystem.Stop();
         }
 
-        public void SetSpeedMultiplier(float multiplier, bool shouldAddToCurrentSpeed)
+        public void SetSpeedMultiplier(float increaseInSpeed, bool shouldAddToCurrentSpeed)
         {
-            m_SpeedMultiplier = (shouldAddToCurrentSpeed) ? m_SpeedMultiplier + multiplier: multiplier;
-            GameMaster.Instance.m_UIManager.m_InfoPanel.SetDeathStarMultiplierText(m_SpeedMultiplier);
+            m_SpeedMultiplier = (shouldAddToCurrentSpeed) ? m_SpeedMultiplier + increaseInSpeed : increaseInSpeed;
+            GameMaster.Instance.m_UIManager.m_InfoPanel.SetDeathStarMultiplierText(Mathf.Round(m_SpeedMultiplier * 100f) / 100f);
+
+            CapSpeed();
+        }
+
+        private void CapSpeed()
+        {
+            // if speed with mulitplier is greater than the max speed then cap it and cap the multiplier
+            float speedWithMultiplier = m_SpeedMultiplier * m_BaseSpeed;
+            m_CurrSpeed = speedWithMultiplier;
+            if (speedWithMultiplier >= m_MaxSpeed)
+            {
+                m_CurrSpeed = m_MaxSpeed;
+                m_SpeedMultiplier = m_MaxSpeed / m_BaseSpeed;
+            }
         }
     }
 }

@@ -18,6 +18,9 @@ namespace Utility
         public Color UnlockedColor;
         public Color LockedColor;
 
+        public Color ScoreTextColor;
+        public Color ZapCurrencyTextColor;
+
         void Awake()
         {
             // create static instance if there is not one

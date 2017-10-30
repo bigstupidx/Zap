@@ -15,10 +15,20 @@ namespace IAP
 
         private static IStoreController m_StoreController;          // The Unity Purchasing system.
         private static IExtensionProvider m_StoreExtensionProvider; // The store-specific Purchasing subsystems.
-        public static string PRODUCT_50_ZAPS = "zaps50";
-        public static string PRODUCT_100_ZAPS = "zaps100";
-        public static string PRODUCT_250_ZAPS = "zaps250";
-        public static string PRODUCT_1000_ZAPS = "zaps1000";
+        public static string PRODUCT_50_ZAPS = /*"com.rgs.zap."*/"zaps50";
+        public static string PRODUCT_100_ZAPS = /*"com.rgs.zap."*/"zaps100";
+        public static string PRODUCT_250_ZAPS = /*"com.rgs.zap.*/"zaps250";
+        public static string PRODUCT_1000_ZAPS = /*"com.rgs.zap.*/"zaps1000";
+
+        /*public static string PRODUCT_50_ZAPS_GooglePlay = "zaps50";
+        public static string PRODUCT_100_ZAPS_GooglePlay = "zaps100";
+        public static string PRODUCT_250_ZAPS_GooglePlay = "zaps250";
+        public static string PRODUCT_1000_ZAPS_GooglePlay = "zaps1000";
+
+        public static string PRODUCT_50_ZAPS_Apple = "zaps50";
+        public static string PRODUCT_100_ZAPS_Apple = "zaps100";
+        public static string PRODUCT_250_ZAPS_Apple = "zaps250";
+        public static string PRODUCT_1000_ZAPS_Apple = "zaps1000";*/
 
         private void Awake()
         {
