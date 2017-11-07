@@ -15,6 +15,8 @@ namespace GameCritical
         public ShopCanvas m_ShopCanvas;
         public LevelPanel m_LevelPanel;
         public BoostLoading m_BoostLoading;
+        public LoginSignUpPanels m_LoginSignupPanels;
+        public ConfirmLogoutPanel m_ConfirmLogoutPanel;
 
         [SerializeField]
         private PopUpText m_PopUpTextPrefab;
@@ -26,8 +28,19 @@ namespace GameCritical
         [SerializeField]
         private RectTransform m_NotificationSpawn;
 
+        [SerializeField]
+        private AudioClip m_DefaultButtonClickSound;
+
         void Awake()
         {
+            if(m_ConfirmLogoutPanel == null)
+            {
+                m_ConfirmLogoutPanel = FindObjectOfType<ConfirmLogoutPanel>();
+            }
+            if (m_LoginSignupPanels == null)
+            {
+                m_LoginSignupPanels = FindObjectOfType<LoginSignUpPanels>();
+            }
             if (m_InfoPanel == null)
             {
                 m_InfoPanel = FindObjectOfType<InfoPanel>();

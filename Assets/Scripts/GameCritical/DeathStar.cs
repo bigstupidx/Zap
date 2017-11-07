@@ -38,6 +38,7 @@ namespace GameCritical
 
         void Awake()
         {
+            m_CurrSpeed = m_BaseSpeed;
             if (m_ParticleSystem == null)
             {
                 m_ParticleSystem = GetComponentInChildren<ParticleSystem>();

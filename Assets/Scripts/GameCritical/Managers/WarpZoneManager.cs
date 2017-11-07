@@ -50,6 +50,7 @@ namespace GameCritical
         public WarpZone SpawnDeadZone()
         {
             Vector3 topMiddleInWorldSpace = ScreenUtilities.GetWSofSSPosition(0.5f, 1.0f);
+            topMiddleInWorldSpace = new Vector3(topMiddleInWorldSpace.x, topMiddleInWorldSpace.y, GameMaster.Instance.m_PlayerMovement.transform.position.z);
             m_WarpZone = (WarpZone)Instantiate(m_WarpZonePrefab, topMiddleInWorldSpace + m_WarpZonePrefab.GetOriginOffsetPosition(), Quaternion.identity);
             return m_WarpZone;
         }

@@ -24,6 +24,9 @@ namespace GameCritical
         private int m_FGSoundtrackIndex;
         private AudioSource m_FGAudioSource;
 
+        [SerializeField]
+        private float m_VolumeFadeInTime = 3.0f;
+
         void Start()
         {
             m_BGAudioSource = AudioManager.Instance.Spawn2DAudio();
@@ -41,16 +44,40 @@ namespace GameCritical
 
             if (!m_FGAudioSource.isPlaying)
             {
-                PlayNextFGTrack();
+                StartCoroutine(PlayNextFGTrack());
             }
         }
 
-        public void PlayNextFGTrack()
+        private IEnumerator transitionFGVolumeOfCurrentTrack(float start, float end)
         {
+            float currTime = 0.0f;
+            while(currTime < m_VolumeFadeInTime)
+            {
+                currTime += Time.deltaTime;
+                m_FGAudioSource.volume = Mathf.Lerp(start, end, currTime / m_VolumeFadeInTime);
+                yield return null;
+            }
+        }
+
+        public void RestartFGTracksFromBeginning()
+        {
+            m_FGSoundtrackIndex = 0;
+            m_FGAudioSource.clip = m_FGSoundtracks[m_FGSoundtrackIndex];
+            m_FGAudioSource.volume = m_FGVolume;
+            m_FGAudioSource.Play();
+        }
+
+        public IEnumerator PlayNextFGTrack()
+        {
+            if(m_FGAudioSource.isPlaying)
+            {
+                yield return StartCoroutine(transitionFGVolumeOfCurrentTrack(1.0f, 0.0f));
+            }
             m_CurrentFGSoundtrack = GetNextFGTrack();
             m_FGAudioSource.clip = m_CurrentFGSoundtrack;
             m_FGAudioSource.volume = m_FGVolume;
             m_FGAudioSource.Play();
+            yield return StartCoroutine(transitionFGVolumeOfCurrentTrack(0.0f, 1.0f));
         }
 
         private AudioClip GetNextFGTrack()

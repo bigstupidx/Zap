@@ -11,6 +11,7 @@ namespace UI
         public ZapScorer m_ZapScorer;
         public ZapBanker m_ZapBanker;
         public Text m_DeathStartMultiplierText;
+        public Text m_Username;
         public string m_DeathStarMultiplierStr;
 
         void Start()
@@ -37,6 +38,18 @@ namespace UI
                     Debug.LogError("Zap Banker in InfoPanel is null");
                 }
             }
+        }
+
+        public void SetUsername(string username)
+        {
+            m_Username.text = username;
+            SaveManager.SetString(Database.DatabaseConstants.m_PARAM_USERNAME, username);
+        }
+
+        public void RemoveUsername()
+        {
+            m_Username.text = "";
+            SaveManager.RemoveKey(Database.DatabaseConstants.m_PARAM_USERNAME);
         }
 
         public void SetDeathStarMultiplierText(float multiplier)

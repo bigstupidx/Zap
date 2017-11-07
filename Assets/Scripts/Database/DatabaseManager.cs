@@ -8,7 +8,6 @@ namespace Database
     {
         public DataLoader m_DataLoader;
         public DataInserter m_DataInserter;
-        public Login m_Login;
 
         // Use this for initialization
         void Start()
@@ -20,10 +19,6 @@ namespace Database
             if (m_DataLoader == null)
             {
                 m_DataLoader = FindObjectOfType<DataLoader>();
-            }
-            if (m_Login == null)
-            {
-                m_Login = FindObjectOfType<Login>();
             }
         }
     }

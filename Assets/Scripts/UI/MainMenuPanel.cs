@@ -20,10 +20,9 @@ namespace UI
             Debug.Log("Pressed Rate Button");
         }
 
-        public void Logout()
+        public void ShowConfirmLogout()
         {
-            GameCritical.GameMaster.Instance.m_LoginSignupPanels.Show();
-            this.Hide();
+            GameMaster.Instance.m_UIManager.m_ConfirmLogoutPanel.Show();
         }
     }
 }

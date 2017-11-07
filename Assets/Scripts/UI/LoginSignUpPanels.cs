@@ -1,15 +1,14 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using GameCritical;
 
 namespace UI
 {
     public class LoginSignUpPanels : UIPanel
     {
-        [SerializeField]
-        private GameObject _signUpMenu;
-        [SerializeField]
-        private GameObject _loginMenu;
+        public SignUpPanel _signUpMenu;
+        public LoginPanel _loginMenu;
 
         [SerializeField]
         private Transform _SlideInLocation;
@@ -18,6 +17,16 @@ namespace UI
 
         [SerializeField]
         private float _lerpTime;
+
+        private void Start()
+        {
+            if (SaveManager.IsStringStored(Database.DatabaseConstants.m_PARAM_USERNAME))
+            {
+                Hide();
+                string username = SaveManager.GetString(Database.DatabaseConstants.m_PARAM_USERNAME);
+                GameMaster.Instance.m_UIManager.m_InfoPanel.SetUsername(username);
+            }
+        }
 
         public override void Show()
         {
@@ -39,14 +48,14 @@ namespace UI
 
         public void LoginSlideIn()
         {
-            StartCoroutine(SlideTo(_SlideInLocation.position, _loginMenu));
-            StartCoroutine(SlideTo(_SlideOutLocation.position, _signUpMenu));
+            StartCoroutine(SlideTo(_SlideInLocation.position, _loginMenu.gameObject));
+            StartCoroutine(SlideTo(_SlideOutLocation.position, _signUpMenu.gameObject));
         }
 
         public void SignUpSlideIn()
         {
-            StartCoroutine(SlideTo(_SlideInLocation.position, _signUpMenu));
-            StartCoroutine(SlideTo(_SlideOutLocation.position, _loginMenu));
+            StartCoroutine(SlideTo(_SlideInLocation.position, _signUpMenu.gameObject));
+            StartCoroutine(SlideTo(_SlideOutLocation.position, _loginMenu.gameObject));
         }
     }
 }

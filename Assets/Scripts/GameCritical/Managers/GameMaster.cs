@@ -28,7 +28,7 @@ namespace GameCritical
         public PlayerBoost m_PlayerBoost;
         public SolarSystemSpawner m_SolarSystemSpawner;
         public NotificationManager m_NotificationManager;
-        public LoginSignUpPanels m_LoginSignupPanels;
+        public MusicManager m_MusicManager;
 
         public DeathStar m_DeathStar;
         public CameraFollow m_CameraFollow;
@@ -50,9 +50,9 @@ namespace GameCritical
                 }
             }
 
-            if (m_LoginSignupPanels == null)
+            if(m_MusicManager == null)
             {
-                m_LoginSignupPanels = FindObjectOfType<LoginSignUpPanels>();
+                m_MusicManager = FindObjectOfType<MusicManager>();
             }
             if (m_NotificationManager == null)
             {
@@ -143,6 +143,7 @@ namespace GameCritical
             m_PlayerMovement.MoveToZapGrid();
             m_DadEventManager.enabled = true;
             GameMaster.Instance.m_UIManager.m_BoostLoading.SlideToInGamePosition();
+            StartCoroutine(m_MusicManager.PlayNextFGTrack());
         }
 
         public void EndGame()

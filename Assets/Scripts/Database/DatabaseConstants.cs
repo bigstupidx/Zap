@@ -4,29 +4,20 @@ using UnityEngine;
 
 namespace Database
 {
-    public class DatabaseConstants : MonoBehaviour
+    public static class DatabaseConstants
     {
-        public static DatabaseConstants Instance;
+        // request types
+        public static string m_REQUEST_AUTHENTICATE_USER = "AUTHENTICATE_USER";
+        public static string m_REQUEST_CREATE_USER = "CREATE_USER";
 
-        public string m_UsernamePost = "usernamePost";
-        public string m_PasswordPost = "passwordPost";
-        public string m_EmailPost = "emailPost";
+        // parameter types
+        public static string m_PARAM_USERNAME = "username";
+        public static string m_PARAM_PASSWORD = "password";
+        public static string m_PARAM_EMAIL = "email";
+        public static string m_PARAM_REQUEST = "request";
 
-        void Awake()
-        {
-            // create static instance if there is not one
-            if (Instance == null)
-            {
-                Instance = this;
-            }
-            else
-            {
-                if (Instance != this)
-                {
-                    Destroy(this.gameObject);
-                }
-            }
-            DontDestroyOnLoad(this.gameObject);
-        }
+        // response types
+        public static string m_RESPONSE_AUTHORIZED = "AUTHORIZED";
+        public static string m_RESPONSE_UNAUTHORIZED = "UNAUTHORIZED";
     }
 }

@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System;
 
 namespace Database
 {
@@ -10,31 +11,30 @@ namespace Database
         public string m_InputPassword;
         public string m_InputEmail;
 
-        private string m_CreateUserURL = "http://localhost/Zap/InsertUser.php";
+        private string m_CreateUserURL = "http://localhost/zap/UserRequests.php";
 
-        // Use this for initialization
-        void Start()
+        public IEnumerator CreateUser(string username, string password, string email, 
+            Action successAction, Action failedAction)
         {
-
-        }
-
-        // Update is called once per frame
-        void Update()
-        {
-            if (Input.GetKeyDown(KeyCode.Space))
-            {
-                CreateUser(m_InputUserName, m_InputPassword, m_InputEmail);
-            }
-        }
-
-        public void CreateUser(string username, string password, string email)
-        {
+            // send create user request
             WWWForm form = new WWWForm();
-            form.AddField(DatabaseConstants.Instance.m_UsernamePost, username);
-            form.AddField(DatabaseConstants.Instance.m_EmailPost, email);
-            form.AddField(DatabaseConstants.Instance.m_PasswordPost, password);
+            form.AddField(DatabaseConstants.m_PARAM_REQUEST, DatabaseConstants.m_REQUEST_CREATE_USER);
+            form.AddField(DatabaseConstants.m_PARAM_USERNAME, username);
+            form.AddField(DatabaseConstants.m_PARAM_PASSWORD, password);
+            form.AddField(DatabaseConstants.m_PARAM_EMAIL, email);
+            WWW responseMessage = new WWW(m_CreateUserURL, form);
+            yield return responseMessage;
 
-            WWW www = new WWW(m_CreateUserURL, form);
+            // get response
+            string responseString = responseMessage.text;
+            if(responseString == DatabaseConstants.m_RESPONSE_AUTHORIZED)
+            {
+                successAction();
+            }
+            else
+            {
+                failedAction();
+            }
         }
     }
 }
