@@ -32,9 +32,12 @@ namespace Player
         private float m_ToWarpZoneSpeed = 100.0f;
         [SerializeField]
         private LayerMask m_TouchInputMask;
+        [SerializeField]
+        private GameObject m_NextRowIndicator;
 
 
         private Vector3 m_TargetPosition;
+        public Vector3 TargetPosition { get { return m_TargetPosition; } }
         private Vector3 m_StartPosition;
         private float m_SpeedMultiplier = 1.0f;
         private float m_LerpAmount = 0.0f;
@@ -421,6 +424,7 @@ namespace Player
         public void MoveToWarpZone()
         {
             // Move to next zap grid
+            m_NextRowIndicator.gameObject.SetActive(false);
             WarpZone newDeadZone = GameMaster.Instance.m_WarpZoneManager.SpawnDeadZone();
             m_CurrZap = null;
             m_NextZap = null;
@@ -450,6 +454,7 @@ namespace Player
 
         public void MoveToZapGrid()
         {
+            m_NextRowIndicator.gameObject.SetActive(true);
             m_CurrZap = null;
             m_NextZap = null;
             m_PrevMovementState = MovementState.MovingToZapGrid;

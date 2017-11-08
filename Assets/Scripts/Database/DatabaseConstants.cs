@@ -19,5 +19,6 @@ namespace Database
         // response types
         public static string m_RESPONSE_AUTHORIZED = "AUTHORIZED";
         public static string m_RESPONSE_UNAUTHORIZED = "UNAUTHORIZED";
+        public static string m_RESPONSE_ALREADY_EXISTS = "ALREADY_EXISTS";
     }
 }

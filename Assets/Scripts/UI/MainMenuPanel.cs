@@ -9,6 +9,9 @@ namespace UI
 {
     public class MainMenuPanel : UIPanel
     {
+        public Button m_LogoutButton;
+        public Button m_LoginButton;
+
         public void PlayGame()
         {
             GameCritical.GameMaster.Instance.PlayGame();

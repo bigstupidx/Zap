@@ -9,7 +9,7 @@ namespace UI
 {
     public class LoginPanel : MonoBehaviour
     {
-        public InputField m_UsernameInputField;
+        public InputField m_EmailInputField;
         
         public InputField m_PasswordInputField;
 
@@ -46,7 +46,7 @@ namespace UI
 
         private void OnEnable()
         {
-            m_UsernameInputField.text = "";
+            m_EmailInputField.text = "";
             m_PasswordInputField.text = "";
         }
 
@@ -62,8 +62,10 @@ namespace UI
         #region Login Methods
         private void loginSuccess()
         {
-            GameMaster.Instance.m_UIManager.m_InfoPanel.SetUsername(m_UsernameInputField.text);
+            GameMaster.Instance.m_UIManager.m_InfoPanel.SetUsername(m_EmailInputField.text);
             GameMaster.Instance.m_UIManager.m_LoginSignupPanels.gameObject.SetActive(false);
+            GameMaster.Instance.m_UIManager.m_MainMenuPanel.m_LogoutButton.gameObject.SetActive(true);
+            GameMaster.Instance.m_UIManager.m_MainMenuPanel.m_LoginButton.gameObject.SetActive(false);
             m_ErrorMessage.text = "";
             m_LoginSuccessfulAnimation.Play();
         }
@@ -73,9 +75,9 @@ namespace UI
         }
         private void login()
         {
-            if(m_UsernameInputField.text.Length <= 0 || m_PasswordInputField.text.Length <= 0)
+            if(m_EmailInputField.text.Length <= 0 || m_PasswordInputField.text.Length <= 0)
             {
-                m_ErrorMessage.text = "please type a user and password";
+                m_ErrorMessage.text = "please type an email and password";
                 return;
             }
             else
@@ -87,7 +89,7 @@ namespace UI
             if(dataLoader != null)
             {
                 dataLoader.StartCoroutine(dataLoader.AuthenticateUser(
-                    m_UsernameInputField.text, 
+                    m_EmailInputField.text, 
                     m_PasswordInputField.text,
                     loginSuccess,
                     loginFailed

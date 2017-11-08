@@ -67,7 +67,7 @@ namespace UI
 
         private void signupSuccess()
         {
-            GameMaster.Instance.m_UIManager.m_LoginSignupPanels._loginMenu.m_UsernameInputField.text = m_UsernameInputField.text;
+            GameMaster.Instance.m_UIManager.m_LoginSignupPanels._loginMenu.m_EmailInputField.text = m_EmailInputField.text;
             //GameMaster.Instance.m_UIManager.m_LoginSignupPanels._loginMenu.m_PasswordInputField.text = m_PasswordInputField.text;
             m_ErrorMessage.text = "";
             m_UsernameInputField.text = "";
@@ -79,6 +79,10 @@ namespace UI
         private void signupFailed()
         {
             m_ErrorMessage.text = "sign-up failed";
+        }
+        private void signupEmailAlreadyExists()
+        {
+            m_ErrorMessage.text = "email is already in use";
         }
         private void signup()
         {
@@ -109,7 +113,8 @@ namespace UI
                     m_PasswordInputField.text,
                     m_EmailInputField.text,
                     signupSuccess,
-                    signupFailed
+                    signupFailed,
+                    signupEmailAlreadyExists
                     ));
             }
             else

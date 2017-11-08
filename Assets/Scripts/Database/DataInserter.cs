@@ -14,7 +14,7 @@ namespace Database
         private string m_CreateUserURL = "http://localhost/zap/UserRequests.php";
 
         public IEnumerator CreateUser(string username, string password, string email, 
-            Action successAction, Action failedAction)
+            Action successAction, Action failedAction, Action alreadyExistsAction)
         {
             // send create user request
             WWWForm form = new WWWForm();
@@ -27,7 +27,11 @@ namespace Database
 
             // get response
             string responseString = responseMessage.text;
-            if(responseString == DatabaseConstants.m_RESPONSE_AUTHORIZED)
+            if (responseString == DatabaseConstants.m_RESPONSE_ALREADY_EXISTS)
+            {
+                alreadyExistsAction();
+            }
+            else if(responseString == DatabaseConstants.m_RESPONSE_AUTHORIZED)
             {
                 successAction();
             }
