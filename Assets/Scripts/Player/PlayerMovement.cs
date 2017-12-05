@@ -55,12 +55,15 @@ namespace Player
         private PlayerScaler m_PlayerScaler;
         private PlayerDecorations m_PlayerDecorations;
 
+        bool shouldRotateInTowardTargetPosition;
+
         void Awake()
         {
             m_Rigidbody = GetComponent<Rigidbody2D>();
             m_SpriteRenderer = GetComponent<SpriteRenderer>();
             m_PlayerScaler = GetComponent<PlayerScaler>();
             m_PlayerDecorations = GetComponent<PlayerDecorations>();
+            shouldRotateInTowardTargetPosition = true;
         }
 
         // Update is called once per frame
@@ -101,6 +104,26 @@ namespace Player
             }*/
 
             lerpToTarget();
+
+            if (shouldRotateInTowardTargetPosition)
+                rotateTowardTarget();
+            else
+                rotateToForwardPosition();
+        }
+
+        private void rotateToForwardPosition()
+        {
+            transform.rotation = Quaternion.Lerp(this.transform.rotation, Quaternion.AngleAxis(0, Vector3.forward), 0.1f);
+        }
+
+        private void rotateTowardTarget()
+        {
+            Vector3 moveDirection = m_TargetPosition - this.transform.position;
+            if (moveDirection != Vector3.zero)
+            {
+                float angle = Mathf.Atan2(moveDirection.y, moveDirection.x) * Mathf.Rad2Deg;
+                transform.rotation = Quaternion.Lerp(this.transform.rotation, Quaternion.AngleAxis(angle - 90, Vector3.forward), 0.18f);
+            }
         }
 
         public void SetMovementState(MovementState movementState)
@@ -148,6 +171,7 @@ namespace Player
                 {
                     deathStar.SetIsMoving(false);
                 }
+                shouldRotateInTowardTargetPosition = true;
                 m_LerpAmount += Time.deltaTime * m_SpeedMultiplier * m_VerticalMoveSpeed;
                 m_LerpPercentage = m_LerpAmount / startToFinishDistance;
                 this.transform.position = Vector3.Lerp(m_StartPosition, m_TargetPosition, m_LerpPercentage);
@@ -200,7 +224,8 @@ namespace Player
             {
                 m_TargetPosition = this.transform.position;
                 m_StartPosition = this.transform.position;
-                if(!m_PlayerDecorations.GetWarpZonePS().isPlaying)
+                shouldRotateInTowardTargetPosition = false;
+                if (!m_PlayerDecorations.GetWarpZonePS().isPlaying)
                 {
                     m_PlayerDecorations.ShowWarpZonePS();
                 }

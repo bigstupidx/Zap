@@ -44,7 +44,7 @@ namespace Player
                 pd.HideAll();
             }
 
-            GameCritical.GameMaster.Instance.EndGame();
+            GameCritical.GameMaster.Instance.m_UIManager.m_ScorePanel.Show();
         }
     }
 }

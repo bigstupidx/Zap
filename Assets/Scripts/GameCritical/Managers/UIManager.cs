@@ -17,6 +17,7 @@ namespace GameCritical
         public BoostLoading m_BoostLoading;
         public LoginSignUpPanels m_LoginSignupPanels;
         public ConfirmLogoutPanel m_ConfirmLogoutPanel;
+        public ScoreMenuPanel m_ScorePanel;
 
         [SerializeField]
         private PopUpText m_PopUpTextPrefab;
@@ -64,6 +65,10 @@ namespace GameCritical
             if (m_BoostLoading == null)
             {
                 m_BoostLoading = FindObjectOfType<BoostLoading>();
+            }
+            if (m_ScorePanel == null)
+            {
+                m_ScorePanel = FindObjectOfType<ScoreMenuPanel>();
             }
         }
 

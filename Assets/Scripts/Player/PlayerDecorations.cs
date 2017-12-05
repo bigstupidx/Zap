@@ -18,12 +18,10 @@ namespace Player
         [SerializeField]
         private AtmosphereFire m_AtmosphereFire;
         private ParticleSystem m_CurrTrailPS;
-        private SpriteRenderer m_SpriteRenderer;
+        public SpriteRenderer m_SpriteRenderer;
 
         void Awake()
         {
-            m_SpriteRenderer = this.GetComponent<SpriteRenderer>();
-
             // set warp zone particle system to foreground layer
             ParticleSystemRenderer psr = m_WarpZonePS.GetComponent<ParticleSystemRenderer>();
             psr.sortingLayerName = m_PSSortingLayer;
@@ -64,10 +62,11 @@ namespace Player
             }
         }
 
-        public void SetCharacter(Sprite sprite, Color color)
+        public void SetCharacter(Sprite sprite, Color color, Vector3 scale)
         {
             m_SpriteRenderer.sprite = sprite;
             m_SpriteRenderer.color = color;
+            m_SpriteRenderer.transform.localScale = scale;
         }
 
         public void SetTrailPS(ParticleSystem newTrailPSPrefab)

@@ -12,6 +12,7 @@ namespace UI
         public ZapBanker m_ZapBanker;
         public Text m_DeathStartMultiplierText;
         public Text m_Username;
+        public Text m_StageText;
         public string m_DeathStarMultiplierStr;
 
         void Start()
@@ -38,6 +39,12 @@ namespace UI
                     Debug.LogError("Zap Banker in InfoPanel is null");
                 }
             }
+        }
+
+        public void SetStage(int stage)
+        {
+            m_StageText.text = "STAGE: " + stage.ToString();
+            GameMaster.Instance.m_UIManager.m_ScorePanel.SetStageText(stage);
         }
 
         public void SetUsername(string username)

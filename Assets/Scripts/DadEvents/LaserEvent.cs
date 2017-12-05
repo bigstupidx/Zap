@@ -58,6 +58,7 @@ namespace DadEvents
 
                 // make sure the laser is spawned at the same y position as the zap row.
                 spawnPos.y = zapInRow.GetOffsetPosition().y;
+                spawnPos.z = 80.0f;
                 laserInstance.SetPositionLaserPost(spawnPos, isOnRightSide);
             }
 

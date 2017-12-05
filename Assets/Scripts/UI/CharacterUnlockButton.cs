@@ -27,7 +27,8 @@ namespace UI
 
             GameMaster.Instance.m_PlayerDecorations.SetCharacter(
                 m_CharacterSprite.sprite, 
-                m_CharacterSprite.color);
+                m_CharacterSprite.color,
+                m_CharacterSprite.transform.localScale);
         }
     }
 }

@@ -42,12 +42,15 @@ namespace GameCritical
         private ZapGrid m_ZapGridPrefab;
         private ZapGrid m_CurrZapGrid;
 
+        private int m_CurrentStage;
+
         void Start()
         {
             m_CurrCols = m_StartCols;
             m_CurrRows = m_StartRows;
             m_CurrGrids = m_StartGrids;
             m_CurrGridIndex = 0;
+            m_CurrentStage = 1;
         }
 
         private void scaleDifficulty()
@@ -60,6 +63,9 @@ namespace GameCritical
             {
                 stageScale();
             }
+
+            m_CurrentStage++;
+            GameMaster.Instance.m_UIManager.m_InfoPanel.SetStage(m_CurrentStage);
         }
 
         // scales difficulty after a stage

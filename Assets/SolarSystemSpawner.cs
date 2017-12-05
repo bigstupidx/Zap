@@ -84,6 +84,7 @@ public class SolarSystemSpawner : MonoBehaviour {
         Vector3 spawnPos = Vector3.Lerp(aboveTopLeftOfScreen, aboveTopRightOfScreen, randomRangeBetweenLeftAndRight);
 
         // Spawn solar object
+        spawnPos.z = -80;
         SolarObject solarObjectInstance = Instantiate(solarObjectPrefab, spawnPos, Quaternion.identity, this.transform);
         _maxSolarObjects++;
 

@@ -58,6 +58,7 @@ namespace DadEvents
             // get random screen vertical point to spawn asteroid and exclamation
             float screenVerticalSpawnPercentage = Random.Range(m_LowerScreenBound, m_UpperScreenBound);
             Vector3 spawnPos = Utility.ScreenUtilities.GetWSofSSPosition(1.0f, screenVerticalSpawnPercentage);
+            spawnPos.z = -80.0f;
 
             // spawn exclamation
             Blink exclamationInstance = Instantiate(

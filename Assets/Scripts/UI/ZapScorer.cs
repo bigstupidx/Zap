@@ -51,6 +51,7 @@ namespace UI
         public void UpdateScoreString(int totalScore)
         {
             m_Text.text = m_ScoreString + totalScore;
+            GameMaster.Instance.m_UIManager.m_ScorePanel.SetScoreText(totalScore);
         }
     }
 }
