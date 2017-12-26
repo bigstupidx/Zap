@@ -21,6 +21,11 @@ namespace UI
             m_MainImage.color = m_CharacterSprite.color;
         }
 
+        private void Update()
+        {
+            m_MainImage.gameObject.transform.Rotate(Vector3.forward * 100.0f * Time.deltaTime);
+        }
+
         public override void equip()
         {
             base.equip();

@@ -8,6 +8,8 @@ namespace GameCritical
     [RequireComponent(typeof(Rigidbody2D))]
     public abstract class Zap : MonoBehaviour
     {
+        public static int m_PointMultiplier = 1;
+
         [SerializeField]
         private Color m_PopUpColor;
 
@@ -63,11 +65,14 @@ namespace GameCritical
 
         private bool m_Occupied;
 
+        private Point pointPrefab;
+
         void Awake()
         {
             m_SpriteRenderer = GetComponent<SpriteRenderer>();
             m_SpriteRenderer.color = m_Color;
             m_Occupied = false;
+            pointPrefab = Resources.Load<Point>(Utility.PrefabFinder.PREFABS + "Point");
         }
 
         void Start()
@@ -120,15 +125,32 @@ namespace GameCritical
             {
                 UIManager m_UIManager = GameMaster.Instance.m_UIManager;
                 StatsManager m_StatsManager = GameMaster.Instance.m_StatsManager;
+
+                int pointsWithMultiplier = m_Points;
+                if (m_Points > 0)
+                    pointsWithMultiplier *= m_PointMultiplier;
+
                 if (m_UIManager && m_StatsManager)
                 {
-                    m_StatsManager.AddToScore(m_Points);
+                    m_StatsManager.AddToScore(pointsWithMultiplier);
                     m_UIManager.SpawnPopUpText(
-                        m_Points.ToString(),
+                        pointsWithMultiplier.ToString(),
                         this.transform.position + new Vector3(Width / 2.0f, Height * 2.0f, 0),
                         m_PopUpColor);
                 }
+
+                int numPointsToSpawn = pointsWithMultiplier / 10;
+                for(int i = 0; i < numPointsToSpawn; i++)
+                {
+                    Invoke("spawnPoint", i / 12.0f);
+                }
             }
+        }
+
+        private void spawnPoint()
+        {
+            Point p = Instantiate(pointPrefab, GetCenter(), Quaternion.identity);
+            p.SetTarget(GameMaster.Instance.m_UIManager.m_InfoPanel.m_ZapScorer.gameObject);
         }
 
         public void ShowPopUptext()
@@ -173,7 +195,7 @@ namespace GameCritical
 
                     if(m_BS._breakSound != null)
                     {
-                        AudioManager.Instance.Spawn2DAudio(m_BS._breakSound);
+                        AudioManager.Instance.Spawn2DAudio(m_BS._breakSound, true);
                     }
 
                     // Instantiate splitting zaps

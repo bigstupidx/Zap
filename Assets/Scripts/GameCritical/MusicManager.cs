@@ -29,10 +29,10 @@ namespace GameCritical
 
         void Start()
         {
-            m_BGAudioSource = AudioManager.Instance.Spawn2DAudio();
-            m_FGAudioSource = AudioManager.Instance.Spawn2DAudio();
+            m_BGAudioSource = AudioManager.Instance.Spawn2DAudio(null, false);
+            m_FGAudioSource = AudioManager.Instance.Spawn2DAudio(null, false);
             m_BGSoundtrackIndex = -1;
-            m_FGSoundtrackIndex = -1;
+            m_FGSoundtrackIndex = Random.Range(0, m_FGSoundtracks.Count);
         }
 
         void Update()

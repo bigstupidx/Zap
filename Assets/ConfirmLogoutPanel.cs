@@ -10,6 +10,7 @@ namespace UI
         public void Logout()
         {
             GameMaster.Instance.m_UIManager.m_InfoPanel.RemoveUsername();
+            GameMaster.Instance.m_UIManager.m_InfoPanel.RemovePassword();
             GameMaster.Instance.m_UIManager.m_LoginSignupPanels.Show();
             Hide();
         }

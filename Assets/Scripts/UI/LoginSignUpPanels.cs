@@ -18,19 +18,33 @@ namespace UI
         [SerializeField]
         private float _lerpTime;
 
-        private void Start()
+        private void Awake()
         {
-            if (SaveManager.IsStringStored(Database.DatabaseConstants.m_PARAM_USERNAME))
+            if (SaveManager.IsStringStored(Database.DatabaseConstants.m_PARAM_EMAIL))
             {
                 Hide();
-                string username = SaveManager.GetString(Database.DatabaseConstants.m_PARAM_USERNAME);
-                GameMaster.Instance.m_UIManager.m_InfoPanel.SetUsername(username);
+                string email = SaveManager.GetString(Database.DatabaseConstants.m_PARAM_EMAIL);
+                string pass = SaveManager.GetString(Database.DatabaseConstants.m_PARAM_PASSWORD);
+                GameMaster.Instance.m_UIManager.m_InfoPanel.SetEmail(email);
+                GameMaster.Instance.m_UIManager.m_InfoPanel.SetPassword(pass);
+                GameMaster.Instance.m_UIManager.m_LoginSignupPanels._loginMenu.m_EmailInputField.text = email;
+                GameMaster.Instance.m_UIManager.m_LoginSignupPanels._loginMenu.m_PasswordInputField.text = pass;
+                //GameMaster.Instance.m_UIManager.m_MainMenuPanel.m_LoginButton.gameObject.SetActive(false);
+                //GameMaster.Instance.m_UIManager.m_MainMenuPanel.m_LogoutButton.gameObject.SetActive(true);
+                GameMaster.Instance.m_UIManager.m_LoginSignupPanels._loginMenu.login();
             }
+        }
+
+        public void PlayOffline()
+        {
+            GameMaster.Instance.m_UIManager.m_InfoPanel.RemoveUsername();
+            GameMaster.Instance.m_UIManager.m_InfoPanel.RemovePassword();
         }
 
         public override void Show()
         {
             base.Show();
+            this.gameObject.SetActive(true);
             LoginSlideIn();
         }
 

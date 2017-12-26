@@ -26,7 +26,7 @@ namespace GameCritical
         }
 
 
-        public AudioSource Spawn2DAudio(AudioClip audioClip = null)
+        public AudioSource Spawn2DAudio(AudioClip audioClip, bool destroyAfter)
         {
             if (m_AudioSourcePrefab == null)
             {
@@ -39,6 +39,8 @@ namespace GameCritical
             {
                 audioSource.clip = audioClip;
                 audioSource.Play();
+                if(destroyAfter)
+                    Destroy(audioSource.gameObject, audioSource.clip.length);
             }
 
             return audioSource;

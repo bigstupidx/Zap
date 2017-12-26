@@ -21,6 +21,9 @@ namespace Player
         private bool m_IsScaling;
         private float m_TargetScale;
 
+        [SerializeField]
+        private SpriteRenderer m_SpriteRenderer;
+
         // Use this for initialization
         void Start()
         {
@@ -42,7 +45,7 @@ namespace Player
             {
                 ZapGrid zapGrid = GameMaster.Instance.m_ZapManager.GetZapGrid();
                 float zapWidth = zapGrid.GetZap(0, 0).Width;
-                Sprite s = this.GetComponent<SpriteRenderer>().sprite;
+                Sprite s = m_SpriteRenderer.sprite;
                 float unitWidth = s.textureRect.width / s.pixelsPerUnit;
                 float unitHeight = s.textureRect.height / s.pixelsPerUnit;
                 m_CurrScale = this.transform.localScale;

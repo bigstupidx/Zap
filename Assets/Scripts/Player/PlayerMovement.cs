@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
 using GameCritical;
+using UnityEngine.UI;
+using Misc;
 
 namespace Player
 {
@@ -54,8 +56,11 @@ namespace Player
         private SpriteRenderer m_SpriteRenderer;
         private PlayerScaler m_PlayerScaler;
         private PlayerDecorations m_PlayerDecorations;
+        private UIManager m_UIManager;
 
         bool shouldRotateInTowardTargetPosition;
+
+        private TouchPulse m_TouchPulseSprite;
 
         void Awake()
         {
@@ -64,12 +69,18 @@ namespace Player
             m_PlayerScaler = GetComponent<PlayerScaler>();
             m_PlayerDecorations = GetComponent<PlayerDecorations>();
             shouldRotateInTowardTargetPosition = true;
+            m_TouchPulseSprite = Resources.Load<TouchPulse>(Utility.PrefabFinder.PREFABS + "TouchPulseSprite");
+        }
+
+        private void Start()
+        {
+            m_UIManager = GameMaster.Instance.m_UIManager;
         }
 
         // Update is called once per frame
         void Update()
         {
-            if (m_CanMove) // don't allow payer to move up until they reach the grid.
+            if (m_CanMove && !m_UIManager.m_ScorePanel.menuIsShowing) // don't allow payer to move up until they reach the grid.
             {
                 if (m_CurrZap != null && m_NextZap != null)
                 {
@@ -80,6 +91,13 @@ namespace Player
                         {
                             SetMovementState(MovementState.MovingVertical);
                             fillMovementData();
+                            Vector3 touchLocation = Input.GetTouch(i).position;
+                            touchLocation.z = this.transform.position.z;
+                            Instantiate(
+                                m_TouchPulseSprite,
+                                touchLocation,
+                                Quaternion.identity
+                                );
                         }
                     }
 
@@ -88,6 +106,19 @@ namespace Player
                     {
                         SetMovementState(MovementState.MovingVertical);
                         fillMovementData();
+                    }
+                    if (Input.GetMouseButtonDown(0))
+                    {
+                        SetMovementState(MovementState.MovingVertical);
+                        fillMovementData();
+                        Vector3 touchLocation = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+                        touchLocation.z = this.transform.position.z;
+
+                        Instantiate(
+                            m_TouchPulseSprite,
+                            touchLocation,
+                            Quaternion.identity
+                            );
                     }
                 }
             }
@@ -494,7 +525,7 @@ namespace Player
             GameMaster.Instance.m_DadEventManager.StartEvents();
 
             // Increase level UI displayed to user
-            GameMaster.Instance.m_UIManager.m_LevelPanel.IncrementLevelText();
+            GameMaster.Instance.m_UIManager.m_LevelPanel.Show();
 
             // start cooldown of player boost if it exists
             GameMaster.Instance.m_PlayerBoost.Reset();

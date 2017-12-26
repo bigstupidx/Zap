@@ -12,11 +12,13 @@ namespace UI
         public ZapBanker m_ZapBanker;
         public Text m_DeathStartMultiplierText;
         public Text m_Username;
+        public string m_Password;
         public Text m_StageText;
         public string m_DeathStarMultiplierStr;
 
         void Start()
         {
+            m_Password = "";
             if(m_ZapScorer == null)
             {
                 m_ZapScorer = FindObjectOfType<ZapScorer>();
@@ -47,16 +49,28 @@ namespace UI
             GameMaster.Instance.m_UIManager.m_ScorePanel.SetStageText(stage);
         }
 
-        public void SetUsername(string username)
+        public void SetEmail(string email)
         {
-            m_Username.text = username;
-            SaveManager.SetString(Database.DatabaseConstants.m_PARAM_USERNAME, username);
+            m_Username.text = email;
+            SaveManager.SetString(Database.DatabaseConstants.m_PARAM_EMAIL, email);
+        }
+
+        public void SetPassword(string pass)
+        {
+            m_Password = pass;
+            SaveManager.SetString(Database.DatabaseConstants.m_PARAM_PASSWORD, pass);
+        }
+
+        public void RemovePassword()
+        {
+            m_Password = "";
+            SaveManager.RemoveKey(Database.DatabaseConstants.m_PARAM_PASSWORD);
         }
 
         public void RemoveUsername()
         {
             m_Username.text = "";
-            SaveManager.RemoveKey(Database.DatabaseConstants.m_PARAM_USERNAME);
+            SaveManager.RemoveKey(Database.DatabaseConstants.m_PARAM_EMAIL);
         }
 
         public void SetDeathStarMultiplierText(float multiplier)

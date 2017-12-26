@@ -60,6 +60,7 @@ public class SolarSystemSpawner : MonoBehaviour {
         Vector3 aboveTopRightOfScreen = Utility.ScreenUtilities.GetWSofSSPosition(1.0f, 1.0f) + additionalHeightVector;
         float randomRangeBetweenLeftAndRight = Random.Range(0, 1.0f);
         Vector3 spawnPos = Vector3.Lerp(aboveTopLeftOfScreen, aboveTopRightOfScreen, randomRangeBetweenLeftAndRight);
+        spawnPos.z = -80;
 
         Star solarObjectInstance = (Star)Instantiate(starSolarPrefab, spawnPos, Quaternion.identity, this.transform);
     }

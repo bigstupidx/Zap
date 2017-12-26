@@ -34,7 +34,6 @@ namespace UI
         {
             m_OverallLevel++;
             m_LevelText.text = m_PreString + m_OverallLevel.ToString();
-            Show();
         }
 
         public override void Show()

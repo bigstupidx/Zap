@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using GameCritical;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
@@ -13,7 +14,7 @@ namespace UI
         private float m_ExpandTime = 1.0f;
         [SerializeField]
         private float m_OnScreenTime = 3.0f;
-        private bool menuIsShowing = false;
+        public bool menuIsShowing = false;
 
         public void SetScoreText(int score)
         {
@@ -31,6 +32,7 @@ namespace UI
         {
             base.Show();
             this.gameObject.SetActive(true);
+            GameCritical.GameMaster.Instance.m_UIManager.m_ShopCanvas.gameObject.SetActive(false);
             //GameCritical.GameMaster.Instance.EndGame();
             StartCoroutine(expandScoreMenu());
         }
@@ -73,7 +75,27 @@ namespace UI
             }
 
             menuIsShowing = true;
+
+            // if we are logged in then get high score information
+            if(SaveManager.IsStringStored(Database.DatabaseConstants.m_PARAM_EMAIL))
+            {
+                yield return StartCoroutine(GameMaster.Instance.m_DatabaseManager.m_DataInserter.SetHighScore(
+                    10,
+                    setHighScore,
+                    didNotSetHighScore
+                    ));
+            }
             StartCoroutine(waitOnScreenForTime());
+        }
+
+        private void didNotSetHighScore()
+        {
+
+        }
+
+        private void setHighScore()
+        {
+
         }
     }
 }

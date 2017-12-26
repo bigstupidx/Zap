@@ -36,6 +36,12 @@ namespace UI
         [SerializeField]
         private Animation m_SignupSuccessfulAnimation;
 
+        [SerializeField]
+        private Animation m_SignupFailedAnimation;
+
+        [SerializeField]
+        private Image m_LoadingImage;
+
         void Awake()
         {
             m_ErrorMessage.text = "";
@@ -62,6 +68,7 @@ namespace UI
         private void back()
         {
             m_LoginPanelAnimationHandler.LoginSlideIn();
+            m_LoadingImage.gameObject.SetActive(false);
         }
 
 
@@ -75,14 +82,18 @@ namespace UI
             m_EmailInputField.text = "";
             GameMaster.Instance.m_UIManager.m_LoginSignupPanels.LoginSlideIn();
             m_SignupSuccessfulAnimation.Play();
+            m_LoadingImage.gameObject.SetActive(false);
         }
         private void signupFailed()
         {
             m_ErrorMessage.text = "sign-up failed";
+            m_SignupFailedAnimation.Play();
+            m_LoadingImage.gameObject.SetActive(false);
         }
         private void signupEmailAlreadyExists()
         {
             m_ErrorMessage.text = "email is already in use";
+            m_LoadingImage.gameObject.SetActive(false);
         }
         private void signup()
         {
@@ -103,6 +114,8 @@ namespace UI
             {
                 m_ErrorMessage.text = "";
             }
+
+            m_LoadingImage.gameObject.SetActive(true);
 
             // Create new user
             DataInserter dataInserter = GameMaster.Instance.m_DatabaseManager.m_DataInserter;

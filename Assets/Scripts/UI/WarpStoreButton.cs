@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using Utility;
+using GameCritical;
 
 namespace UI
 {
@@ -27,11 +28,14 @@ namespace UI
         protected string m_Text;
 
         protected RectTransform m_RectTransform;
+        private AudioSource m_AudioSource;
+        private AudioClip m_CLickClip;
 
         void Awake()
         {
             m_RectTransform = this.GetComponent<RectTransform>();
             m_Text = m_Text.ToUpper();
+            m_CLickClip = Resources.Load<AudioClip>("Audio/Sounds/Male mouth makes click sound effect sound- short_Nightingale Music Productions_12671");
         }
 
         private void Start()
@@ -81,6 +85,7 @@ namespace UI
             {
                 button.onClick.AddListener(() => {
                     onButtonClick();
+                    AudioManager.Instance.Spawn2DAudio(m_CLickClip, true);
                 });
             }
         }

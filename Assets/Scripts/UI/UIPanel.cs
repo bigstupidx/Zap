@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using GameCritical;
 
 namespace UI
 {
@@ -13,19 +14,18 @@ namespace UI
         [SerializeField]
         private AudioClip m_SelectSound;
 
-        private AudioSource m_AudioSource;
-
         void Awake()
         {
             if (m_HideOnStart)
             {
                 Hide();
+                m_HideOnStart = false; // this is so when we call gameobject.setactive it wont hide this again
             }
         }
 
         void Start()
         {
-            m_AudioSource = this.GetComponent<AudioSource>();
+            //m_AudioSource = this.GetComponent<AudioSource>();
         }
 
         public virtual void Show() { this.gameObject.SetActive(true); }
@@ -33,10 +33,12 @@ namespace UI
 
         public void PlaySelectSound()
         {
-            if (m_AudioSource != null && m_SelectSound != null)
+            AudioSource audio = AudioManager.Instance.Spawn2DAudio(m_SelectSound, true);
+            if (audio != null && m_SelectSound != null)
             {
-                m_AudioSource.clip = m_SelectSound;
-                m_AudioSource.Play();
+                audio.clip = m_SelectSound;
+                audio.Play();
+                Destroy(audio.gameObject, audio.clip.length);
             }
         }
     }

@@ -28,22 +28,26 @@ namespace UI
 
         public void SetUnlocked()
         {
-            m_Image.sprite = m_TransparentSprite;
+            if(m_Image)
+                m_Image.sprite = m_TransparentSprite;
         }
 
         public void SetCenterLocked()
         {
-            m_Image.sprite = m_LockCenterSprite;
+            if (m_Image)
+                m_Image.sprite = m_LockCenterSprite;
         }
 
         public void SetTopRightLocked()
         {
-            m_Image.sprite = m_LockTopRightSprite;
+            if (m_Image)
+                m_Image.sprite = m_LockTopRightSprite;
         }
 
         public void SetEquipped()
         {
-            m_Image.sprite = m_CheckmarkSprite;
+            if (m_Image)
+                m_Image.sprite = m_CheckmarkSprite;
         }
     }
 }

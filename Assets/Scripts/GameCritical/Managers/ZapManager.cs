@@ -42,7 +42,8 @@ namespace GameCritical
         private ZapGrid m_ZapGridPrefab;
         private ZapGrid m_CurrZapGrid;
 
-        private int m_CurrentStage;
+        [HideInInspector]
+        public int m_CurrentStage;
 
         void Start()
         {
@@ -51,6 +52,7 @@ namespace GameCritical
             m_CurrGrids = m_StartGrids;
             m_CurrGridIndex = 0;
             m_CurrentStage = 1;
+            GameMaster.Instance.m_UIManager.m_LevelPanel.IncrementLevelText();
         }
 
         private void scaleDifficulty()
@@ -65,6 +67,7 @@ namespace GameCritical
             }
 
             m_CurrentStage++;
+            GameMaster.Instance.m_UIManager.m_LevelPanel.IncrementLevelText();
             GameMaster.Instance.m_UIManager.m_InfoPanel.SetStage(m_CurrentStage);
         }
 

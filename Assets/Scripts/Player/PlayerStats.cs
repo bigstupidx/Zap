@@ -12,13 +12,13 @@ namespace Player
         private bool m_Invincible = false;
 
         private PlayerMovement m_PlayerMovement;
+        [SerializeField]
         private SpriteRenderer m_SpriteRenderer;
 
         void Start()
         {
             m_Invincible = false;
             m_PlayerMovement = this.GetComponent<PlayerMovement>();
-            m_SpriteRenderer = this.GetComponent<SpriteRenderer>();
         }
 
         public bool GetInvicible()

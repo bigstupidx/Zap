@@ -40,5 +40,10 @@ namespace Database
                 failedAction();
             }
         }
+
+        public IEnumerator SetHighScore(int localScore, Action setHighScore, Action notHighScore)
+        {
+            yield return null;
+        }
     }
 }
