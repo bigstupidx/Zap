@@ -71,6 +71,26 @@ namespace GameCritical
             GameMaster.Instance.m_UIManager.m_InfoPanel.SetStage(m_CurrentStage);
         }
 
+        public void ShowDoublePointsOnAllZaps()
+        {
+            List<Zap> lucrativeZaps = m_CurrZapGrid.GetLucrativeZaps();
+            for (int i = 0; i < lucrativeZaps.Count; i++)
+            {
+                Zap currZap = lucrativeZaps[i];
+                currZap.ShowDoublePointsPopUpText();
+            }
+        }
+
+        public void HideDoublePointsOnAllZaps()
+        {
+            List<Zap> lucrativeZaps = m_CurrZapGrid.GetLucrativeZaps();
+            for (int i = 0; i < lucrativeZaps.Count; i++)
+            {
+                Zap currZap = lucrativeZaps[i];
+                currZap.HideAllDoublePointsPopUpText();
+            }
+        }
+
         // scales difficulty after a stage
         private void stageScale()
         {

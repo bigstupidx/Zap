@@ -8,6 +8,7 @@ namespace UI
 {
     [RequireComponent(typeof(DestroyTimer))]
     [RequireComponent(typeof(AudioSource))]
+    [RequireComponent(typeof(Image))]
     public class NotificationPanel : MonoBehaviour
     {
 
@@ -18,7 +19,20 @@ namespace UI
         private AudioSource m_AudioSource;
 
         [SerializeField]
+        private Color _goodNotifColor;
+
+        [SerializeField]
+        private Color _badNotifColor;
+
+        [SerializeField]
         private Text m_Text;
+
+        private Image _image;
+
+        private void Awake()
+        {
+            _image = GetComponent<Image>();
+        }
 
         // Use this for initialization
         void Start()
@@ -54,6 +68,16 @@ namespace UI
             if (m_Text)
             {
                 m_Text.text = text;
+            }
+
+            // set the notifcation color based on the type of notifcation it is
+            if(isGoodNotification)
+            {
+                _image.color = _goodNotifColor;
+            }
+            else
+            {
+                _image.color = _badNotifColor;
             }
 
             PlayNotificationSound(isGoodNotification);

@@ -27,6 +27,7 @@ namespace GameCritical
             playerMovement.SetMovementState(PlayerMovement.MovementState.MovingRocketJump);
             playerMovement.SetSpeedMultiplier(m_SpeedMultiplier, true);
             playerMovement.MoveRocketJump(m_NumberOfRowsToJump);
+            m_StreakManager.IncrementStreakCount();
 
             // play lockdown animation 
             PlayerDecorations playerDecorations = GameMaster.Instance.m_PlayerDecorations;

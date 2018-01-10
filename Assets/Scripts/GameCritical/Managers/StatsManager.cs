@@ -8,6 +8,8 @@ namespace GameCritical
 {
     public class StatsManager : MonoBehaviour
     {
+        [SerializeField]
+        private bool debugScore;
         private int m_Score = 0;
         private int m_NumZaps = 1200;
 
@@ -42,6 +44,10 @@ namespace GameCritical
             m_FlawlessGridRun = true;
             m_ZapScorer.UpdateScoreString(m_Score);
             m_ZapBanker.UpdateZapsString(m_NumZaps);
+            if (debugScore)
+            {
+                AddToScore(30000);
+            }
         }
 
         public bool GetFlawlessGridRun()

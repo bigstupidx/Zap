@@ -7,7 +7,6 @@ namespace GameCritical
 {
     public class BackdropManager : MonoBehaviour
     {
-
         [SerializeField]
         private Backdrop m_Backdrop;
 
@@ -21,6 +20,10 @@ namespace GameCritical
         private Color m_WarpStoreColor1;
         [SerializeField]
         private Color m_WarpStoreColor2;
+        [SerializeField]
+        private Color m_StreakColor1;
+        [SerializeField]
+        private Color m_StreakColor2;
 
         [SerializeField]
         private float m_LerpTime;
@@ -32,9 +35,15 @@ namespace GameCritical
         private Color m_NextColor2;
         private bool m_IsLerping;
 
+        private float currLerpTime;
+
+        [SerializeField]
+        private float streakColLerpTime = 0.5f;
+
         void Awake()
         {
             m_CurrColorIndex = 0;
+            currLerpTime = m_LerpTime;
         }
 
         void Start()
@@ -52,7 +61,7 @@ namespace GameCritical
             if (m_IsLerping)
             {
                 m_LerpAmount += Time.deltaTime;
-                float m_LerpPercentage = m_LerpAmount / m_LerpTime;
+                float m_LerpPercentage = m_LerpAmount / currLerpTime;
                 Color currColor1 = Color.Lerp(m_PrevColor1, m_NextColor1, m_LerpPercentage);
                 Color currColor2 = Color.Lerp(m_PrevColor2, m_NextColor2, m_LerpPercentage);
                 SetColors(currColor1, currColor2);
@@ -75,9 +84,18 @@ namespace GameCritical
             m_NextColor2 = col2;
         }
 
+        public void ShowCurrentStageColors()
+        {
+            currLerpTime = m_LerpTime;
+            Color startColor = m_StartColors[m_CurrColorIndex];
+            Color endColor = m_EndColors[m_CurrColorIndex];
+            ChangeColors(startColor, endColor);
+        }
+
         public void ShowNextStageColors()
         {
-            if(m_CurrColorIndex + 1 <= m_StartColors.Count && m_CurrColorIndex + 1 <= m_EndColors.Count)
+            currLerpTime = m_LerpTime;
+            if (m_CurrColorIndex + 1 <= m_StartColors.Count && m_CurrColorIndex + 1 <= m_EndColors.Count)
             {
                 m_CurrColorIndex++;
                 Color startColor = m_StartColors[m_CurrColorIndex];
@@ -88,6 +106,7 @@ namespace GameCritical
 
         public void ShowStageColors()
         {
+            currLerpTime = m_LerpTime;
             Color startColor = m_StartColors[m_CurrColorIndex];
             Color endColor = m_EndColors[m_CurrColorIndex];
             ChangeColors(startColor, endColor);
@@ -95,7 +114,14 @@ namespace GameCritical
 
         public void ShowWarpStoreColors()
         {
+            currLerpTime = m_LerpTime;
             ChangeColors(m_WarpStoreColor1, m_WarpStoreColor2);
+        }
+
+        public void ShowStreakColors()
+        {
+            currLerpTime = streakColLerpTime;
+            ChangeColors(m_StreakColor1, m_EndColors[m_CurrColorIndex]);
         }
 
         public void SetColors(Color col1, Color col2)

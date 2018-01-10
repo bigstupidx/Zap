@@ -47,6 +47,7 @@ namespace GameCritical
             {
                 AddAndShowPoints();
                 BreakZap(col);
+                m_StreakManager.IncrementStreakCount();
             }
             else
             {

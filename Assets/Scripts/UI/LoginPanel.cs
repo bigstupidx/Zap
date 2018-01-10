@@ -67,6 +67,7 @@ namespace UI
             m_PasswordInputField.text = "";
         }
 
+
         private void signup()
         {
             Debug.Log("Signup button clicked");

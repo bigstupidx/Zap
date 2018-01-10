@@ -33,10 +33,19 @@ namespace Player
         [SerializeField]
         private float m_ToWarpZoneSpeed = 100.0f;
         [SerializeField]
+        private float m_VerticalStreakSpeed = 600.0f;
+        [SerializeField]
+        private float m_HorizontalStreakSpeed = 600.0f;
+        [SerializeField]
         private LayerMask m_TouchInputMask;
         [SerializeField]
         private GameObject m_NextRowIndicator;
 
+        private float m_CurrVerticalSpeed;
+        private float m_CurrHorizontalSpeed;
+
+        public GameObject m_StreakImageBackground;
+        private _2dxFX_Shiny_Reflect m_ShinyEffect;
 
         private Vector3 m_TargetPosition;
         public Vector3 TargetPosition { get { return m_TargetPosition; } }
@@ -62,25 +71,49 @@ namespace Player
 
         private TouchPulse m_TouchPulseSprite;
 
+        private Rect m_BoostRect;
+        private PlayerStats stats;
+
         void Awake()
         {
+            stats = GetComponent<PlayerStats>();
+            m_CurrVerticalSpeed = m_VerticalMoveSpeed;
+            m_CurrHorizontalSpeed = m_HorizontalMoveSpeed;
             m_Rigidbody = GetComponent<Rigidbody2D>();
             m_SpriteRenderer = GetComponent<SpriteRenderer>();
             m_PlayerScaler = GetComponent<PlayerScaler>();
             m_PlayerDecorations = GetComponent<PlayerDecorations>();
             shouldRotateInTowardTargetPosition = true;
             m_TouchPulseSprite = Resources.Load<TouchPulse>(Utility.PrefabFinder.PREFABS + "TouchPulseSprite");
+            m_ShinyEffect = GetComponentInChildren<_2dxFX_Shiny_Reflect>();
         }
 
         private void Start()
         {
             m_UIManager = GameMaster.Instance.m_UIManager;
+            m_BoostRect = GameMaster.Instance.m_UIManager.m_BoostLoading.m_LoadImage.rectTransform.rect;
+        }
+
+        public void EnableStreakSpeed()
+        {
+            m_ShinyEffect.enabled = true;
+            m_StreakImageBackground.gameObject.SetActive(true);
+            m_CurrVerticalSpeed = m_VerticalStreakSpeed;
+            m_CurrHorizontalSpeed = m_HorizontalStreakSpeed;
+        }
+
+        public void DisableStreakSpeed()
+        {
+            m_ShinyEffect.enabled = false;
+            m_StreakImageBackground.gameObject.SetActive(false);
+            m_CurrVerticalSpeed = m_VerticalMoveSpeed;
+            m_CurrHorizontalSpeed = m_HorizontalMoveSpeed;
         }
 
         // Update is called once per frame
         void Update()
         {
-            if (m_CanMove && !m_UIManager.m_ScorePanel.menuIsShowing) // don't allow payer to move up until they reach the grid.
+            if (m_CanMove && !stats.isDead) // don't allow payer to move up until they reach the grid.
             {
                 if (m_CurrZap != null && m_NextZap != null)
                 {
@@ -89,15 +122,18 @@ namespace Player
                     {
                         if (Input.GetTouch(i).phase == TouchPhase.Began)
                         {
-                            SetMovementState(MovementState.MovingVertical);
-                            fillMovementData();
                             Vector3 touchLocation = Input.GetTouch(i).position;
-                            touchLocation.z = this.transform.position.z;
-                            Instantiate(
-                                m_TouchPulseSprite,
-                                touchLocation,
-                                Quaternion.identity
-                                );
+                            if(!m_BoostRect.Contains(touchLocation))
+                            {
+                                SetMovementState(MovementState.MovingVertical);
+                                fillMovementData();
+                                touchLocation.z = this.transform.position.z;
+                                Instantiate(
+                                    m_TouchPulseSprite,
+                                    touchLocation,
+                                    Quaternion.identity
+                                    );
+                            }
                         }
                     }
 
@@ -107,19 +143,22 @@ namespace Player
                         SetMovementState(MovementState.MovingVertical);
                         fillMovementData();
                     }
-                    if (Input.GetMouseButtonDown(0))
+                    /*if (Input.GetMouseButtonDown(0))
                     {
-                        SetMovementState(MovementState.MovingVertical);
-                        fillMovementData();
                         Vector3 touchLocation = Camera.main.ScreenToWorldPoint(Input.mousePosition);
                         touchLocation.z = this.transform.position.z;
+                        if (!m_BoostRect.Contains(touchLocation))
+                        {
+                            SetMovementState(MovementState.MovingVertical);
+                            fillMovementData();
 
-                        Instantiate(
-                            m_TouchPulseSprite,
-                            touchLocation,
-                            Quaternion.identity
-                            );
-                    }
+                            Instantiate(
+                                m_TouchPulseSprite,
+                                touchLocation,
+                                Quaternion.identity
+                                );
+                        }
+                    }*/
                 }
             }
 
@@ -183,7 +222,7 @@ namespace Player
                 m_MovementState == MovementState.MovingRocketJump || m_MovementState == MovementState.MovingBounceBackFromZap)
             {
                 // Lerp normal
-                m_LerpAmount += Time.deltaTime * m_SpeedMultiplier * m_HorizontalMoveSpeed;
+                m_LerpAmount += Time.deltaTime * m_SpeedMultiplier * m_CurrHorizontalSpeed;
                 m_LerpPercentage = m_LerpAmount / startToFinishDistance;
                 this.transform.position = Vector3.Lerp(m_StartPosition, m_TargetPosition, m_LerpPercentage);
             }
@@ -203,7 +242,7 @@ namespace Player
                     deathStar.SetIsMoving(false);
                 }
                 shouldRotateInTowardTargetPosition = true;
-                m_LerpAmount += Time.deltaTime * m_SpeedMultiplier * m_VerticalMoveSpeed;
+                m_LerpAmount += Time.deltaTime * m_SpeedMultiplier * m_CurrVerticalSpeed;
                 m_LerpPercentage = m_LerpAmount / startToFinishDistance;
                 this.transform.position = Vector3.Lerp(m_StartPosition, m_TargetPosition, m_LerpPercentage);
                 // Scale player to match zap grid size.
@@ -502,7 +541,7 @@ namespace Player
                 UIManager uiManager = GameMaster.Instance.m_UIManager;
                 if(uiManager)
                 {
-                    uiManager.SpawnUINotification("FLAWLESS RUN [+500 PTS]", true);
+                    uiManager.SpawnUINotification("+500 FLAWLESS RUN", true);
                     statsManager.AddToScore(500);
                 }
             }

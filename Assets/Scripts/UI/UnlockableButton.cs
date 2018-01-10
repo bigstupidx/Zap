@@ -46,8 +46,19 @@ namespace UI
         public delegate void UnlockButton_EventHandler(UnlockableButton button);
         public static event UnlockButton_EventHandler UnlockButtonEvent;
 
+        private static AudioClip cashRegisterSound;
+        private static AudioClip equipSound;
+
         private void Awake()
         {
+            if(cashRegisterSound == null)
+            {
+                cashRegisterSound = Resources.Load<AudioClip>(PrefabFinder.AUDIO + "Sounds/Cash register");
+            }
+            if (equipSound == null)
+            {
+                equipSound = Resources.Load<AudioClip>(PrefabFinder.AUDIO + "Sounds/EquipSound");
+            }
             UnlockButtonEvent += this.handleUnlockButtonPress;
         }
 
@@ -166,12 +177,17 @@ namespace UI
                 m_BackgroundImage.color = Constants.Instance.UnlockedColor;
                 m_StatusInstance.SetUnlocked();
                 Destroy(m_PriceBannerInstance.gameObject);
+                // play purchase sound
+                AudioManager.Instance.Spawn2DAudio(cashRegisterSound, true);
+
+                handleUnlockButtonPress(this);
             }
         }
 
         public virtual void equip()
         {
-
+            // play equip sound
+            AudioManager.Instance.Spawn2DAudio(equipSound,true);
         }
     }
 }

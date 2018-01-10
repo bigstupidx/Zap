@@ -15,6 +15,7 @@ namespace GameCritical
         public override void ApplyCollisionEffect(Collision2D col)
         {
             base.ApplyCollisionEffect(col);
+            m_StreakManager.ExitStreakMode();
             GameObject go = col.gameObject;
             PlayerStats playerStats = go.GetComponent<PlayerStats>();
             if(playerStats)

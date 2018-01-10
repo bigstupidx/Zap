@@ -29,6 +29,7 @@ namespace GameCritical
         public SolarSystemSpawner m_SolarSystemSpawner;
         public NotificationManager m_NotificationManager;
         public MusicManager m_MusicManager;
+        public StreakManager m_StreakManager;
 
         public DeathStar m_DeathStar;
         public CameraFollow m_CameraFollow;
@@ -109,6 +110,10 @@ namespace GameCritical
             if(m_SolarSystemSpawner == null)
             {
                 m_SolarSystemSpawner = FindObjectOfType<SolarSystemSpawner>();
+            }
+            if (m_StreakManager == null)
+            {
+                m_StreakManager = FindObjectOfType<StreakManager>();
             }
         }
 

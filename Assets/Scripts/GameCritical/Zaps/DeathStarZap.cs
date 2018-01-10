@@ -13,6 +13,7 @@ namespace GameCritical
         public override void ApplyImmediateEffect()
         {
             base.ApplyImmediateEffect();
+            m_StreakManager.ExitStreakMode();
             GameMaster.Instance.m_DeathStar.SetSpeedMultiplier(m_SpeedMultiplier, true);
         }
 

@@ -34,6 +34,8 @@ namespace UI
 
         private WarpPanel m_CurrPanel;
 
+        public Animation m_SuccessfulPurchaseAnimation;
+
         public enum CurrencyActionType
         {
             BUY_50_ZAPS,

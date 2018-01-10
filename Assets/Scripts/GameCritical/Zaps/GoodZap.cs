@@ -9,6 +9,7 @@ namespace GameCritical
         public override void ApplyImmediateEffect()
         {
             base.ApplyImmediateEffect();
+            m_StreakManager.IncrementStreakCount();
         }
 
         public override void ApplyCollisionEffect(Collision2D col)

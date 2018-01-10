@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Purchasing;
 using GameCritical;
+using Utility;
 
 // Placing the Purchaser class in the CompleteProject namespace allows it to interact with ScoreManager, 
 // one of the existing Survival Shooter scripts.
@@ -19,6 +20,8 @@ namespace IAP
         public static string PRODUCT_100_ZAPS = /*"com.rgs.zap."*/"zaps100";
         public static string PRODUCT_250_ZAPS = /*"com.rgs.zap.*/"zaps250";
         public static string PRODUCT_1000_ZAPS = /*"com.rgs.zap.*/"zaps1000";
+
+        private AudioClip successfulPurchaseClip;
 
         /*public static string PRODUCT_50_ZAPS_GooglePlay = "zaps50";
         public static string PRODUCT_100_ZAPS_GooglePlay = "zaps100";
@@ -46,6 +49,8 @@ namespace IAP
             }
 
             DontDestroyOnLoad(this);
+
+            successfulPurchaseClip = Resources.Load<AudioClip>(PrefabFinder.AUDIO + "Sounds/Cash register");
         }
 
         private void Start()
@@ -174,21 +179,29 @@ namespace IAP
             {
                 Debug.Log("You've just bought 50 zaps! good times!");
                 AddZaps(50);
+                AudioManager.Instance.Spawn2DAudio(successfulPurchaseClip, true);
+                GameMaster.Instance.m_UIManager.m_ShopCanvas.m_WarpStorePanel.m_SuccessfulPurchaseAnimation.Play();
             }
             else if (String.Equals(args.purchasedProduct.definition.id, PRODUCT_100_ZAPS, StringComparison.Ordinal))
             {
                 Debug.Log("You've just bought 100 zaps! good times!");
                 AddZaps(100);
+                AudioManager.Instance.Spawn2DAudio(successfulPurchaseClip, true);
+                GameMaster.Instance.m_UIManager.m_ShopCanvas.m_WarpStorePanel.m_SuccessfulPurchaseAnimation.Play();
             }
             else if (String.Equals(args.purchasedProduct.definition.id, PRODUCT_250_ZAPS, StringComparison.Ordinal))
             {
                 Debug.Log("You've just bought 250 zaps! good times!");
                 AddZaps(250);
+                AudioManager.Instance.Spawn2DAudio(successfulPurchaseClip, true);
+                GameMaster.Instance.m_UIManager.m_ShopCanvas.m_WarpStorePanel.m_SuccessfulPurchaseAnimation.Play();
             }
             else if (String.Equals(args.purchasedProduct.definition.id, PRODUCT_1000_ZAPS, StringComparison.Ordinal))
             {
                 Debug.Log("You've just bought 1000 zaps! good times!");
                 AddZaps(1000);
+                AudioManager.Instance.Spawn2DAudio(successfulPurchaseClip, true);
+                GameMaster.Instance.m_UIManager.m_ShopCanvas.m_WarpStorePanel.m_SuccessfulPurchaseAnimation.Play();
             }
             else
             {

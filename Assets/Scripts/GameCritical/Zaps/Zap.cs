@@ -67,12 +67,18 @@ namespace GameCritical
 
         private Point pointPrefab;
 
+        protected StreakManager m_StreakManager;
+
+        List<VFX.PopUpText> times2PopUpText;
+
         void Awake()
         {
+            times2PopUpText = new List<VFX.PopUpText>();
             m_SpriteRenderer = GetComponent<SpriteRenderer>();
             m_SpriteRenderer.color = m_Color;
             m_Occupied = false;
             pointPrefab = Resources.Load<Point>(Utility.PrefabFinder.PREFABS + "Point");
+            m_StreakManager = GameMaster.Instance.m_StreakManager;
         }
 
         void Start()
@@ -160,6 +166,25 @@ namespace GameCritical
                 GameMaster.Instance.m_UIManager.SpawnPopUpText(m_PopUpText,
                     this.transform.position + new Vector3(Width / 2.0f, Height * 2.0f, 0),
                     m_PopUpColor);
+            }
+        }
+
+        public void ShowDoublePointsPopUpText()
+        {
+            VFX.PopUpText text = GameMaster.Instance.m_UIManager.SpawnPopUpText("x2",
+                this.transform.position + new Vector3(Width / 2.0f, Height * 2.0f, 0),
+                Color.yellow);
+            times2PopUpText.Add(text);
+        }
+
+        public void HideAllDoublePointsPopUpText()
+        {
+            if(times2PopUpText != null)
+            {
+                for (int i = 0; i < times2PopUpText.Count; i++)
+                {
+                    Destroy(times2PopUpText[i].gameObject);
+                }
             }
         }
 

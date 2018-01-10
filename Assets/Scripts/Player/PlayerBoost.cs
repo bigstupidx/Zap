@@ -36,6 +36,10 @@ namespace Player
                 BoostLoading boostLoadingUI = GameMaster.Instance.m_UIManager.m_BoostLoading;
                 boostLoadingUI.HideBoostImage();
                 currentBoosterInstance = Instantiate(currentBoosterPrefab, this.transform);
+                if(!currentBoosterInstance.shouldShowOnPlayer)
+                {
+                    currentBoosterInstance.spriteRenderer.enabled = false;
+                }
                 currentBoosterInstance.Activate();
                 canActivate = false;
 

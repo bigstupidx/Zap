@@ -13,8 +13,7 @@ namespace UI
         public Vector3 m_InGamePosition;
         public Vector3 m_WarpStorePosition;
 
-        [SerializeField]
-        private Image m_LoadImage;
+        public Image m_LoadImage;
 
         [SerializeField]
         private Image m_BoostImage;

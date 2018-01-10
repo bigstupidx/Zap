@@ -15,6 +15,8 @@ namespace Player
         [SerializeField]
         private SpriteRenderer m_SpriteRenderer;
 
+        public bool isDead;
+
         void Start()
         {
             m_Invincible = false;
@@ -37,6 +39,7 @@ namespace Player
             m_PlayerMovement.enabled = false;
             m_SpriteRenderer.enabled = false;
             Destroy(this.gameObject);
+            isDead = true;
 
             PlayerDecorations pd = GetComponent<PlayerDecorations>();
             if (pd)

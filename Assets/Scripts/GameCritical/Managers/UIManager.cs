@@ -81,13 +81,14 @@ namespace GameCritical
             notificationInstance.SetText(message, isGoodNotification);
         }
 
-        public void SpawnPopUpText(string str, Vector3 position, Color color)
+        public PopUpText SpawnPopUpText(string str, Vector3 position, Color color)
         {
             PopUpText popUpTextPrefab = (PopUpText)Instantiate(m_PopUpTextPrefab,
                 position + m_PopUpTextOffset,
                 Quaternion.identity);
             popUpTextPrefab.SetText(str);
             popUpTextPrefab.SetColor(color);
+            return popUpTextPrefab;
         }
     }
 }
