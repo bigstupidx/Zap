@@ -77,25 +77,26 @@ namespace UI
             menuIsShowing = true;
 
             // if we are logged in then get high score information
-            if(SaveManager.IsStringStored(Database.DatabaseConstants.m_PARAM_EMAIL))
+            if (SaveManager.IsStringStored(Database.DatabaseConstants.m_PARAM_EMAIL))
             {
                 yield return StartCoroutine(GameMaster.Instance.m_DatabaseManager.m_DataInserter.SetHighScore(
-                    10,
-                    setHighScore,
-                    didNotSetHighScore
+                    SaveManager.GetString(Database.DatabaseConstants.m_PARAM_EMAIL),
+                    GameMaster.Instance.m_StatsManager.GetScore(),
+                    setHighScoreSuccesfully,
+                    setHighScoreFailed
                     ));
             }
             StartCoroutine(waitOnScreenForTime());
         }
 
-        private void didNotSetHighScore()
+        private void setHighScoreFailed()
         {
-
+            Debug.Log("SET HIGH SCORE FAILED!");
         }
 
-        private void setHighScore()
+        private void setHighScoreSuccesfully()
         {
-
+            Debug.Log("SET HIGH SCORE SUCCESS!");
         }
     }
 }

@@ -11,7 +11,7 @@ namespace Database
         public string m_InputPassword;
         public string m_InputEmail;
 
-        private string m_CreateUserURL = "http://localhost/zap/UserRequests.php";
+        private string m_UserRequestsURL = "http://localhost/zap/UserRequests.php";
 
         public IEnumerator CreateUser(string username, string password, string email, 
             Action successAction, Action failedAction, Action alreadyExistsAction)
@@ -22,7 +22,7 @@ namespace Database
             form.AddField(DatabaseConstants.m_PARAM_USERNAME, username);
             form.AddField(DatabaseConstants.m_PARAM_PASSWORD, password);
             form.AddField(DatabaseConstants.m_PARAM_EMAIL, email);
-            WWW responseMessage = new WWW(m_CreateUserURL, form);
+            WWW responseMessage = new WWW(m_UserRequestsURL, form);
             yield return responseMessage;
 
             // get response
@@ -41,9 +41,26 @@ namespace Database
             }
         }
 
-        public IEnumerator SetHighScore(int localScore, Action setHighScore, Action notHighScore)
+        public IEnumerator SetHighScore(string email, int localScore, Action successAction, Action failedAction)
         {
-            yield return null;
+            // send create user request
+            WWWForm form = new WWWForm();
+            form.AddField(DatabaseConstants.m_PARAM_REQUEST, DatabaseConstants.m_REQUEST_SET_HIGHSCORE);
+            form.AddField(DatabaseConstants.m_PARAM_EMAIL, email);
+            form.AddField(DatabaseConstants.m_PARAM_SCORE, localScore);
+            WWW responseMessage = new WWW(m_UserRequestsURL, form);
+            yield return responseMessage;
+
+            // get response
+            string responseString = responseMessage.text;
+            if (responseString == DatabaseConstants.m_RESPONSE_SUCCESS)
+            {
+                successAction();
+            }
+            else
+            {
+                failedAction();
+            }
         }
     }
 }
