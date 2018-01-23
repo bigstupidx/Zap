@@ -38,10 +38,17 @@ namespace GameCritical
             {
                 m_ConfirmLogoutPanel = FindObjectOfType<ConfirmLogoutPanel>();
             }
+
+            // show login panels
             if (m_LoginSignupPanels == null)
             {
                 m_LoginSignupPanels = FindObjectOfType<LoginSignUpPanels>();
             }
+            if(m_LoginSignupPanels)
+            {
+                m_LoginSignupPanels.gameObject.SetActive(true);
+            }
+
             if (m_InfoPanel == null)
             {
                 m_InfoPanel = FindObjectOfType<InfoPanel>();

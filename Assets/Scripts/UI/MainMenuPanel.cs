@@ -23,6 +23,11 @@ namespace UI
             Debug.Log("Pressed Rate Button");
         }
 
+        public void ShowLeaderboards()
+        {
+            Debug.Log("Pressed Leaderboard Button");
+        }
+
         public void ShowConfirmLogout()
         {
             GameMaster.Instance.m_UIManager.m_ConfirmLogoutPanel.Show();

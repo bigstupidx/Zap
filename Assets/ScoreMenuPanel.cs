@@ -8,6 +8,8 @@ namespace UI
 {
     public class ScoreMenuPanel : UIPanel
     {
+        [SerializeField]
+        private Animation m_SetHighScoreAnimation;
         public Text m_Score;
         public Text m_Stage;
         [SerializeField]
@@ -96,7 +98,8 @@ namespace UI
 
         private void setHighScoreSuccesfully()
         {
-            Debug.Log("SET HIGH SCORE SUCCESS!");
+            if (m_SetHighScoreAnimation)
+                m_SetHighScoreAnimation.Play();
         }
     }
 }
