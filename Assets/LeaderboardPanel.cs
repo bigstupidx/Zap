@@ -1,16 +1,9 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using UI;
 using UnityEngine;
 
-public class LeaderboardPanel : MonoBehaviour {
+public class LeaderboardPanel : UIPanel
+{
 
-	// Use this for initialization
-	void Start () {
-		
-	}
-	
-	// Update is called once per frame
-	void Update () {
-		
-	}
 }

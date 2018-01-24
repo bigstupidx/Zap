@@ -25,7 +25,7 @@ namespace UI
 
         public void ShowLeaderboards()
         {
-            Debug.Log("Pressed Leaderboard Button");
+            GameMaster.Instance.m_UIManager.m_LeaderboardPanel.Show();
         }
 
         public void ShowConfirmLogout()

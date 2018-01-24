@@ -18,6 +18,7 @@ namespace GameCritical
         public LoginSignUpPanels m_LoginSignupPanels;
         public ConfirmLogoutPanel m_ConfirmLogoutPanel;
         public ScoreMenuPanel m_ScorePanel;
+        public LeaderboardPanel m_LeaderboardPanel;
 
         [SerializeField]
         private PopUpText m_PopUpTextPrefab;
@@ -34,7 +35,11 @@ namespace GameCritical
 
         void Awake()
         {
-            if(m_ConfirmLogoutPanel == null)
+            if (m_LeaderboardPanel == null)
+            {
+                m_LeaderboardPanel = FindObjectOfType<LeaderboardPanel>();
+            }
+            if (m_ConfirmLogoutPanel == null)
             {
                 m_ConfirmLogoutPanel = FindObjectOfType<ConfirmLogoutPanel>();
             }
