@@ -14,7 +14,7 @@ namespace UI
         [SerializeField]
         private AudioClip m_SelectSound;
 
-        void Awake()
+        protected virtual void Awake()
         {
             if (m_HideOnStart)
             {
