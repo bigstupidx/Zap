@@ -10,6 +10,7 @@ namespace Database
         public static string m_REQUEST_AUTHENTICATE_USER = "AUTHENTICATE_USER";
         public static string m_REQUEST_CREATE_USER = "CREATE_USER";
         public static string m_REQUEST_SET_HIGHSCORE = "SET_HIGHSCORE";
+        public static string m_REQUEST_GET_HIGHSCORE = "GET_HIGHSCORE";
 
         // parameter types
         public static string m_PARAM_USERNAME = "username";
@@ -24,5 +25,8 @@ namespace Database
         public static string m_RESPONSE_ALREADY_EXISTS = "ALREADY_EXISTS";
         public static string m_RESPONSE_SUCCESS = "SUCCESS";
         public static string m_RESPONSE_FAILED = "FAILED";
+
+        // local player prefs keys
+        public static string m_HIGHSCORE = "highscore";
     }
 }

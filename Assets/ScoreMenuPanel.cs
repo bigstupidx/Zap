@@ -78,22 +78,33 @@ namespace UI
 
             menuIsShowing = true;
 
-            // if we are logged in then get high score information
+
+            int score = GameMaster.Instance.m_StatsManager.GetScore();
+            bool setHighscoreSuccess = SaveManager.SetHighscoreIfBetterOrDoesntExist(score);
+            if (setHighscoreSuccess)
+            {
+                setHighScoreSuccesfully(); // set highscore success
+            }
+            else
+            {
+                setHighScoreFailed(); // set highscore success
+            }
+
+            // if we are logged in then attempt to set highscore
             if (SaveManager.IsStringStored(Database.DatabaseConstants.m_PARAM_EMAIL))
             {
                 yield return StartCoroutine(GameMaster.Instance.m_DatabaseManager.m_DataInserter.SetHighScore(
                     SaveManager.GetString(Database.DatabaseConstants.m_PARAM_EMAIL),
-                    GameMaster.Instance.m_StatsManager.GetScore(),
-                    setHighScoreSuccesfully,
-                    setHighScoreFailed
+                    score,
+                    null,
+                    null
                     ));
             }
             StartCoroutine(waitOnScreenForTime());
         }
 
-        private void setHighScoreFailed()
+        private void setHighScoreFailed() // if highscore failed because of connection error or because it wasn't high enough score, then.
         {
-            Debug.Log("SET HIGH SCORE FAILED!");
         }
 
         private void setHighScoreSuccesfully()

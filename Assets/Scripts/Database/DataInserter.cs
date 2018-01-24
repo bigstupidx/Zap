@@ -55,11 +55,13 @@ namespace Database
             string responseString = responseMessage.text;
             if (responseString == DatabaseConstants.m_RESPONSE_SUCCESS)
             {
-                successAction();
+                if(successAction != null)
+                    successAction();
             }
             else
             {
-                failedAction();
+                if (failedAction != null)
+                    failedAction();
             }
         }
     }

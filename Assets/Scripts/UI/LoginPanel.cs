@@ -88,6 +88,8 @@ namespace UI
             m_ErrorMessage.text = "";
             m_LoginSuccessfulAnimation.Play();
             HideLoadingImage();
+            // send current highscore to database if we are logged in
+            GameMaster.Instance.m_StatsManager.SendLocalHighscoreToDatabase();
         }
         private void loginFailed()
         {

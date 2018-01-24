@@ -22,7 +22,6 @@ namespace UI
         {
             if (SaveManager.IsStringStored(Database.DatabaseConstants.m_PARAM_EMAIL))
             {
-                Hide();
                 string email = SaveManager.GetString(Database.DatabaseConstants.m_PARAM_EMAIL);
                 string pass = SaveManager.GetString(Database.DatabaseConstants.m_PARAM_PASSWORD);
                 GameMaster.Instance.m_UIManager.m_InfoPanel.SetEmail(email);

@@ -12,6 +12,7 @@ namespace GameCritical
         private bool debugScore;
         private int m_Score = 0;
         private int m_NumZaps = 1200;
+        private int m_Highscore = 0;
 
         private bool m_FlawlessGridRun; // if this is true that means the player didnt hit anything bad in the current grid.
 
@@ -36,6 +37,9 @@ namespace GameCritical
             {
                 m_ZapBanker = FindObjectOfType<ZapBanker>();
             }
+
+            // create heartbeat for obtaining the highscore from database
+            InvokeRepeating("GetScoreHeartbeat", 0.0f, 4.0f);
         }
         
         void Start()
@@ -48,6 +52,31 @@ namespace GameCritical
             {
                 AddToScore(30000);
             }
+        }
+
+        public void SendLocalHighscoreToDatabase()
+        {
+            StartCoroutine(LocalHighscoreToDatabase());
+        }
+
+        private IEnumerator LocalHighscoreToDatabase()
+        {
+            // attempt to set the highscore in the database in case the local score is better
+            if (SaveManager.IsStringStored(Database.DatabaseConstants.m_PARAM_EMAIL) &&
+                SaveManager.IsStringStored(Database.DatabaseConstants.m_HIGHSCORE))
+            {
+                yield return StartCoroutine(GameMaster.Instance.m_DatabaseManager.m_DataInserter.SetHighScore(
+                    SaveManager.GetString(Database.DatabaseConstants.m_PARAM_EMAIL),
+                    SaveManager.GetInt(Database.DatabaseConstants.m_HIGHSCORE),
+                    null,
+                    null
+                    ));
+            }
+        }
+
+        public int GetHighscore()
+        {
+            return m_Highscore;
         }
 
         public bool GetFlawlessGridRun()
@@ -77,6 +106,15 @@ namespace GameCritical
         public int GetScore()
         {
             return m_Score;
+        }
+
+        private void GetScoreHeartbeat()
+        {
+            if (SaveManager.IsStringStored(Database.DatabaseConstants.m_PARAM_EMAIL))
+            {
+                StartCoroutine(GameMaster.Instance.m_DatabaseManager.m_DataLoader.GetHighscore(
+                    SaveManager.GetString(Database.DatabaseConstants.m_PARAM_EMAIL), null, null));
+            }
         }
 
         public void AddToScore(int scoreToAdd)
